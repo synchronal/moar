@@ -1,0 +1,11 @@
+*.ez
+.medic/.doctor.out
+.medic/skipped
+/.fetch
+/cover/
+/deps/
+/doc/
+/tmp/
+/_build/
+erl_crash.dump
+moar-*.tar

@@ -1,0 +1,9 @@
+{
+  "actions" : {
+    "run" : {
+      "enabled" : true,
+      "script" : "mix test --color"
+    }
+  },
+  "openLogOnRun" : "start"
+}
