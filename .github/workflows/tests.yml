@@ -133,5 +133,5 @@ jobs:
       - name: Publish to Hex
         uses: ./.github/publish
         with:
-          name: pages
+          name: moar
           key: ${{ secrets.HEX_PM_KEY }}
