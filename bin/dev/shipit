@@ -10,4 +10,4 @@ git push origin HEAD
 
 source "./.medic/_support/cecho.sh"
 
-cecho --bold-bright-green "DONE!" --white "CI is at" --bright-yellow "https://github.com/synchronal/yard/actions"
+cecho --bold-bright-green "DONE!" --white "CI is at" --bright-yellow "https://github.com/synchronal/moar/actions"
