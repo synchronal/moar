@@ -32,7 +32,7 @@ defmodule Moar.DateTimeTest do
         minute: 0,
         second: 7,
         microsecond: {111, 5},
-        utc_offset: -14400,
+        utc_offset: -14_400,
         std_offset: 0,
         time_zone: "America/Manaus"
       }

@@ -5,6 +5,7 @@ defmodule Moar.MixProject do
     [
       app: :moar,
       deps: deps(),
+      dialyzer: dialyzer(),
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -20,9 +21,14 @@ defmodule Moar.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.28.4", only: :dev, runtime: false}
+      {:credo, "~> 1.6", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.28.4", only: :dev, runtime: false},
+      {:mix_audit, "~> 1.0", only: :dev, runtime: false}
     ]
   end
+
+  defp dialyzer, do: [plt_add_apps: [:ex_unit]]
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]

@@ -35,7 +35,7 @@ defmodule Moar.Assertions do
 
   def assert_eq(string, %Regex{} = regex, opts) when is_binary(string) do
     unless string =~ regex do
-      ExUnit.Assertions.flunk("""
+      flunk("""
         Expected string to match regex
         left (string): #{string}
         right (regex): #{regex |> inspect}

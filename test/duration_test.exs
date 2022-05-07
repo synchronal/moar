@@ -6,7 +6,7 @@ defmodule Moar.DurationTest do
 
   test "convert" do
     assert Moar.Duration.convert({1, :second}, :millisecond) == 1000
-    assert Moar.Duration.convert({23, :second}, :millisecond) == 23000
+    assert Moar.Duration.convert({23, :second}, :millisecond) == 23_000
     assert Moar.Duration.convert({1001, :millisecond}, :second) == 1
     assert Moar.Duration.convert({121, :second}, :minute) == 2
     assert Moar.Duration.convert({121, :minute}, :hour) == 2

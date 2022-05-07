@@ -52,11 +52,11 @@ defmodule Moar.StringTest do
     end
 
     test "converts to integer" do
-      assert Moar.String.to_integer("12345") == 12345
+      assert Moar.String.to_integer("12345") == 12_345
     end
 
     test "allows commas and spaces" do
-      assert Moar.String.to_integer(" 12,345  ") == 12345
+      assert Moar.String.to_integer(" 12,345  ") == 12_345
     end
 
     test "can be very lenient" do
