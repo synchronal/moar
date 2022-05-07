@@ -5,6 +5,25 @@ defmodule Moar.String do
 
   use Bitwise
 
+  @doc """
+  Convert strings and atoms to dash-case (kebab-case) and trims leading and trailing non-alphanumeric characters.
+
+  The following all get converted to `"foo"`: `"foo"`, `"FOO"`, `:foo`.
+
+  The following all get converted to `"foo-bar"`: `"foo-bar"`, `:foo_bar`, `" fooBar "`, `"  ?foo ! bar "`
+  """
+  @spec dasherize(atom() | binary()) :: binary()
+  def dasherize(term) do
+    term
+    |> Moar.Atom.to_string()
+    |> String.replace(~r/([A-Z]+)([A-Z][a-z])/, "\\1_\\2")
+    |> String.replace(~r/([a-z\d])([A-Z])/, "\\1_\\2")
+    |> String.replace(~r{[^a-z0-9]+}i, "-")
+    |> String.trim_leading("-")
+    |> String.trim_trailing("-")
+    |> String.downcase()
+  end
+
   @doc "Truncate `s` to `max_length` by removing the middle of the string"
   @spec inner_truncate(binary(), integer()) :: binary()
   def inner_truncate(nil, _),

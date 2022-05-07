@@ -1,7 +1,31 @@
 defmodule Moar.StringTest do
+  # @related [subject](/lib/string.ex)
+
   use Moar.SimpleCase, async: true
 
   doctest Moar.String
+
+  describe "dasherize" do
+    test "replaces non-string characters with dashes" do
+      assert Moar.String.dasherize(" A brown cow.") == "a-brown-cow"
+      assert Moar.String.dasherize("SomeModule.Name") == "some-module-name"
+      assert Moar.String.dasherize("foo") == "foo"
+      assert Moar.String.dasherize("FOO") == "foo"
+      assert Moar.String.dasherize(:foo) == "foo"
+      assert Moar.String.dasherize("foo_bar") == "foo-bar"
+      assert Moar.String.dasherize("FOO_BAR") == "foo-bar"
+      assert Moar.String.dasherize(:foo_bar) == "foo-bar"
+      assert Moar.String.dasherize("fooBar") == "foo-bar"
+      assert Moar.String.dasherize(" fooBar ") == "foo-bar"
+      assert Moar.String.dasherize(" [fooBar) ") == "foo-bar"
+      assert Moar.String.dasherize(" foo bar ") == "foo-bar"
+      assert Moar.String.dasherize(" ?foo! bar ) ") == "foo-bar"
+    end
+
+    test "stringifies atoms" do
+      assert Moar.String.dasherize(:ok) == "ok"
+    end
+  end
 
   describe "inner_truncate" do
     test "works with nil" do
