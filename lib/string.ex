@@ -159,7 +159,7 @@ defmodule Moar.String do
     do: s |> String.replace(~r|\D|, "") |> Elixir.String.to_integer()
 
   def to_integer(s, default: default),
-    do: s |> to_integer() |> Moar.Term.or_default(default)
+    do: s |> to_integer() |> Moar.Term.presence(default)
 
   @doc "Like `String.trim/1` but returns `nil` if the argument is nil."
   @spec trim(nil | binary()) :: binary()

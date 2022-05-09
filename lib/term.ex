@@ -43,17 +43,6 @@ defmodule Moar.Term do
   def blank?(_), do: false
 
   @doc """
-  Returns `value` unless it is blank, in which case it returns `default`.
-
-  ```elixir
-  iex> Moar.Term.or_default(%{}, %{color: :blue})
-  %{color: :blue}
-  ```
-  """
-  @spec or_default(any(), any()) :: any()
-  def or_default(value, default), do: if(present?(value), do: value, else: default)
-
-  @doc """
   Returns true if the term is not blank, nil, or empty.
 
   ```elixir
