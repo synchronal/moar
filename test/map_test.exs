@@ -1,6 +1,8 @@
 defmodule Moar.MapTest do
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Map
+
   describe "atomize_keys" do
     test "converts keys from strings to atoms" do
       %{"item1" => "chapstick", "item2" => "mask"}

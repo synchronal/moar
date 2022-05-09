@@ -1,16 +1,20 @@
 defmodule Moar.String do
   # @related [test](/test/string_test.exs)
 
-  @moduledoc "String-related functions"
+  @moduledoc "String-related functions."
 
   use Bitwise
 
   @doc """
   Convert strings and atoms to dash-case (kebab-case) and trims leading and trailing non-alphanumeric characters.
 
-  The following all get converted to `"foo"`: `"foo"`, `"FOO"`, `:foo`.
+  ```elixir
+  iex> ["foo", "FOO", :foo] |> Enum.map(&Moar.String.dasherize/1)
+  ["foo", "foo", "foo"]
 
-  The following all get converted to `"foo-bar"`: `"foo-bar"`, `:foo_bar`, `" fooBar "`, `"  ?foo ! bar "`
+  iex> ["foo-bar", "foo_bar", :foo_bar, " fooBar ", "  ?foo ! bar  "] |> Enum.map(&Moar.String.dasherize/1)
+  ["foo-bar", "foo-bar", "foo-bar", "foo-bar", "foo-bar"]
+  ```
   """
   @spec dasherize(atom() | binary()) :: binary()
   def dasherize(term) do
@@ -24,12 +28,27 @@ defmodule Moar.String do
     |> String.downcase()
   end
 
-  @doc "Truncate `s` to `max_length` by removing the middle of the string"
-  @spec inner_truncate(binary(), integer()) :: binary()
-  def inner_truncate(nil, _),
+  @doc """
+  Truncate `s` to `max_length` by replacing the middle of the string with `replacement`, which defaults to
+  the single unicode character `…`.
+
+  Note that the final length of the string will be `max_length` plus the length of `replacement`.
+
+  ```elixir
+  iex> Moar.String.inner_truncate("abcdefghijklmnopqrstuvwxyz", 10)
+  "abcde…vwxyz"
+
+  iex> Moar.String.inner_truncate("abcdefghijklmnopqrstuvwxyz", 10, "<==>")
+  "abcde<==>vwxyz"
+  ```
+  """
+  @spec inner_truncate(binary(), integer(), binary()) :: binary()
+  def inner_truncate(s, max_length, replacement \\ "…")
+
+  def inner_truncate(nil, _, _),
     do: nil
 
-  def inner_truncate(s, max_length) do
+  def inner_truncate(s, max_length, replacement) do
     case String.length(s) <= max_length do
       true ->
         s
@@ -37,13 +56,18 @@ defmodule Moar.String do
       false ->
         left_length = (max_length / 2) |> Float.ceil() |> round()
         right_length = (max_length / 2) |> Float.floor() |> round()
-        "#{String.slice(s, 0, left_length)}…#{String.slice(s, -right_length, right_length)}"
+        [String.slice(s, 0, left_length), replacement, String.slice(s, -right_length, right_length)] |> to_string()
     end
   end
 
   @doc """
   Compares the two binaries in constant-time to avoid timing attacks.
-  See: http://codahale.com/a-lesson-in-timing-attacks/
+  See: <http://codahale.com/a-lesson-in-timing-attacks/>.
+
+  ```elixir
+  iex> Moar.String.secure_compare("foo", "bar")
+  false
+  ```
   """
   @spec secure_compare(binary(), binary()) :: boolean()
   def secure_compare(left, right) when is_nil(left) or is_nil(right),
@@ -60,7 +84,14 @@ defmodule Moar.String do
   defp secure_compare(<<>>, <<>>, acc),
     do: acc === 0
 
-  @doc "Replace consecutive whitespace characters with a single space"
+  @doc """
+  Trims a string and replaces consecutive whitespace characters with a single space.
+
+  ```elixir
+  iex> Moar.String.squish("  foo   bar  \tbaz ")
+  "foo bar baz"
+  ```
+  """
   @spec squish(binary()) :: binary()
   def squish(nil),
     do: nil
@@ -68,17 +99,38 @@ defmodule Moar.String do
   def squish(s),
     do: s |> trim() |> Elixir.String.replace(~r/\s+/, " ")
 
-  @doc "Add `surrounder` to the beginning and end of `s`"
+  @doc """
+  Adds `surrounder` to the beginning and end of `s`.
+
+  ```elixir
+  iex> Moar.String.surround("Hello", "**")
+  "**Hello**"
+  ```
+  """
   @spec surround(binary(), binary()) :: binary()
   def surround(s, surrounder),
     do: surrounder <> s <> surrounder
 
-  @doc "Add `prefix` to the beginning of `s` and `suffix` to the end"
+  @doc """
+  Adds `prefix` to the beginning of `s` and `suffix` to the end.
+
+  ```elixir
+  iex> Moar.String.surround("Hello", "“", "”")
+  "“Hello”"
+  ```
+  """
   @spec surround(binary(), binary(), binary()) :: binary()
   def surround(s, prefix, suffix),
     do: prefix <> s <> suffix
 
-  @doc "Convert a string to an integer. Returns `nil` if the argument is `nil` or empty string"
+  @doc """
+  Converts a string to an integer. Returns `nil` if the argument is `nil` or empty string.
+
+  ```elixir
+  iex> Moar.String.to_integer("12,345")
+  12_345
+  ```
+  """
   @spec to_integer(nil | binary()) :: integer()
   def to_integer(nil),
     do: nil
@@ -93,6 +145,14 @@ defmodule Moar.String do
   Like `to_integer/1` but with options:
   * `:lenient` option removes non-digit characters first
   * `default:` option specifies a default in case `s` is nil
+
+  ```elixir
+  iex> Moar.String.to_integer("USD$25", :lenient)
+  25
+
+  iex> Moar.String.to_integer(nil, default: 0)
+  0
+  ```
   """
   @spec to_integer(binary(), :lenient | [default: binary()]) :: integer()
   def to_integer(s, :lenient) when is_binary(s),
@@ -101,7 +161,7 @@ defmodule Moar.String do
   def to_integer(s, default: default),
     do: s |> to_integer() |> Moar.Term.or_default(default)
 
-  @doc "Like `String.trim/1` but returns `nil` if the argument is nil"
+  @doc "Like `String.trim/1` but returns `nil` if the argument is nil."
   @spec trim(nil | binary()) :: binary()
   def trim(nil),
     do: nil

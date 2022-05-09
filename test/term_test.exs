@@ -1,6 +1,8 @@
 defmodule Moar.TermTest do
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Term
+
   describe "blank?" do
     test "booleans: true is not blank, false is blank" do
       refute Moar.Term.blank?(true)

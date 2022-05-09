@@ -8,7 +8,7 @@ defmodule Moar.MixProject do
     [
       app: :moar,
       deps: deps(),
-      description: "A collection of useful functions.",
+      description: "An assortment of useful functions.",
       dialyzer: dialyzer(),
       docs: docs(),
       elixir: "~> 1.13",

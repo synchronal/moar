@@ -1,7 +1,7 @@
 defmodule Moar.DateTime do
   # @related [test](/test/datetime_test.exs)
 
-  @moduledoc "DateTime-related functions"
+  @moduledoc "DateTime-related functions."
 
   @doc """
   Like `DateTime.from_iso8601/1` but raises if the string cannot be parsed.

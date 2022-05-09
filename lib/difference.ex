@@ -3,6 +3,7 @@ defprotocol Moar.Difference do
 
   @moduledoc """
   A protocol that defines `diff/2` for finding the difference between two terms.
+
   Includes implementations for `DateTime`, `NaiveDateTime`, and `BitString`.
   """
 
@@ -10,6 +11,7 @@ defprotocol Moar.Difference do
 
   @doc """
   Returns the difference between `a` and `b`.
+
   The fallback implementation uses `Kernel.-/2` to subtract `b` from `a`.
   """
   @spec diff(any(), any()) :: any()

@@ -1,6 +1,8 @@
 defmodule Moar.ProtocolTest do
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Protocol
+
   describe "implements!" do
     test "returns the first param if it implements the given protocol" do
       assert Moar.Protocol.implements!(Date.new!(2000, 1, 2), String.Chars)

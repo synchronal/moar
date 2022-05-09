@@ -2,8 +2,10 @@ defmodule Moar.Duration do
   # @related [test](/test/duration_test.exs)
 
   @moduledoc """
-  A duration is a `{time, unit}` tuple, where the time is a number and the unit is one of:
-  `:nanosecond`, `:microsecond`, `:millisecond`, `:second`, `:minute`, `:hour`, `:day`
+  A duration is a `{time, unit}` tuple.
+
+  The time is a number and the unit is one of:
+  `:nanosecond`, `:microsecond`, `:millisecond`, `:second`, `:minute`, `:hour`, `:day`.
   """
 
   @seconds_per_minute 60
@@ -14,7 +16,8 @@ defmodule Moar.Duration do
   @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
 
   @doc """
-  Converts a `{duration, time_unit}` tuple into a numeric duration. Rounds down to the nearest whole number.
+  Converts a `{duration, time_unit}` tuple into a numeric duration, rounding down to the nearest whole number.
+
   Uses `System.convert_time_unit/3` under the hood; see its documentation for more details.
 
   ## Examples
@@ -25,20 +28,13 @@ defmodule Moar.Duration do
   ```
   """
   @spec convert(from :: duration(), to :: time_unit()) :: number()
-  def convert({time, :minute} = _duration, to_unit), do: convert({time * @seconds_per_minute, :second}, to_unit)
-  def convert({time, :hour} = _duration, to_unit), do: convert({time * @seconds_per_hour, :second}, to_unit)
-  def convert({time, :day} = _duration, to_unit), do: convert({time * @seconds_per_day, :second}, to_unit)
-
-  def convert({_time, _from_unit} = duration, :minute),
-    do: convert(duration, :second) |> Integer.floor_div(@seconds_per_minute)
-
-  def convert({_time, _from_unit} = duration, :hour),
-    do: convert(duration, :second) |> Integer.floor_div(@seconds_per_hour)
-
-  def convert({_time, _from_unit} = duration, :day),
-    do: convert(duration, :second) |> Integer.floor_div(@seconds_per_day)
-
-  def convert({time, from_unit} = _duration, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
+  def convert({time, :minute}, to_unit), do: convert({time * @seconds_per_minute, :second}, to_unit)
+  def convert({time, :hour}, to_unit), do: convert({time * @seconds_per_hour, :second}, to_unit)
+  def convert({time, :day}, to_unit), do: convert({time * @seconds_per_day, :second}, to_unit)
+  def convert(duration, :minute), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_minute)
+  def convert(duration, :hour), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_hour)
+  def convert(duration, :day), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_day)
+  def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
   Converts a `{duration, time_unit}` tuple into a string.

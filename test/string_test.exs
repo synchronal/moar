@@ -42,6 +42,11 @@ defmodule Moar.StringTest do
       assert Moar.String.inner_truncate("1234567890", 5) == "123…90"
       assert Moar.String.inner_truncate("1234567890", 6) == "123…890"
     end
+
+    test "accepts a replacement" do
+      assert Moar.String.inner_truncate("1234567890", 4) == "12…90"
+      assert Moar.String.inner_truncate("1234567890", 4, "#-#") == "12#-#90"
+    end
   end
 
   describe "secure_compare/2" do

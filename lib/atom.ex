@@ -1,12 +1,12 @@
 defmodule Moar.Atom do
   # @related [test](/test/atom_test.exs)
 
-  @moduledoc "Atom-related functions"
+  @moduledoc "Atom-related functions."
 
   @doc """
-  When given a string, converts it to an atom via `String.to_atom/1`. When given an atom, returns it unchanged.
+  Converts a string to an atom (via `String.to_atom/1`), and returns atoms unchanged.
 
-  Useful when you aren't sure ahead of time whether you have a string or an atom and want an atom.
+  Useful when you aren't sure ahead of time whether you have a string or an atom.
   """
   @spec from_string(atom() | binary()) :: atom()
   def from_string(nil), do: raise(ArgumentError, message: "Unable to convert nil into an atom")
@@ -14,9 +14,9 @@ defmodule Moar.Atom do
   def from_string(a) when is_atom(a), do: a
 
   @doc """
-  When given an atom, converts it to a string via `Atom.to_string/1`. When given a string, returns it unchanged.
+  Converts an atom to a string (via `Atom.to_string/1`), and returns strings unchanged.
 
-  Useful when you aren't sure ahead of time whether you have a string or an atom and want a string.
+  Useful when you aren't sure ahead of time whether you have a string or an atom.
   """
   @spec to_string(atom() | binary()) :: binary()
   def to_string(nil), do: raise(ArgumentError, message: "Unable to convert nil into a string")

@@ -1,7 +1,7 @@
 defmodule Moar.File do
   # @related [test](/test/file_test.exs)
 
-  @moduledoc "File-related functions"
+  @moduledoc "File-related functions."
 
   @doc "Returns a path to a new temp file in a new temp directory."
   @spec new_tempfile_path(file_extension :: binary()) :: binary()

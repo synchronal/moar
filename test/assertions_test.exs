@@ -3,6 +3,8 @@ defmodule Moar.AssertionsTest do
 
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Assertions
+
   describe "assert_eq" do
     test "returns its first arg if the assertion passes" do
       assert assert_eq("arg", "arg") == "arg"

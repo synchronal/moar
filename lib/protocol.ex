@@ -1,7 +1,16 @@
 defmodule Moar.Protocol do
   # @related [test](/test/protocol_test.exs)
 
-  @doc "Returns `x` or raises if `x` does not implment `protocol`"
+  @moduledoc "Protocol-related functions."
+
+  @doc """
+  Returns `x` or raises if `x` does not implment `protocol`.
+
+  ```elixir
+  iex> Moar.Protocol.implements!(~D[2000-01-02], String.Chars)
+  ~D[2000-01-02]
+  ```
+  """
   @spec implements!(any(), module()) :: any()
   def implements!(x, protocol) do
     if protocol.impl_for(x) == nil,

@@ -4,7 +4,7 @@
 [![Hex pm](http://img.shields.io/hexpm/v/moar.svg?style=flat)](https://hex.pm/packages/moar)
 [![License](http://img.shields.io/github/license/synchronal/moar.svg?style=flat)](https://github.com/synchronal/moar/blob/main/LICENSE.md)
 
-A collection of useful functions.
+An assortment of useful functions.
 
 The docs can be found at <https://hexdocs.pm/moar>
 

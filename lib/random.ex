@@ -5,7 +5,7 @@ defmodule Moar.Random do
 
   @type encoding() :: :base32 | :base64
 
-  @doc "Returns a random integer between `0` and `max`"
+  @doc "Returns a random integer between `0` and `max`."
   @spec integer(max :: pos_integer()) :: pos_integer()
   def integer(max \\ 1_000_000_000),
     do: 0..max |> Enum.random()
@@ -19,7 +19,7 @@ defmodule Moar.Random do
   def string(:base64), do: string(32, :base64)
 
   @doc """
-  Returns a base64- or base32-encoded random string of given length
+  Returns a base64- or base32-encoded random string of given length.
 
   ```elixir
   iex> Moar.Random.string()
