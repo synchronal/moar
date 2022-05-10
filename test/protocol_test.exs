@@ -1,4 +1,6 @@
 defmodule Moar.ProtocolTest do
+  # @related [subject](/lib/protocol.ex)
+
   use Moar.SimpleCase, async: true
 
   doctest Moar.Protocol

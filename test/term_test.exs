@@ -1,4 +1,6 @@
 defmodule Moar.TermTest do
+  # @related [subject](/lib/term.ex)
+
   use Moar.SimpleCase, async: true
 
   doctest Moar.Term

@@ -2,6 +2,7 @@ defmodule Moar.DurationTest do
   # @related [subject](/lib/duration.ex)
 
   use Moar.SimpleCase, async: true
+
   doctest Moar.Duration
 
   test "convert" do

@@ -1,4 +1,6 @@
 defmodule Moar.MapTest do
+  # @related [subject](/lib/map.ex)
+
   use Moar.SimpleCase, async: true
 
   doctest Moar.Map

@@ -1,5 +1,8 @@
 defmodule Moar.SugarTest do
-  use ExUnit.Case, async: true
+  # @related [subject](/lib/sugar.ex)
+
+  use Moar.SimpleCase, async: true
+
   doctest Moar.Sugar
 
   describe "error" do

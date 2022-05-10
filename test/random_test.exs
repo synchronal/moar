@@ -1,4 +1,6 @@
 defmodule Moar.RandomTest do
+  # @related [subject](/lib/random.ex)
+
   use Moar.SimpleCase, async: true
 
   describe "integer" do
