@@ -15,7 +15,7 @@ The package can be installed by adding `moar` to your list of dependencies in `m
 ```elixir
 def deps do
   [
-    {:moar, "~> 0.1.0"}
+    {:moar, "~> 1.0.0"}
   ]
 end
 ```
