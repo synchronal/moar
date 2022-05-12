@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.1.0
+
+- Add `Moar.Tuple.from_list!/1`
+
 ## 1.0.0
 
 - Update documentation
