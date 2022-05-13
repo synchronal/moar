@@ -54,6 +54,29 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "deep merge" do
+    test "can do a shallow merge of maps" do
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
+    end
+
+    test "can do a shallow merge of other enumerables" do
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(b: 3, c: 4) |> assert_eq(%{a: 1, b: 3, c: 4})
+      [a: 1, b: 2] |> Moar.Map.deep_merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
+    end
+
+    test "can do a deep merge of maps" do
+      %{a: %{aa: %{aaa: 1}}, b: 2}
+      |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{ab: 3}}})
+      |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
+    end
+
+    test "can do a deep merge of other enumerables" do
+      [a: [aa: [aaa: 1]], b: 2]
+      |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{ab: 3}}})
+      |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
+    end
+  end
+
   describe "merge" do
     test "with two maps" do
       %{a: 1, b: 2} |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})

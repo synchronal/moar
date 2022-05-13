@@ -3,6 +3,7 @@
 ## Unreleased changes
 
 - Add `Moar.Protocol.implements?/2`
+- Add `Moar.Map.deep_merge/2`
 
 ## 1.3.0
 

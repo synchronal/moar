@@ -39,6 +39,24 @@ defmodule Moar.Map do
     do: not_a_map
 
   @doc """
+  Deeply merges two enumerables into a single map.
+
+  ```elixir
+  iex> Moar.Map.deep_merge(%{fruit: %{apples: 3, bananas: 5}, veggies: %{carrots: 10}}, [fruit: [cherries: 20]])
+  %{fruit: %{apples: 3, bananas: 5, cherries: 20}, veggies: %{carrots: 10}}
+  ```
+  """
+  @spec deep_merge(Enum.t(), Enum.t()) :: map()
+  def deep_merge(a, b),
+    do: deep_merge(nil, a, b)
+
+  defp deep_merge(_key, a, b) do
+    if Moar.Protocol.implements?(a, Enumerable) && Moar.Protocol.implements?(b, Enumerable),
+      do: Map.merge(Enum.into(a, %{}), Enum.into(b, %{}), &deep_merge/3),
+      else: b
+  end
+
+  @doc """
   Merges two enumerables into a single map.
 
   ```elixir
