@@ -10,11 +10,11 @@ defmodule Moar.RetryTest do
       Agent.start_link(fn -> 0 end, name: __MODULE__)
     end
 
-    defp value do
+    def value do
       Agent.get(__MODULE__, & &1)
     end
 
-    defp increment do
+    def increment do
       Agent.update(__MODULE__, &(&1 + 1))
     end
 
@@ -61,6 +61,40 @@ defmodule Moar.RetryTest do
       assert_raise RuntimeError, "not 10 yet", fn ->
         Moar.Retry.rescue_until!(later, fun, 10)
       end
+    end
+  end
+
+  describe "retry_for" do
+    test "calls the function repeatedly until it returns a truthy value" do
+      {:ok, _pid} = Counter.start_link()
+
+      fun = fn -> if Counter.tick() > 3, do: Counter.value() end
+      assert {:ok, 4} = Moar.Retry.retry_for(50, fun, 10)
+    end
+
+    test "fails if the function does not return a truthy value within the timeout period" do
+      {:ok, _pid} = Counter.start_link()
+
+      fun = fn -> if Counter.tick() > 10, do: Counter.value() end
+      assert {:error, :timeout} = Moar.Retry.retry_for(20, fun, 10)
+    end
+  end
+
+  describe "retry_until" do
+    test "calls the function repeatedly until it returns a truthy value" do
+      {:ok, _pid} = Counter.start_link()
+
+      fun = fn -> if Counter.tick() > 3, do: Counter.value() end
+      later = DateTime.add(DateTime.utc_now(), 50, :millisecond)
+      assert {:ok, 4} = Moar.Retry.retry_until(later, fun, 10)
+    end
+
+    test "raises if the function does not stop raising before the timeout time" do
+      {:ok, _pid} = Counter.start_link()
+
+      fun = fn -> if Counter.tick() > 10, do: Counter.value() end
+      later = DateTime.add(DateTime.utc_now(), 20, :millisecond)
+      assert {:error, :timeout} = Moar.Retry.retry_until(later, fun, 10)
     end
   end
 end
