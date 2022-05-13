@@ -1,6 +1,8 @@
 defmodule Moar.RetryTest do
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Retry
+
   defmodule Counter do
     use Agent
 
