@@ -3,6 +3,14 @@ defmodule Moar.DateTimeTest do
 
   use Moar.SimpleCase, async: true
 
+  doctest Moar.DateTime
+
+  describe "add" do
+    test "adds a duration to a time" do
+      assert Moar.DateTime.add(~U[2022-01-01T00:00:00Z], {55, :second}) == ~U[2022-01-01T00:00:55Z]
+    end
+  end
+
   describe "from_iso8601!" do
     test "parses a valid ISO8601 string" do
       assert Moar.DateTime.from_iso8601!("2020-01-01T00:00:00.000Z") == ~U[2020-01-01T00:00:00.000Z]
