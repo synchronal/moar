@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Protocol.implements?/2`
+
 ## 1.3.0
 
 - `Moar.DateTime.add` can add a `Moar.Duration` to a `DateTime`

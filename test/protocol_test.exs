@@ -16,4 +16,15 @@ defmodule Moar.ProtocolTest do
       end
     end
   end
+
+  describe "implements?" do
+    test "returns true if the term implements the protocol" do
+      assert Moar.Protocol.implements?([], Enumerable) == true
+      assert Moar.Protocol.implements?("hi", String.Chars) == true
+    end
+
+    test "returns false if the term does not implement the protocol" do
+      assert Moar.Protocol.implements?("hi", Enumerable) == false
+    end
+  end
 end
