@@ -20,8 +20,6 @@ defmodule Moar.Duration do
 
   Uses `System.convert_time_unit/3` under the hood; see its documentation for more details.
 
-  ## Examples
-
   ```elixir
   iex> Moar.Duration.convert({121, :second}, :minute)
   2
@@ -38,8 +36,6 @@ defmodule Moar.Duration do
 
   @doc """
   Converts a `{duration, time_unit}` tuple into a string.
-
-  ## Examples
 
   ```elixir
   iex> Moar.Duration.to_string({1, :second})

@@ -29,7 +29,7 @@ defmodule Moar.RetryTest do
       {:ok, _pid} = Counter.start_link()
 
       fun = fn -> if Counter.tick() < 3, do: raise("not 3 yet") end
-      Moar.Retry.rescue_for!(500, fun)
+      Moar.Retry.rescue_for!(50, fun, 10)
     end
 
     test "raises if the function does not stop raising within the timeout period" do
@@ -38,7 +38,7 @@ defmodule Moar.RetryTest do
       fun = fn -> if Counter.tick() < 10, do: raise("not 10 yet") end
 
       assert_raise RuntimeError, "not 10 yet", fn ->
-        Moar.Retry.rescue_for!(200, fun)
+        Moar.Retry.rescue_for!(20, fun, 10)
       end
     end
   end
@@ -48,18 +48,18 @@ defmodule Moar.RetryTest do
       {:ok, _pid} = Counter.start_link()
 
       fun = fn -> if Counter.tick() < 3, do: raise("not 3 yet") end
-      later = DateTime.add(DateTime.utc_now(), 500, :millisecond)
-      Moar.Retry.rescue_until!(later, fun)
+      later = DateTime.add(DateTime.utc_now(), 50, :millisecond)
+      Moar.Retry.rescue_until!(later, fun, 10)
     end
 
     test "raises if the function does not stop raising before the timeout time" do
       {:ok, _pid} = Counter.start_link()
 
       fun = fn -> if Counter.tick() < 10, do: raise("not 10 yet") end
-      later = DateTime.add(DateTime.utc_now(), 200, :millisecond)
+      later = DateTime.add(DateTime.utc_now(), 20, :millisecond)
 
       assert_raise RuntimeError, "not 10 yet", fn ->
-        Moar.Retry.rescue_until!(later, fun)
+        Moar.Retry.rescue_until!(later, fun, 10)
       end
     end
   end
