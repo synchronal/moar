@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.3.0
+
 - `Moar.DateTime.add` can add a `Moar.Duration` to a `DateTime`
 - `Moar.Retry.rescue_for!/2` can take a `Moar.Duration`
 - Add `Moar.Retry.retry_for` and `Moar.Retry.retry_until`
