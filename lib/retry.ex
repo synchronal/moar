@@ -8,10 +8,10 @@ defmodule Moar.Retry do
   @default_interval 100
 
   @doc """
-  Run `fun` every `interval` ms until it doesn't raise an exception.
+  Run `fun` every `interval_ms` until it doesn't raise an exception.
   If `timeout` expires, the exception will be re-raised.
 
-  * `timeout` can be an integer (milliseconds) or a `Moar.Duration` tuple
+  * `timeout` can be an integer in milliseconds or a `Moar.Duration` tuple
 
   ```elixir
   iex> Moar.Retry.rescue_for!(20, fn -> raise "always fails" end, 2)
@@ -23,13 +23,12 @@ defmodule Moar.Retry do
   """
   @spec rescue_for!(pos_integer() | Moar.Duration.t(), (() -> any()), pos_integer()) :: any() | no_return
   def rescue_for!(timeout, fun, interval_ms \\ @default_interval) do
-    timeout = if is_tuple(timeout), do: timeout, else: {timeout, :millisecond}
-    expiry = Moar.DateTime.add(DateTime.utc_now(), timeout)
+    expiry = Moar.DateTime.add(DateTime.utc_now(), duration(timeout))
     rescue_until!(expiry, fun, interval_ms)
   end
 
   @doc """
-  Run `fun` every `interval` ms until it doesn't raise an exception.
+  Run `fun` every `interval_ms` until it doesn't raise an exception.
   If the current time reaches `expiry`, the exception will be re-raised.
 
   ```elixir
@@ -52,10 +51,10 @@ defmodule Moar.Retry do
   end
 
   @doc """
-  Run `fun` every `interval` ms until it returns a truthy value, returning `{:ok, <value>}`.
+  Run `fun` every `interval_ms` until it returns a truthy value, returning `{:ok, <value>}`.
   If `timeout` expires, returns `{:error, :timeout}`.
 
-  * `timeout` can be an integer (milliseconds) or a `Moar.Duration` tuple
+  * `timeout` can be an integer in milliseconds or a `Moar.Duration` tuple
 
   ```elixir
   iex> Moar.Retry.retry_for(20, fn -> 10 end, 2)
@@ -67,13 +66,12 @@ defmodule Moar.Retry do
   """
   @spec retry_for(pos_integer() | Moar.Duration.t(), fun(), pos_integer()) :: {:ok, any()} | {:error, :timeout}
   def retry_for(timeout, fun, interval_ms \\ @default_interval) do
-    timeout = if is_tuple(timeout), do: timeout, else: {timeout, :millisecond}
-    expiry = Moar.DateTime.add(DateTime.utc_now(), timeout)
+    expiry = Moar.DateTime.add(DateTime.utc_now(), duration(timeout))
     retry_until(expiry, fun, interval_ms)
   end
 
   @doc """
-  Run `fun` every `interval` ms until it returns a truthy value, returning `{:ok, <value>}`.
+  Run `fun` every `interval_ms` until it returns a truthy value, returning `{:ok, <value>}`.
   If the current time reaches `expiry`, returns `{:error, :timeout}`.
 
   ```elixir
@@ -84,17 +82,21 @@ defmodule Moar.Retry do
   """
   @spec retry_until(DateTime.t(), fun(), pos_integer()) :: {:ok, any()} | {:error, :timeout}
   def retry_until(expiry, fun, interval_ms \\ @default_interval) do
-    result = fun.()
+    cond do
+      result = fun.() ->
+        {:ok, result}
 
-    if result do
-      {:ok, result}
-    else
-      if DateTime.compare(expiry, DateTime.utc_now()) == :gt do
+      DateTime.compare(expiry, DateTime.utc_now()) == :gt ->
         :timer.sleep(interval_ms)
         retry_until(expiry, fun, interval_ms)
-      else
+
+      true ->
         {:error, :timeout}
-      end
     end
   end
+
+  # # #
+
+  defp duration({_time, _unit} = duration), do: duration
+  defp duration(time) when is_integer(time), do: {time, :millisecond}
 end
