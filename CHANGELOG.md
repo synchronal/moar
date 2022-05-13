@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Retry.rescue_for!/2` and `.rescue_until!/2`
+
 ## 1.1.0
 
 - Add `Moar.Tuple.from_list!/1`
