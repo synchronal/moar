@@ -12,7 +12,7 @@ defmodule Moar.Duration do
   @seconds_per_hour 60 * 60
   @seconds_per_day 60 * 60 * 24
 
-  @type duration() :: {time :: number(), unit :: time_unit()}
+  @type t() :: {time :: number(), unit :: time_unit()}
   @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
 
   @doc """
@@ -25,7 +25,7 @@ defmodule Moar.Duration do
   2
   ```
   """
-  @spec convert(from :: duration(), to :: time_unit()) :: number()
+  @spec convert(from :: t(), to :: time_unit()) :: number()
   def convert({time, :minute}, to_unit), do: convert({time * @seconds_per_minute, :second}, to_unit)
   def convert({time, :hour}, to_unit), do: convert({time * @seconds_per_hour, :second}, to_unit)
   def convert({time, :day}, to_unit), do: convert({time * @seconds_per_day, :second}, to_unit)
@@ -45,7 +45,7 @@ defmodule Moar.Duration do
   "25 milliseconds"
   ```
   """
-  @spec to_string({duration :: duration(), unit :: time_unit()}) :: String.t()
+  @spec to_string({duration :: t(), unit :: time_unit()}) :: String.t()
   def to_string({1, unit}), do: "1 #{unit}"
   def to_string({-1, unit}), do: "-1 #{unit}"
   def to_string({time, unit}), do: "#{time} #{unit}s"
