@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Opts`
+
 ## 1.4.0
 
 - Add `Moar.Protocol.implements?/2`
