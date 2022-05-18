@@ -2,83 +2,81 @@ defmodule Moar.Opts do
   # @related [test](/test/opts_test.exs)
 
   @moduledoc """
-  Extracts keys and values from enumerables. Meant to be used to handle function options.
+  Extracts keys and values from enumerables, especially from function options.
+
+  There are two main functions, each of which takes an opts enumerable as input. `get/2` and `get/3` each extract
+  one value from the opts. `take/2` extracts multiple values from the opts. `get/3` and `take/2` allow the
+  specification of default values.
+
+  Example using `get/2` and `get/3`:
 
   ```elixir
-  iex> [a: 1, b: 2, c: 3]
-  ...> |> Moar.Opts.new()
-  ...> |> Moar.Opts.get(:a)
-  ...> |> Moar.Opts.take([:b, :d])
-  ...> |> Moar.Opts.get(:e, 100)
-  ...> |> Moar.Opts.done!()
-  %{a: 1, b: 2, d: nil, e: 100}
+  def build_url(path, opts \\\\ []) do
+    %URI{
+      path: path,
+      host: Moar.Opts.get(opts, :host, "localhost"),
+      port: Moar.Opts.get(opts, :port),
+      scheme: "https"
+    } |> URI.to_string()
+  end
   ```
-  """
 
-  @type t() :: {map(), map()}
-
-  @doc """
-  Create a new Opts from `input`.
+  Examples using `take/2`:
 
   ```elixir
-  iex> [a: 1, b: 2] |> Moar.Opts.new()
-  {%{a: 1, b: 2}, %{}}
-  ```
-  """
-  @spec new(Enum.t()) :: t()
-  def new(input), do: {input |> Enum.into(%{}) |> Moar.Map.atomize_keys(), %{}}
-
-  @doc """
-  Get one item from the original input.
-
-  ```elixir
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.get(:a)
-  {%{a: 1, b: 2}, %{a: 1}}
-
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.get(:a) |> Moar.Opts.get(:c, 300)
-  {%{a: 1, b: 2}, %{a: 1, c: 300}}
-
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.get(:a) |> Moar.Opts.get(:c, 300) |> Moar.Opts.done!()
-  %{a: 1, c: 300}
-  ```
-  """
-  @spec get(t(), atom(), any()) :: t()
-  def get({input, output} = _opts, key, default \\ nil) do
-    value = Map.get(input, key) |> Moar.Term.presence(default)
-    output = Map.put(output, key, value)
-    {input, output}
+  # example using pattern matching
+  def build_url(path, opts \\ []) do
+    %{host: h, port: p} = Moar.Opts.take(opts, [:port, host: "localhost"])
+    %URI{path: path, host: h, port: p, scheme: "https"} |> URI.to_string()
   end
 
+  #example rebinding `opts` to the parsed opts
+  def build_url(path, opts \\ []) do
+    opts = Moar.Opts.take(opts, [:port, host: "localhost"])
+    %URI{path: path, host: opts.host, port: opts.port, scheme: "https"} |> URI.to_string()
+  end
+  ```
+  """
+
   @doc """
-  Take multiple items from the original input.
+  Get the value of `key` from `input`, falling back to optional `default` if the key does not exist.
+
 
   ```elixir
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.take([:a, :c])
-  {%{a: 1, b: 2}, %{a: 1, c: nil}}
+  iex> [a: 1, b: 2] |> Moar.Opts.get(:a)
+  1
 
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.take([:a, :c]) |> Moar.Opts.done!()
+  iex> [a: 1, b: 2] |> Moar.Opts.get(:c)
+  nil
+
+  iex> [a: 1, b: 2] |> Moar.Opts.get(:c, 300)
+  300
+  ```
+  """
+  @spec get(Enum.t(), binary() | atom(), any()) :: any()
+  def get(input, key, default \\ nil),
+    do: input |> Enum.into(%{}) |> Map.get(key) |> Moar.Term.presence(default)
+
+  @doc """
+  Get each key in `keys` from `input`.
+
+  `keys` is a list of keys, a keyword list of keys and default values, or a hybrid list/keyword list.
+
+  ```elixir
+  iex> [a: 1, b: 2] |> Moar.Opts.take([:a, :c])
   %{a: 1, c: nil}
+
+  iex> [a: 1, b: 2] |> Moar.Opts.take([:a, b: 0, c: 3])
+  %{a: 1, b: 2, c: 3}
   ```
   """
-  @spec take(t(), keyword()) :: t()
-  def take({input, output} = _opts, keys) do
-    output =
-      Enum.reduce(keys, output, fn key, acc ->
-        value = Map.get(input, key) |> Moar.Term.presence(nil)
-        Map.put(acc, key, value)
-      end)
+  @spec take(Enum.t(), list()) :: map()
+  def take(input, keys) do
+    input = Enum.into(input, %{})
 
-    {input, output}
+    Enum.reduce(keys, %{}, fn
+      {key, default}, acc -> Map.put(acc, key, get(input, key, default))
+      key, acc -> Map.put(acc, key, get(input, key))
+    end)
   end
-
-  @doc """
-  Finalize the opts, returning the values obtained via `get/3` and `take/2` and discarding the original input.
-
-  ```elixir
-  iex> [a: 1, b: 2] |> Moar.Opts.new() |> Moar.Opts.get(:a) |> Moar.Opts.done!()
-  %{a: 1}
-  ```
-  """
-  @spec done!(t()) :: map()
-  def done!({_input, output} = _opts), do: output
 end
