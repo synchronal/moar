@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.5.0
+
 - Add `Moar.Opts`
 
 ## 1.4.0
