@@ -6,6 +6,8 @@ defmodule Moar.DateTime do
   @doc """
   Like `DateTime.add` but takes a `Moar.Duration`.
 
+  See also `Moar.NaiveDateTime`.
+
   ```elixir
   iex> start = ~U[2022-01-01T00:00:00Z]
   iex> Moar.DateTime.add(start, {3, :minute})

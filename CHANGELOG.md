@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.NaiveDateTime`
+
 ## 1.5.0
 
 - Add `Moar.Opts`
