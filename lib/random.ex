@@ -1,7 +1,7 @@
 defmodule Moar.Random do
   # @related [test](/test/random_test.exs)
 
-  @moduledoc "Generate random data."
+  @moduledoc "Generates random data."
 
   @type encoding() :: :base32 | :base64
 

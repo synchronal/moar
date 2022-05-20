@@ -3,6 +3,8 @@ defmodule Moar.FileTest do
 
   use Moar.SimpleCase, async: true
 
+  doctest Moar.File
+
   describe "new_tempfile_path" do
     test "generates a tempfile path" do
       ".txt"

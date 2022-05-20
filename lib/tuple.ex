@@ -1,10 +1,14 @@
 defmodule Moar.Tuple do
   # @related [test](/test/tuple_test.exs)
 
+  @moduledoc "Tuple-related functions."
+
   @doc """
-  Converts a list of tuples to a single tuple where the first element is the first element of the first tuple,
-  and the second element is a list of the second elements of each tuple.
-  Raises if the first element in each tuple is not homogeneous.
+  Converts a list of tuples to a single tuple whose first element is the first element of each tuple in
+  the list (which must all be the same), and whose second element is a list containing the second elements
+  of each tuple in the list.
+
+  Raises if the list contains tuples whose first elements are not all the same.
 
   ```elixir
   iex> Moar.Tuple.from_list!([{:ok, :a}, {:ok, :b}])

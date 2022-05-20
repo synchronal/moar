@@ -3,6 +3,28 @@ defmodule Moar.Retry do
 
   @moduledoc """
   Retryable functions.
+
+  These functions are particularly useful in higher-level tests, though they can be used for any
+  kind of waiting.
+
+  One use of `rescue_for/3` in a test is to wait until an assertion succeeds:
+
+  ```elixir
+  # wait up to 5 seconds for the element with ID "status" to be "finished"
+  Moar.Retry.rescue_for!(5000, fn ->
+    assert view |> element("#status") |> render() == "finished"
+  end)
+  ```
+
+  One use of `retry_for/3` in a test is to wait until something changes before making an assertion:
+
+  ```elixir
+  Moar.Retry.retry_for(5000, fn ->
+    view |> element("#status") |> render() == "finished"
+  end)
+
+  assert view |> element("#total") |> render() == "8,675,309"
+  ```
   """
 
   @default_interval 100

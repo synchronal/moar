@@ -38,7 +38,7 @@ defmodule Moar.Sugar do
   def error!({:error, term}), do: term
 
   @doc """
-  Wraps a term in a :noreply tuple.
+  Wraps a term in a :noreply tuple. Useful in pipelines.
 
   ```elixir
   iex> %{} |> Map.put(:count, 0) |> Moar.Sugar.noreply()
@@ -49,7 +49,7 @@ defmodule Moar.Sugar do
   def noreply(term), do: {:noreply, term}
 
   @doc """
-  Wraps a term in an :ok tuple.
+  Wraps a term in an :ok tuple. Useful in pipelines.
 
   ```elixir
   iex> %{} |> Map.put(:count, 10) |> Moar.Sugar.ok()
