@@ -111,8 +111,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-        elixir-version: ${{ env.ELIXIR_VERSION }}
-        otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
       - name: Cache deps
         uses: actions/cache@v2
         with:
@@ -179,18 +179,18 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-        elixir-version: ${{ env.ELIXIR_VERSION }}
-        otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
       - name: Cache deps
         uses: actions/cache@v2
         with:
           path: deps
-          key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
       - name: Cache _build
         uses: actions/cache@v2
         with:
           path: _build
-          key: ${{ runner.os }}-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
       - name: Publish to Hex
         uses: ./.github/publish
         with:
