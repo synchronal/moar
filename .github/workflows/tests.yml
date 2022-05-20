@@ -94,12 +94,6 @@ jobs:
       - name: Run tests
         run: mix test --color --warnings-as-errors
         working-directory: .
-      - name: Run mix audit
-        run: MIX_ENV=dev mix deps.audit
-        working-directory: .
-      - name: Warnings as errors
-        run: mix compile --force --warnings-as-errors
-        working-directory: .
   credo_and_dialyxir:
     name: Credo + Dialyxir
     needs: build_test
