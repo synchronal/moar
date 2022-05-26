@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.7.0
+
 - Add `assert_recent` to `Moar.Assertions`
 
 ## 1.6.0
