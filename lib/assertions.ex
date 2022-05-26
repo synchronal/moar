@@ -97,6 +97,32 @@ defmodule Moar.Assertions do
   end
 
   @doc """
+  Asserts that `datetime` is within `recency` of now (in UTC), returning `datetime` if the assertion succeeeds.
+
+  Uses `assert_eq(datetime, now, within: recency)` under the hood.
+
+  * `datetime` can be a `DateTime`, a `NaiveDateTime`, or an ISO8601-formatted UTC datetime string.
+  * `recency` is a `Moar.Duration` and defaults to `{10, :second}`.
+
+  ```elixir
+  five_seconds_ago = Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
+  assert_recent five_seconds_ago
+  ```
+  """
+  @spec assert_recent(DateTime.t() | NaiveDateTime.t() | binary(), Moar.Duration.t()) ::
+          DateTime.t() | NaiveDateTime.t() | binary()
+  def assert_recent(datetime, recency \\ {10, :second})
+
+  def assert_recent(%DateTime{} = datetime, recency),
+    do: assert_eq(datetime, DateTime.utc_now(), within: recency)
+
+  def assert_recent(%NaiveDateTime{} = datetime, recency),
+    do: assert_eq(datetime, NaiveDateTime.utc_now(), within: recency)
+
+  def assert_recent(datetime, recency) when is_binary(datetime),
+    do: assert_eq(datetime, DateTime.utc_now() |> DateTime.to_iso8601(), within: recency)
+
+  @doc """
   Asserts that a pre-condition and a post-condition are true after performing an action.
 
   ## Examples

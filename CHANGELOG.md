@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `assert_recent` to `Moar.Assertions`
+
 ## 1.6.0
 
 - Add `Moar.NaiveDateTime`

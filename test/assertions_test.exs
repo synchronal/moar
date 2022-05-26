@@ -98,6 +98,45 @@ defmodule Moar.AssertionsTest do
     end
   end
 
+  describe "assert_recent" do
+    test "passes when given a datetime that's less than 10 seconds in the past" do
+      assert_recent Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
+    end
+
+    test "passes when given a datetime that's less than 10 seconds into the future" do
+      assert_recent Moar.DateTime.add(DateTime.utc_now(), {5, :second})
+    end
+
+    test "fails when given a datetime that's more than 10 seconds in the past" do
+      assert_raise ExUnit.AssertionError, fn -> assert_recent(Moar.DateTime.add(DateTime.utc_now(), {-12, :second})) end
+    end
+
+    test "fails when given a datetime that's more than 10 seconds into the future" do
+      assert_raise ExUnit.AssertionError, fn -> assert_recent(Moar.DateTime.add(DateTime.utc_now(), {12, :second})) end
+    end
+
+    test "accepts a DateTime" do
+      assert_recent Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
+    end
+
+    test "accepts a NaiveDateTime" do
+      assert_recent Moar.NaiveDateTime.add(NaiveDateTime.utc_now(), {-5, :second})
+    end
+
+    test "accepts an ISO8601-formatted UTC datetime string" do
+      assert_recent Moar.DateTime.add(DateTime.utc_now(), {-5, :second}) |> DateTime.to_iso8601()
+    end
+
+    test "accepts a custom recency value" do
+      assert_recent Moar.DateTime.add(DateTime.utc_now(), {30, :second}), {40, :second}
+    end
+
+    test "returns the first argument" do
+      datetime = Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
+      assert assert_recent(datetime) == datetime
+    end
+  end
+
   describe "assert_that" do
     test "is happy when the experiment works as expected" do
       {:ok, agent} = Agent.start(fn -> 0 end)
