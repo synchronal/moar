@@ -18,7 +18,6 @@ defmodule Moar.MapTest do
       |> assert_eq(%{"key1" => "value1", :key2 => "value2"})
     end
 
-    @tag :skip
     test "works if the key does not exist in the map" do
       %{"key1" => "value1", "key2" => "value2"}
       |> Moar.Map.atomize_key("key3")

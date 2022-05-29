@@ -4,12 +4,12 @@ defmodule Moar.Map do
   @moduledoc "Map-related functions."
 
   @doc """
-  Converts `key` in `map` to an atom, optionally transforming the value with `value_fn`.
+  Converts `key` in `map` to an atom, optionally transforming the value with `value_transformer`.
 
   Raises if `key` is a string and `map` already has an atomized version of that key.
   """
   @spec atomize_key(map(), binary() | atom(), (any() -> any()) | nil) :: map()
-  def atomize_key(map, key, value_fn \\ &Function.identity/1) do
+  def atomize_key(map, key, value_transformer \\ &Function.identity/1) do
     atomized_key =
       if is_atom(key) do
         key
@@ -21,8 +21,7 @@ defmodule Moar.Map do
         end)
       end
 
-    {value, map} = Map.pop!(map, key)
-    Map.put(map, atomized_key, value_fn.(value))
+    map |> rename_key(key, atomized_key) |> transform(atomized_key, value_transformer)
   end
 
   @doc """
