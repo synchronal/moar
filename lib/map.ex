@@ -4,7 +4,31 @@ defmodule Moar.Map do
   @moduledoc "Map-related functions."
 
   @doc """
+  Converts `key` in `map` to an atom, optionally transforming the value with `value_fn`.
+
+  Raises if `key` is a string and `map` already has an atomized version of that key.
+  """
+  @spec atomize_key(map(), binary() | atom(), (any() -> any()) | nil) :: map()
+  def atomize_key(map, key, value_fn \\ &Function.identity/1) do
+    atomized_key =
+      if is_atom(key) do
+        key
+      else
+        Moar.Atom.from_string(key)
+        |> tap(fn new_key ->
+          if Map.has_key?(map, new_key),
+            do: raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
+        end)
+      end
+
+    {value, map} = Map.pop!(map, key)
+    Map.put(map, atomized_key, value_fn.(value))
+  end
+
+  @doc """
   Converts keys in `map` to atoms.
+
+  Raises if converting a key from a string to an atom would result in a key conflict.
 
   ```elixir
   iex> Moar.Map.atomize_keys(%{"a" => 1, "b" => 2})
@@ -13,10 +37,12 @@ defmodule Moar.Map do
   """
   @spec atomize_keys(map()) :: map()
   def atomize_keys(map),
-    do: map |> Map.new(fn {k, v} -> {Moar.Atom.from_string(k), v} end)
+    do: Enum.reduce(map, map, fn {k, _v}, acc -> atomize_key(acc, k) end)
 
   @doc """
   Converts keys to atoms, traversing through descendant lists and maps.
+
+  Raises if converting a key from a string to an atom would result in a key conflict.
 
   ```elixir
   iex> Moar.Map.deep_atomize_keys(%{"a" => %{"aa" => 1}, "b" => [%{"bb" => 2}, %{"bbb" => 3}]})
@@ -28,10 +54,10 @@ defmodule Moar.Map do
     do: list |> Enum.map(&deep_atomize_keys(&1))
 
   def deep_atomize_keys(map) when is_map(map) do
-    Map.new(map, fn
-      {k, v} when is_map(v) -> {Moar.Atom.from_string(k), deep_atomize_keys(v)}
-      {k, list} when is_list(list) -> {Moar.Atom.from_string(k), Enum.map(list, fn v -> deep_atomize_keys(v) end)}
-      {k, v} -> {Moar.Atom.from_string(k), v}
+    Enum.reduce(map, map, fn
+      {k, v}, acc when is_map(v) -> atomize_key(acc, k, &deep_atomize_keys/1)
+      {k, list}, acc when is_list(list) -> atomize_key(acc, k, &Enum.map(&1, fn v -> deep_atomize_keys(v) end))
+      {k, _v}, acc -> atomize_key(acc, k)
     end)
   end
 

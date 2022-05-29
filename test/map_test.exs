@@ -5,6 +5,46 @@ defmodule Moar.MapTest do
 
   doctest Moar.Map
 
+  describe "atomize_key" do
+    test "converts a key from a string to an atom" do
+      %{"key1" => "value1", "key2" => "value2"}
+      |> Moar.Map.atomize_key("key2")
+      |> assert_eq(%{"key1" => "value1", :key2 => "value2"})
+    end
+
+    test "works if the given key is already an atom" do
+      %{"key1" => "value1", :key2 => "value2"}
+      |> Moar.Map.atomize_key(:key2)
+      |> assert_eq(%{"key1" => "value1", :key2 => "value2"})
+    end
+
+    test "optionally accepts a function that modifies the value" do
+      %{"key1" => "value1", "key2" => "value2"}
+      |> Moar.Map.atomize_key("key2", &String.upcase/1)
+      |> assert_eq(%{"key1" => "value1", :key2 => "VALUE2"})
+    end
+
+    test "modifies the value even if the key was already an atom" do
+      %{"key1" => "value1", :key2 => "value2"}
+      |> Moar.Map.atomize_key(:key2, &String.upcase/1)
+      |> assert_eq(%{"key1" => "value1", :key2 => "VALUE2"})
+    end
+
+    test "raises if converting a string to an already-existing atom" do
+      assert_raise KeyError, ~s|key :key1 already exists in %{:key1 => "value1", "key1" => "value2"}|, fn ->
+        %{:key1 => "value1", "key1" => "value2"}
+        |> Moar.Map.atomize_key("key1")
+      end
+    end
+
+    test "raises if the key does not exist in the map" do
+      assert_raise KeyError, ~s|key "key3" not found in: %{"key1" => "value1", "key2" => "value2"}|, fn ->
+        %{"key1" => "value1", "key2" => "value2"}
+        |> Moar.Map.atomize_key("key3")
+      end
+    end
+  end
+
   describe "atomize_keys" do
     test "converts keys from strings to atoms" do
       %{"item1" => "chapstick", "item2" => "mask"}
@@ -36,6 +76,18 @@ defmodule Moar.MapTest do
       %{:item1 => %{"item3" => "mask"}, "item2" => 2}
       |> Moar.Map.deep_atomize_keys()
       |> assert_eq(%{item1: %{item3: "mask"}, item2: 2})
+    end
+
+    test "raises if there are duplicate keys where one is a string and one is an atom" do
+      assert_raise KeyError, ~s|key :item1 already exists in %{:item1 => 1, "item1" => 2, "item2" => 3}|, fn ->
+        %{:item1 => 1, "item1" => 2, "item2" => 3}
+        |> Moar.Map.deep_atomize_keys()
+      end
+
+      assert_raise KeyError, ~s|key :item2 already exists in %{:item2 => 1, "item2" => 2}|, fn ->
+        %{:item1 => %{:item2 => 1, "item2" => 2}}
+        |> Moar.Map.deep_atomize_keys()
+      end
     end
 
     test "handles values that are lists" do
