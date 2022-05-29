@@ -48,7 +48,8 @@ defmodule Moar.Opts do
   """
 
   @doc """
-  Get the value of `key` from `input`, falling back to optional `default` if the key does not exist.
+  Get the value of `key` from `input`, falling back to optional `default` if the key does not exist,
+  or if its value is blank (via `Moar.Term.blank?/1`).
 
   ```elixir
   iex> [a: 1, b: 2] |> Moar.Opts.get(:a)
@@ -72,7 +73,8 @@ defmodule Moar.Opts do
     do: input |> Enum.into(%{}) |> Map.get(key) |> Moar.Term.presence(default)
 
   @doc """
-  Get the value each key in `keys` from `input`, falling back to optional default values.
+  Get the value each key in `keys` from `input`, falling back to optional default values for keys that
+  do not exist, or for values that are blank (via `Moar.Term.blank?/1`).
 
   If `key` does not exist in `keys`, return `nil`, or return the default value if provided.
 

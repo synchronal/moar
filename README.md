@@ -24,8 +24,8 @@ end
 
 `Moar.Assertions`
 * `assert_eq` is a pipeable equality assertion, with options such as the ability to ignore order when comparing
-  lists, returning a different value than what was passed in, asserting that a value is within some delta which
-  can be a number or time duration.
+  lists, returning a different value than what was passed in, and asserting that a value is within some delta
+  (which can be a number or time duration).
 * `assert_recent` asserts that a datetime is pretty close to now.
 * `assert_that` asserts that a pre-condition and post-condition are true after performing an action.
 
@@ -36,22 +36,23 @@ end
 `Moar.DateTime` and `Moar.NaiveDatetime`
 * `add` can add a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
 * `from_iso8601!` raises if the string is not in ISO 8601 format.
+* `to_iso8601_rounded` converts to an ISO 8601 string, truncated to the second.
 
 `Moar.Difference`
 * a protocol that defines `diff(a, b)` along with implementations for datetimes.
 
 `Moar.Duration`
-* is a `{time, unit}` tuple, like `{27, :minute}`, and supports the regular `t:System.time_unit` values and also
+* is a `{time, unit}` tuple (like `{27, :minute}`) and supports the regular `t:System.time_unit/0` values and also
   `:minute`, `:hour`, and `:day`.
 * `convert` converts between various time units.
-* `to_string` renders a time unit into a string like `"27 minutes"`.
+* `to_string` renders a duration into a string like `"27 minutes"`.
 
 `Moar.Enum`
 * `at` is like `Enum.at` but raises if the index is out of bounds.
 * `compact` rejects nil values.
 * `first!` returns the first item or raises if there isn't a first item.
 * `isort` and `isort_by` sort case-insensitively.
-* `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use it extensively for testing.)
+* `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids extensively for testing.)
 
 `Moar.File`
 * `new_tempfile_path` returns a new path for a tempfile, without creating it.
@@ -62,4 +63,46 @@ end
   `stringify_keys` does the opposite.
 * `merge` and `deep_merge` merge maps, and can also convert enumerables into maps before merging.
 * `rename_key` and `rename_keys` rename keys in a map.
-* `transform` transform a key or multiple keys with a transformer function.
+* `transform` transforms a key or multiple keys with a transformer function.
+
+`Moar.Opts`
+* is meant to be used with function options.
+* `get` extracts a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
+* `take` extracts multiple values from opts, falling back to defaults if the value is blank (via `Moar.Term.blank?/1`)
+
+`Moar.Protocol`
+* `implements!` raises if a struct does not implement the given protocol.
+* `implements?` returns true if a struct implements the given protocol.
+
+`Moar.Random`
+* `integer` returns a random integer.
+* `string` returns random base64- or base32-encoded string.
+
+`Moar.Retry`
+* `rescue_until` and `rescue_for` run the given function repeatedly until it does not raise.
+* `retry_until` and `retry_for` run the given function repeatedly until it returns a truthy value.
+
+`Moar.String`
+* `dasherize` converts strings to dash-case (kebab-case).
+* `inner_truncate` removes the middle of a string to make it the desired length.
+* `secure_compare` compares two strings in constant time.
+* `squish` collapses consecutive whitespace characters.
+* `surround` wraps a string with the given characters.
+* `to_integer` converts a string to an integer with a few handy options.
+* `trim` is like `String.trim/1` but handles `nil` values.
+* `truncate_at` truncates a string at the last instance of a substring that results in the truncated string
+  being shorter than a given length.
+  
+`Moar.Sugar`
+* `error`, `noreply`, and `ok` create tuples (`"foo" |> error()` -> `{:error, "foo"}`).
+* `error!` and `ok!` unwrap tuples (`{:error, "foo"} |> error!()` -> `"foo"`).
+* `returning` takes two arguments and returns the second one.
+
+`Moar.Term`
+* `blank?` returns true if a term is `nil`, an empty string, a whitespace-only string, an empty list, or an empty map.
+* `present?` is the opposite of `blank?`.
+* `presence` returns a default if the argument is blank.
+
+`Moar.Tuple`
+* `from_list!` converts a list of tuples like `[{:ok, 1}, {:ok, 2}, {:ok, 3}]` to a tuple like `{:ok, [1, 2, 3]}`
+
