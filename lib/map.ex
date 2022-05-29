@@ -26,6 +26,18 @@ defmodule Moar.Map do
   end
 
   @doc """
+  Like `atomize_key/3` but raises if `key` is not in `map`.
+  """
+  @spec atomize_key!(map(), binary() | atom(), (any() -> any()) | nil) :: map()
+  def atomize_key!(map, key, value_fn \\ &Function.identity/1)
+
+  def atomize_key!(map, key, value_fn) when is_map_key(map, key),
+    do: atomize_key(map, key, value_fn)
+
+  def atomize_key!(map, key, _value_fn),
+    do: raise(KeyError, ["key ", inspect(key), " not found in: ", inspect(map)] |> to_string())
+
+  @doc """
   Converts keys in `map` to atoms.
 
   Raises if converting a key from a string to an atom would result in a key conflict.
@@ -115,6 +127,23 @@ defmodule Moar.Map do
     do: map
 
   @doc """
+  Like `rename_key/2` but raises if `key` is not in `map`
+  """
+  @spec rename_key!(map(), {binary(), binary()}) :: map()
+  def rename_key!(map, {old_key_name, new_key_name} = _old_and_new_key),
+    do: rename_key!(map, old_key_name, new_key_name)
+
+  @doc """
+  Like `rename_key/3` but raises if `key` is not in `map`
+  """
+  @spec rename_key!(map(), binary() | atom(), binary() | atom()) :: map()
+  def rename_key!(map, old_key_name, new_key_name) when is_map_key(map, old_key_name),
+    do: rename_key(map, old_key_name, new_key_name)
+
+  def rename_key!(map, old_key_name, _new_key_name),
+    do: raise(KeyError, ["key ", inspect(old_key_name), " not found in: ", inspect(map)] |> to_string())
+
+  @doc """
   Returns a copy of `map` with `old_key_name` changed to `new_key_name`.
 
   `old_key_name` and `new_key_name` are passed in as a `{old_key_name, new_key_name}` tuple.
@@ -139,6 +168,13 @@ defmodule Moar.Map do
   @spec rename_keys(map(), map()) :: map()
   def rename_keys(map, keys_map),
     do: Enum.reduce(keys_map, map, &rename_key(&2, &1))
+
+  @doc """
+  Like `rename_keys/2` but raises if any key in `keys_map` is not in `map`.
+  """
+  @spec rename_keys!(map(), map()) :: map()
+  def rename_keys!(map, keys_map),
+    do: Enum.reduce(keys_map, map, &rename_key!(&2, &1))
 
   @doc """
   Converts keys in `map` to strings.

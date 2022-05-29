@@ -18,6 +18,13 @@ defmodule Moar.MapTest do
       |> assert_eq(%{"key1" => "value1", :key2 => "value2"})
     end
 
+    @tag :skip
+    test "works if the key does not exist in the map" do
+      %{"key1" => "value1", "key2" => "value2"}
+      |> Moar.Map.atomize_key("key3")
+      |> assert_eq(%{"key1" => "value1", "key2" => "value2"})
+    end
+
     test "optionally accepts a function that modifies the value" do
       %{"key1" => "value1", "key2" => "value2"}
       |> Moar.Map.atomize_key("key2", &String.upcase/1)
@@ -36,11 +43,13 @@ defmodule Moar.MapTest do
         |> Moar.Map.atomize_key("key1")
       end
     end
+  end
 
+  describe "atomize_key!" do
     test "raises if the key does not exist in the map" do
       assert_raise KeyError, ~s|key "key3" not found in: %{"key1" => "value1", "key2" => "value2"}|, fn ->
         %{"key1" => "value1", "key2" => "value2"}
-        |> Moar.Map.atomize_key("key3")
+        |> Moar.Map.atomize_key!("key3")
       end
     end
   end
@@ -166,6 +175,22 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "rename_key!" do
+    test "raises if the key doesn't exist" do
+      assert_raise KeyError, ~s|key "behavior" not found in: %{"color" => "red", "size" => "medium"}|, fn ->
+        %{"color" => "red", "size" => "medium"}
+        |> Moar.Map.rename_key!("behavior", "behaviour")
+      end
+    end
+
+    test "raises if the key doesn't exist (tuple variant)" do
+      assert_raise KeyError, ~s|key "behavior" not found in: %{"color" => "red", "size" => "medium"}|, fn ->
+        %{"color" => "red", "size" => "medium"}
+        |> Moar.Map.rename_key!({"behavior", "behaviour"})
+      end
+    end
+  end
+
   describe "rename_keys" do
     test "renames multiple keys" do
       %{"behavior" => "chill", "color" => "red", "size" => "medium"}
@@ -183,6 +208,15 @@ defmodule Moar.MapTest do
       %{"color" => nil, "size" => "medium"}
       |> Moar.Map.rename_keys(%{"behavior" => "behaviour"})
       |> assert_eq(%{"color" => nil, "size" => "medium"})
+    end
+  end
+
+  describe "rename_keys!" do
+    test "raises if the key doesn't exist" do
+      assert_raise KeyError, ~s|key "behavior" not found in: %{"color" => "red", "size" => "medium"}|, fn ->
+        %{"color" => "red", "size" => "medium"}
+        |> Moar.Map.rename_keys!(%{"behavior" => "behaviour"})
+      end
     end
   end
 
