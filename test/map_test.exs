@@ -217,10 +217,16 @@ defmodule Moar.MapTest do
       |> assert_eq(%{"foo" => "CHICKEN", "bar" => "cow"})
     end
 
-    test "it accepts a string" do
+    test "it accepts a single key" do
       %{"foo" => "chicken", "bar" => "cow"}
       |> Moar.Map.transform("foo", &String.upcase/1)
       |> assert_eq(%{"foo" => "CHICKEN", "bar" => "cow"})
+    end
+
+    test "it can accept any key type" do
+      %{{:foo, 1} => "chicken", {:bar, 2} => "cow"}
+      |> Moar.Map.transform({:foo, 1}, &String.upcase/1)
+      |> assert_eq(%{{:foo, 1} => "CHICKEN", {:bar, 2} => "cow"})
     end
   end
 end

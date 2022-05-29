@@ -164,11 +164,11 @@ defmodule Moar.Map do
   ```
   """
   @spec transform(map(), atom() | binary() | list(), (any() -> any())) :: map()
-  def transform(map, key, transformer) when is_binary(key) and is_map_key(map, key),
-    do: Map.update!(map, key, transformer)
-
   def transform(map, keys, transformer) when is_list(keys),
     do: Enum.reduce(keys, map, fn key, new_map -> transform(new_map, key, transformer) end)
+
+  def transform(map, key, transformer) when is_map_key(map, key),
+    do: Map.update!(map, key, transformer)
 
   def transform(map, _, _),
     do: map
