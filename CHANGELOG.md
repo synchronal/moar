@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.8.0
+
 - Add `atomize_key` to `Moar.Map`, which atomizes a map key and raises if atomizing a key would conflict
   with an exsiting atom key. `atomize_keys` and `deep_atomize_keys` now use this function so they can also
   raise in the same situation.
