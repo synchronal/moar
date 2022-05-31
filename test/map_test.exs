@@ -135,14 +135,19 @@ defmodule Moar.MapTest do
       |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{ab: 3}}})
       |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
     end
+
+    test "non-enumerable values from the second arg replace values from the first arg when keys match" do
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(%{a: 3}) |> assert_eq(%{a: 3, b: 2})
+      %{a: %{b: 1, c: 2}} |> Moar.Map.deep_merge(a: [b: 3]) |> assert_eq(%{a: %{b: 3, c: 2}})
+    end
   end
 
   describe "merge" do
-    test "with two maps" do
+    test "with two maps, acts just like Map.merge" do
       %{a: 1, b: 2} |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
     end
 
-    test "with other enumerables" do
+    test "with other enumerables, converts to maps before calling Map.merge" do
       %{a: 1, b: 2} |> Moar.Map.merge(b: 3, c: 4) |> assert_eq(%{a: 1, b: 3, c: 4})
       [a: 1, b: 2] |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
     end
