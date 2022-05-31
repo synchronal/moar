@@ -83,9 +83,10 @@ end
 * `retry_until` and `retry_for` run the given function repeatedly until it returns a truthy value.
 
 `Moar.String`
-* `dasherize` converts strings to dash-case (kebab-case).
 * `inner_truncate` removes the middle of a string to make it the desired length.
 * `secure_compare` compares two strings in constant time.
+* `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for
+  common slug formats.
 * `squish` collapses consecutive whitespace characters.
 * `surround` wraps a string with the given characters.
 * `to_integer` converts a string to an integer with a few handy options.
