@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.9.0
+
 - Add `Moar.String.slug/2` and `Moar.String.underscore/1`.
 
 ## 1.8.0
