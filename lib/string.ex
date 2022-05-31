@@ -6,27 +6,18 @@ defmodule Moar.String do
   use Bitwise
 
   @doc """
-  Convert strings and atoms to dash-case (kebab-case) and trims leading and trailing non-alphanumeric characters.
+  Dasherizes `term`. A shortcut to `slug(term, "-")`.
+
+  See docs for `slug/2`.
 
   ```elixir
-  iex> ["foo", "FOO", :foo] |> Enum.map(&Moar.String.dasherize/1)
-  ["foo", "foo", "foo"]
-
-  iex> ["foo-bar", "foo_bar", :foo_bar, " fooBar ", "  ?foo ! bar  "] |> Enum.map(&Moar.String.dasherize/1)
-  ["foo-bar", "foo-bar", "foo-bar", "foo-bar", "foo-bar"]
+  iex> Moar.String.dasherize("foo bar")
+  "foo-bar"
   ```
   """
-  @spec dasherize(atom() | binary()) :: binary()
-  def dasherize(term) do
-    term
-    |> Moar.Atom.to_string()
-    |> String.replace(~r/([A-Z]+)([A-Z][a-z])/, "\\1_\\2")
-    |> String.replace(~r/([a-z\d])([A-Z])/, "\\1_\\2")
-    |> String.replace(~r{[^a-z0-9]+}i, "-")
-    |> String.trim_leading("-")
-    |> String.trim_trailing("-")
-    |> String.downcase()
-  end
+  @spec dasherize(String.Chars.t() | [String.Chars.t()]) :: binary()
+  def dasherize(term),
+    do: slug(term, "-")
 
   @doc """
   Truncate `s` to `max_length` by replacing the middle of the string with `replacement`, which defaults to
@@ -83,6 +74,46 @@ defmodule Moar.String do
 
   defp secure_compare(<<>>, <<>>, acc),
     do: acc === 0
+
+  @doc """
+  Creates slugs like `foo-bar-123` or `foo_bar` from various input types.
+
+  Converts strings, atoms, and anything else that implements `String.Chars`, plus lists of those things,
+  to a single string after removing non-alphanumeric characters, and then joins them with `joiner`.
+  Convert strings and atoms to dash-case (kebab-case) and trims leading and trailing non-alphanumeric characters.
+
+  `dasherize/1` and `underscore/1` are shortcuts that specify a joiner.
+
+  ```elixir
+  iex> Moar.String.slug("foo bar", "_")
+  "foo_bar"
+
+  iex> Moar.String.slug("foo bar", "+")
+  "foo+bar"
+
+  iex> ["foo", "FOO", :foo] |> Enum.map(&Moar.String.slug(&1, "-"))
+  ["foo", "foo", "foo"]
+
+  iex> ["foo-bar", "foo_bar", :foo_bar, " fooBar ", "  ?foo ! bar  "] |> Enum.map(&Moar.String.slug(&1, "-"))
+  ["foo-bar", "foo-bar", "foo-bar", "foo-bar", "foo-bar"]
+  ```
+  """
+  @spec slug(String.Chars.t() | [String.Chars.t()], binary()) :: binary()
+  def slug(term, joiner) when is_list(term) do
+    Enum.map_join(term, joiner, fn t ->
+      t
+      |> to_string()
+      |> String.replace(~r/([A-Z]+)([A-Z][a-z])/, "\\1_\\2")
+      |> String.replace(~r/([a-z\d])([A-Z])/, "\\1_\\2")
+      |> String.replace(~r{[^a-z0-9]+}i, joiner)
+      |> String.trim_leading(joiner)
+      |> String.trim_trailing(joiner)
+      |> String.downcase()
+    end)
+  end
+
+  def slug(term, joiner),
+    do: slug([term], joiner)
 
   @doc """
   Trims a string and replaces consecutive whitespace characters with a single space.
@@ -191,4 +222,18 @@ defmodule Moar.String do
     |> Enum.reverse()
     |> Enum.join("")
   end
+
+  @doc """
+  Underscores `term`. A shortcut to `slug(term, "_")`.
+
+  See docs for `slug/2`.
+
+  ```elixir
+  iex> Moar.String.underscore("foo bar")
+  "foo_bar"
+  ```
+  """
+  @spec underscore(String.Chars.t() | [String.Chars.t()]) :: binary()
+  def underscore(term),
+    do: slug(term, "_")
 end

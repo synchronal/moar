@@ -5,25 +5,42 @@ defmodule Moar.StringTest do
 
   doctest Moar.String
 
-  describe "dasherize" do
-    test "replaces non-string characters with dashes" do
-      assert Moar.String.dasherize(" A brown cow.") == "a-brown-cow"
-      assert Moar.String.dasherize("SomeModule.Name") == "some-module-name"
-      assert Moar.String.dasherize("foo") == "foo"
-      assert Moar.String.dasherize("FOO") == "foo"
-      assert Moar.String.dasherize(:foo) == "foo"
-      assert Moar.String.dasherize("foo_bar") == "foo-bar"
-      assert Moar.String.dasherize("FOO_BAR") == "foo-bar"
-      assert Moar.String.dasherize(:foo_bar) == "foo-bar"
-      assert Moar.String.dasherize("fooBar") == "foo-bar"
-      assert Moar.String.dasherize(" fooBar ") == "foo-bar"
-      assert Moar.String.dasherize(" [fooBar) ") == "foo-bar"
-      assert Moar.String.dasherize(" foo bar ") == "foo-bar"
-      assert Moar.String.dasherize(" ?foo! bar ) ") == "foo-bar"
+  describe "slug" do
+    test "replaces non-string characters with a string" do
+      assert Moar.String.slug(" A brown cow.", "-") == "a-brown-cow"
+      assert Moar.String.slug("SomeModule.Name", "-") == "some-module-name"
+      assert Moar.String.slug("foo", "-") == "foo"
+      assert Moar.String.slug("FOO", "-") == "foo"
+      assert Moar.String.slug(:foo, "-") == "foo"
+      assert Moar.String.slug("foo_bar", "-") == "foo-bar"
+      assert Moar.String.slug("FOO_BAR", "-") == "foo-bar"
+      assert Moar.String.slug(:foo_bar, "-") == "foo-bar"
+      assert Moar.String.slug("fooBar", "-") == "foo-bar"
+      assert Moar.String.slug(" fooBar ", "-") == "foo-bar"
+      assert Moar.String.slug(" [fooBar) ", "-") == "foo-bar"
+      assert Moar.String.slug(" foo bar ", "-") == "foo-bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "-") == "foo-bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "_") == "foo_bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "?") == "foo?bar"
     end
 
-    test "stringifies atoms" do
-      assert Moar.String.dasherize(:ok) == "ok"
+    test "accepts anything that implements `String.Chars`" do
+      assert Moar.String.slug(:foo, "_") == "foo"
+      assert Moar.String.slug(:foo_bar, "_") == "foo_bar"
+      assert Moar.String.slug(123, "_") == "123"
+    end
+
+    test "accepts lists" do
+      assert Moar.String.slug(["foo", "bar", 123], "-") == "foo-bar-123"
+      assert Moar.String.slug([" foo ", :bar, " baz fez ", 123], "-") == "foo-bar-baz-fez-123"
+    end
+
+    test "has a dasherize/1 shortcut" do
+      assert Moar.String.dasherize(" foo bar ") == "foo-bar"
+    end
+
+    test "has an underscore/1 shortcut" do
+      assert Moar.String.underscore(" foo bar ") == "foo_bar"
     end
   end
 

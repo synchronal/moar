@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.String.slug/2` and `Moar.String.underscore/1`.
+
 ## 1.8.0
 
 - Add `atomize_key` to `Moar.Map`, which atomizes a map key and raises if atomizing a key would conflict
