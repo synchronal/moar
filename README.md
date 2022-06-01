@@ -33,7 +33,7 @@ end
 * `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to convert an
   atom to an atom or a string to a string.
   
-`Moar.DateTime` and `Moar.NaiveDatetime`
+`Moar.DateTime` and `Moar.NaiveDateTime`
 * `add` can add a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
 * `from_iso8601!` raises if the string is not in ISO 8601 format.
 * `to_iso8601_rounded` converts to an ISO 8601 string, truncated to the second.
