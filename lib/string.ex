@@ -80,7 +80,7 @@ defmodule Moar.String do
 
   Converts strings, atoms, and anything else that implements `String.Chars`, plus lists of those things,
   to a single string after removing non-alphanumeric characters, and then joins them with `joiner`.
-  Convert strings and atoms to dash-case (kebab-case) and trims leading and trailing non-alphanumeric characters.
+  Existing occurrences of `joiner` are kept, including leading and trailing ones.
 
   `dasherize/1` and `underscore/1` are shortcuts that specify a joiner.
 
@@ -90,6 +90,12 @@ defmodule Moar.String do
 
   iex> Moar.String.slug("foo bar", "+")
   "foo+bar"
+
+  iex> Moar.String.slug(["foo", "bar"], "+")
+  "foo+bar"
+
+  iex> Moar.String.slug("_foo bar", "_")
+  "_foo_bar"
 
   iex> ["foo", "FOO", :foo] |> Enum.map(&Moar.String.slug(&1, "-"))
   ["foo", "foo", "foo"]
@@ -105,9 +111,9 @@ defmodule Moar.String do
       |> to_string()
       |> String.replace(~r/([A-Z]+)([A-Z][a-z])/, "\\1_\\2")
       |> String.replace(~r/([a-z\d])([A-Z])/, "\\1_\\2")
-      |> String.replace(~r{[^a-z0-9]+}i, joiner)
-      |> String.trim_leading(joiner)
-      |> String.trim_trailing(joiner)
+      |> String.replace(~r{^[^a-z0-9#{joiner}]+}i, "", global: false)
+      |> String.replace(~r{[^a-z0-9#{joiner}]+$}i, "", global: false)
+      |> String.replace(~r{[^a-z0-9#{joiner}]+}i, joiner)
       |> String.downcase()
     end)
   end

@@ -5,45 +5,6 @@ defmodule Moar.StringTest do
 
   doctest Moar.String
 
-  describe "slug" do
-    test "replaces non-string characters with a string" do
-      assert Moar.String.slug(" A brown cow.", "-") == "a-brown-cow"
-      assert Moar.String.slug("SomeModule.Name", "-") == "some-module-name"
-      assert Moar.String.slug("foo", "-") == "foo"
-      assert Moar.String.slug("FOO", "-") == "foo"
-      assert Moar.String.slug(:foo, "-") == "foo"
-      assert Moar.String.slug("foo_bar", "-") == "foo-bar"
-      assert Moar.String.slug("FOO_BAR", "-") == "foo-bar"
-      assert Moar.String.slug(:foo_bar, "-") == "foo-bar"
-      assert Moar.String.slug("fooBar", "-") == "foo-bar"
-      assert Moar.String.slug(" fooBar ", "-") == "foo-bar"
-      assert Moar.String.slug(" [fooBar) ", "-") == "foo-bar"
-      assert Moar.String.slug(" foo bar ", "-") == "foo-bar"
-      assert Moar.String.slug(" ?foo! bar ) ", "-") == "foo-bar"
-      assert Moar.String.slug(" ?foo! bar ) ", "_") == "foo_bar"
-      assert Moar.String.slug(" ?foo! bar ) ", "?") == "foo?bar"
-    end
-
-    test "accepts anything that implements `String.Chars`" do
-      assert Moar.String.slug(:foo, "_") == "foo"
-      assert Moar.String.slug(:foo_bar, "_") == "foo_bar"
-      assert Moar.String.slug(123, "_") == "123"
-    end
-
-    test "accepts lists" do
-      assert Moar.String.slug(["foo", "bar", 123], "-") == "foo-bar-123"
-      assert Moar.String.slug([" foo ", :bar, " baz fez ", 123], "-") == "foo-bar-baz-fez-123"
-    end
-
-    test "has a dasherize/1 shortcut" do
-      assert Moar.String.dasherize(" foo bar ") == "foo-bar"
-    end
-
-    test "has an underscore/1 shortcut" do
-      assert Moar.String.underscore(" foo bar ") == "foo_bar"
-    end
-  end
-
   describe "inner_truncate" do
     test "works with nil" do
       assert Moar.String.inner_truncate(nil, 10) == nil
@@ -81,6 +42,52 @@ defmodule Moar.StringTest do
       refute Moar.String.secure_compare(nil, "")
       refute Moar.String.secure_compare("", nil)
       refute Moar.String.secure_compare('', nil)
+    end
+  end
+
+  describe "slug" do
+    test "replaces non-string characters with a string" do
+      assert Moar.String.slug(" A brown cow.", "-") == "a-brown-cow"
+      assert Moar.String.slug("SomeModule.Name", "-") == "some-module-name"
+      assert Moar.String.slug("foo", "-") == "foo"
+      assert Moar.String.slug("FOO", "-") == "foo"
+      assert Moar.String.slug(:foo, "-") == "foo"
+      assert Moar.String.slug("foo_bar", "-") == "foo-bar"
+      assert Moar.String.slug("FOO_BAR", "-") == "foo-bar"
+      assert Moar.String.slug(:foo_bar, "-") == "foo-bar"
+      assert Moar.String.slug("fooBar", "-") == "foo-bar"
+      assert Moar.String.slug(" fooBar ", "-") == "foo-bar"
+      assert Moar.String.slug(" [fooBar) ", "-") == "foo-bar"
+      assert Moar.String.slug(" foo bar ", "-") == "foo-bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "-") == "foo-bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "_") == "foo_bar"
+      assert Moar.String.slug(" ?foo! bar ) ", "?") == "?foo?bar"
+    end
+
+    test "preserves leading and trailing joiners" do
+      assert Moar.String.slug("foo-bar", "_") == "foo_bar"
+      assert Moar.String.slug("_foo_", "_") == "_foo_"
+      assert Moar.String.slug("_foo-bar_", "_") == "_foo_bar_"
+      assert Moar.String.slug(" \t _foo-bar_ _ ", "_") == "_foo_bar___"
+    end
+
+    test "accepts anything that implements `String.Chars`" do
+      assert Moar.String.slug(:foo, "_") == "foo"
+      assert Moar.String.slug(:foo_bar, "_") == "foo_bar"
+      assert Moar.String.slug(123, "_") == "123"
+    end
+
+    test "accepts lists" do
+      assert Moar.String.slug(["foo", "bar", 123], "-") == "foo-bar-123"
+      assert Moar.String.slug([" foo ", :bar, " baz fez ", 123], "-") == "foo-bar-baz-fez-123"
+    end
+
+    test "has a dasherize/1 shortcut" do
+      assert Moar.String.dasherize(" foo bar ") == "foo-bar"
+    end
+
+    test "has an underscore/1 shortcut" do
+      assert Moar.String.underscore(" foo bar ") == "foo_bar"
     end
   end
 
