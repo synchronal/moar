@@ -7,6 +7,14 @@ defmodule Moar.Map do
   Converts `key` in `map` to an atom, optionally transforming the value with `value_transformer`.
 
   Raises if `key` is a string and `map` already has an atomized version of that key.
+
+  ```elixir
+  iex> Moar.Map.atomize_key(%{"number-one" => "one", "number-two" => "two"}, "number-one")
+  %{:number_one => "one", "number-two" => "two"}
+
+  iex> Moar.Map.atomize_key(%{"number-one" => "one", "number-two" => "two"}, "number-one", &String.upcase/1)
+  %{:number_one => "ONE", "number-two" => "two"}
+  ```
   """
   @spec atomize_key(map(), binary() | atom(), (any() -> any()) | nil) :: map()
   def atomize_key(map, key, value_transformer \\ &Function.identity/1) do
@@ -14,7 +22,9 @@ defmodule Moar.Map do
       if is_atom(key) do
         key
       else
-        Moar.Atom.from_string(key)
+        key
+        |> Moar.String.underscore()
+        |> Moar.Atom.from_string()
         |> tap(fn new_key ->
           if Map.has_key?(map, new_key),
             do: raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())

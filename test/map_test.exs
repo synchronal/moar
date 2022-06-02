@@ -12,6 +12,12 @@ defmodule Moar.MapTest do
       |> assert_eq(%{"key1" => "value1", :key2 => "value2"})
     end
 
+    test "converts dashes to underscores" do
+      %{"key-one" => "value1", "key-two" => "value2"}
+      |> Moar.Map.atomize_key("key-two")
+      |> assert_eq(%{"key-one" => "value1", :key_two => "value2"})
+    end
+
     test "works if the given key is already an atom" do
       %{"key1" => "value1", :key2 => "value2"}
       |> Moar.Map.atomize_key(:key2)
