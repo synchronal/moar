@@ -2,6 +2,11 @@
 
 ## Unreleased changes
 
+- `Moar.Map.atomize_key/3` converts dashes in keys to underscores before atomizing. Because
+  the other "atomize" functions in this module use this function, they have the same behavior.
+- `Moar.String.slug/2` retains any leading or trailing joiners (so `slug("_foo-bar", "_")` now
+  returns `"_foo_bar"` instead of `"foo_bar"`).
+  
 ## 1.9.0
 
 - Add `Moar.String.slug/2` and `Moar.String.underscore/1`.
