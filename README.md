@@ -20,6 +20,10 @@ def deps do
 end
 ```
 
+## Similar libraries
+
+* [Swiss](https://hexdocs.pm/swiss/readme.html)
+
 ## A quick tour
 
 `Moar.Assertions`
