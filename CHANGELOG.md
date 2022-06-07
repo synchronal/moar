@@ -3,6 +3,7 @@
 ## Unreleased changes
 
 - `Moar.Assertions.refute_that/2` macro.
+- Add exports to formatter.
 
 ## 1.10.0
 
