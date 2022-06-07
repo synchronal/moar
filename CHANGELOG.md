@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Assertions.refute_that/2` macro.
+
 ## 1.10.0
 
 - `Moar.Map.atomize_key/3` converts dashes in keys to underscores before atomizing. Because

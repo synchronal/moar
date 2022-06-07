@@ -158,6 +158,32 @@ defmodule Moar.Assertions do
     end
   end
 
+  @doc """
+  Refute that a condition is changed after performing an action.
+
+  ## Examples
+
+  ```
+  refute_that(Function.identity(1),
+    changes: Agent.get(agent, fn s -> s end)
+  )
+  ```
+  """
+  @spec refute_that(any, [{:changes, any}]) :: Macro.t()
+  defmacro refute_that(command, changes: check) do
+    quote do
+      before = unquote(check)
+      unquote(command)
+      later = unquote(check)
+
+      assert before == later, """
+      Post-condition failed
+      before: #{before}
+      after: #{later}
+      """
+    end
+  end
+
   # # #
 
   defp assert_within(left, right, {delta, unit}) do

@@ -190,4 +190,28 @@ defmodule Moar.AssertionsTest do
                    end
     end
   end
+
+  describe "refute_that" do
+    test "passes when the action does not change the test condition" do
+      {:ok, agent} = Agent.start(fn -> 0 end)
+      refute_that(Function.identity(1), changes: Agent.get(agent, fn s -> s end))
+    end
+
+    test "fails when the action changes the test condition" do
+      {:ok, agent} = Agent.start(fn -> 0 end)
+
+      assert_raise ExUnit.AssertionError,
+                   """
+
+
+                   Post-condition failed
+                        before: 0
+                        after: 1
+                        
+                   """,
+                   fn ->
+                     refute_that(Agent.update(agent, fn s -> s + 1 end), changes: Agent.get(agent, fn s -> s end))
+                   end
+    end
+  end
 end
