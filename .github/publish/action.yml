@@ -63,14 +63,14 @@ runs:
         echo "::group::Remote version"
 
         if [[ -n "${organization}" ]]; then
-          search=$(mix hex.search "${name}" --organization "${organization}")
+          search=$(mix hex.info "${name}" --organization "${organization}")
         else
-          search=$(mix hex.search "${name}" | sed 's/\x1b\[[^m]+m//g;' | grep "https://hex.pm/packages/${name}")
+          search=$(mix hex.info "${name}")
         fi
 
         echo "name: ${name}"
         echo "hex.search: ${search}"
-        remote_version=$(echo "${search}" | sed -ne 's/[^0-9]*\(\([0-9]\.\)\{0,4\}[0-9][^.]\).*/\1/p')
+        remote_version=$(echo "${search}" | grep 'Releases: ' | awk '{print $2}' | tr -d ',')
 
         echo "remote version: ${remote_version}"
         echo "::endgroup::"
