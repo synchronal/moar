@@ -1,4 +1,6 @@
 defmodule Moar.OptsTest do
+  # @related [subject](/lib/opts.ex)
+
   use Moar.SimpleCase, async: true
 
   alias Moar.Opts

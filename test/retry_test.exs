@@ -1,4 +1,6 @@
 defmodule Moar.RetryTest do
+  # @related [subject](lib/retry.ex)
+
   use Moar.SimpleCase, async: true
 
   doctest Moar.Retry
