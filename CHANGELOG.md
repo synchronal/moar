@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Duration.to_short_string/1` converts duration to short strings like `"3s"`.
+
 ## 1.11.0
 
 - `Moar.Assertions.refute_that/2` macro.

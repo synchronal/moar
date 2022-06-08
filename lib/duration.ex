@@ -12,6 +12,10 @@ defmodule Moar.Duration do
   @seconds_per_hour 60 * 60
   @seconds_per_day 60 * 60 * 24
 
+  @units_desc [day: "d", hour: "h", minute: "m", second: "s", millisecond: "ms", microsecond: "us", nanosecond: "ns"]
+  @units_map Map.new(@units_desc)
+  @units_names Keyword.keys(@units_desc)
+
   @type t() :: {time :: number(), unit :: time_unit()}
   @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
 
@@ -35,6 +39,22 @@ defmodule Moar.Duration do
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
+  Converts a `{duration, time_unit}` tuple into a compact string.
+
+  ```elixir
+  iex> Moar.Duration.to_short_string({1, :second})
+  "1s"
+
+  iex> Moar.Duration.to_short_string({25, :millisecond})
+  "25ms"
+  ```
+  """
+  @spec to_short_string({duration :: t(), unit :: time_unit()}) :: String.t()
+  def to_short_string({1, unit}), do: "1#{@units_map[unit]}"
+  def to_short_string({-1, unit}), do: "-1#{@units_map[unit]}"
+  def to_short_string({time, unit}), do: "#{time}#{@units_map[unit]}"
+
+  @doc """
   Converts a `{duration, time_unit}` tuple into a string.
 
   ```elixir
@@ -49,4 +69,10 @@ defmodule Moar.Duration do
   def to_string({1, unit}), do: "1 #{unit}"
   def to_string({-1, unit}), do: "-1 #{unit}"
   def to_string({time, unit}), do: "#{time} #{unit}s"
+
+  @doc """
+  Returns the list of duration unit names in descending order.
+  """
+  @spec units() :: [time_unit()]
+  def units, do: @units_names
 end
