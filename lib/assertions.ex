@@ -105,8 +105,11 @@ defmodule Moar.Assertions do
   * `recency` is a `Moar.Duration` and defaults to `{10, :second}`.
 
   ```elixir
-  five_seconds_ago = Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
-  assert_recent five_seconds_ago
+  iex> five_seconds_ago = Moar.DateTime.add(DateTime.utc_now(), {-5, :second})
+  iex> assert_recent five_seconds_ago
+
+  iex> twenty_seconds_ago = Moar.DateTime.add(DateTime.utc_now(), {-20, :second})
+  iex> assert_recent twenty_seconds_ago, {25, :second}
   ```
   """
   @spec assert_recent(DateTime.t() | NaiveDateTime.t() | binary(), Moar.Duration.t()) ::
@@ -127,14 +130,13 @@ defmodule Moar.Assertions do
 
   ## Examples
 
-  ```
-  {:ok, agent} = Agent.start(fn -> 0 end)
-
-  assert_that(Agent.update(agent, fn s -> s + 1 end),
-    changes: Agent.get(agent, fn s -> s end),
-    from: 0,
-    to: 1
-  )
+  ```elixir
+  iex> {:ok, agent} = Agent.start(fn -> 0 end)
+  ...>
+  iex> assert_that Agent.update(agent, fn s -> s + 1 end),
+  ...>     changes: Agent.get(agent, fn s -> s end),
+  ...>     from: 0,
+  ...>     to: 1
   ```
   """
   @spec assert_that(any, [{:changes, any} | {:from, any} | {:to, any}, ...]) :: {:__block__, [], [...]}
@@ -163,10 +165,11 @@ defmodule Moar.Assertions do
 
   ## Examples
 
-  ```
-  refute_that(Function.identity(1),
-    changes: Agent.get(agent, fn s -> s end)
-  )
+  ```elixir
+  iex> {:ok, agent} = Agent.start(fn -> 0 end)
+  ...>
+  iex> refute_that Function.identity(1),
+  ...>     changes: Agent.get(agent, fn s -> s end)
   ```
   """
   @spec refute_that(any, [{:changes, any}]) :: Macro.t()

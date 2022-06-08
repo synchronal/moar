@@ -3,6 +3,8 @@ defmodule Moar.AtomTest do
 
   use Moar.SimpleCase, async: true
 
+  doctest Moar.Atom
+
   describe "from_string" do
     test "string", do: assert(Moar.Atom.from_string("banana") == :banana)
     test "already an atom", do: assert(Moar.Atom.from_string(:banana) == :banana)
