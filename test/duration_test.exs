@@ -5,6 +5,46 @@ defmodule Moar.DurationTest do
 
   doctest Moar.Duration
 
+  describe "ago" do
+    test "returns the duration between a DateTime and now, in the largest possible unit" do
+      earlier = Moar.DateTime.add(DateTime.utc_now(), {-121, :minute})
+      assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
+    end
+
+    test "works with NaiveDateTimes" do
+      earlier = Moar.NaiveDateTime.add(NaiveDateTime.utc_now(), {-121, :minute})
+      assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
+    end
+
+    test "works with ISO 8601 strings" do
+      earlier = Moar.DateTime.add(DateTime.utc_now(), {-121, :minute}) |> DateTime.to_iso8601()
+      assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
+    end
+  end
+
+  describe "between" do
+    test "returns the duration between two dates, in the largest possible unit" do
+      earlier = ~U[2020-01-01T00:00:00.000000Z]
+      later = ~U[2020-01-01T02:01:00.000000Z]
+
+      assert Moar.Duration.between(earlier, later) == {121, :minute}
+    end
+
+    test "works with NaiveDateTimes" do
+      earlier = ~N[2020-01-01T00:00:00.000000Z]
+      later = ~N[2020-01-01T02:01:00.000000Z]
+
+      assert Moar.Duration.between(earlier, later) == {121, :minute}
+    end
+
+    test "works with ISO 8601 strings" do
+      earlier = "2020-01-01T00:00:00.000000Z"
+      later = "2020-01-01T02:01:00.000000Z"
+
+      assert Moar.Duration.between(earlier, later) == {121, :minute}
+    end
+  end
+
   describe "convert" do
     test "converts a duration to a value in a different time unit" do
       assert Moar.Duration.convert({1, :second}, :millisecond) == 1000

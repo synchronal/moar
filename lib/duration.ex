@@ -21,7 +21,40 @@ defmodule Moar.Duration do
   @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
 
   @doc """
+  Returns the duration between `datetime` and now, in the largest possible unit.
+
+  `datetime` can be an ISO8601-formatted string, a `DateTime`, or a `NaiveDateTime`.
+
+  ```elixir
+  iex> DateTime.utc_now() |> Moar.DateTime.add({-121, :minute}) |> Moar.Duration.ago() |> Moar.Duration.shift(:minute)
+  {121, :minute}
+  ```
+  """
+  @spec ago(DateTime.t() | NaiveDateTime.t() | binary()) :: t()
+  def ago(datetime) when is_binary(datetime), do: datetime |> Moar.DateTime.from_iso8601!() |> ago()
+  def ago(%module{} = datetime), do: between(datetime, module.utc_now())
+
+  @doc """
+  Returns the duration between `earlier` and `later`, in the largest possible unit.
+
+  `earlier` and `later` can be ISO8601-formatted strings, `DateTime`s, or `NaiveDateTime`s.
+
+  ```elixir
+  iex> earlier = ~U[2020-01-01T00:00:00.000000Z]
+  iex> later = ~U[2020-01-01T02:01:00.000000Z]
+  iex> Moar.Duration.between(earlier, later)
+  {121, :minute}
+  ```
+  """
+  @spec between(DateTime.t() | NaiveDateTime.t() | binary(), DateTime.t() | NaiveDateTime.t() | binary()) :: t()
+  def between(earlier, later), do: {Moar.Difference.diff(later, earlier), :microsecond} |> humanize()
+
+  @doc """
   Converts a `{duration, time_unit}` tuple into a numeric duration, rounding down to the nearest whole number.
+
+  > #### Warning {: .warning}
+  >
+  > This function loses data because it rounds down to the nearest whole number.
 
   Uses `System.convert_time_unit/3` under the hood; see its documentation for more details.
 
@@ -79,6 +112,10 @@ defmodule Moar.Duration do
   @doc """
   Shifts `duration` to `time_unit`. It is similar to `convert/1` but this function returns a duration tuple,
   while `convert/1` just returns an integer value.
+
+  > #### Warning {: .warning}
+  >
+  > This function loses data because it rounds down to the nearest whole number.
 
   ```elixir
   iex> Moar.Duration.shift({121, :second}, :minute)
