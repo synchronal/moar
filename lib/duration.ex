@@ -89,8 +89,10 @@ defmodule Moar.Duration do
   {49, :hour}
   ```
   """
-  @spec humanize(t(), [time_unit()]) :: t()
-  def humanize({_time, current_unit} = duration, [head_unit | remaining_units] = _units \\ @units_asc) do
+  @spec humanize(t()) :: t()
+  def humanize(duration), do: humanize(duration, @units_asc)
+
+  defp humanize({_time, current_unit} = duration, [head_unit | remaining_units] = _units) do
     cond do
       Enum.empty?(remaining_units) ->
         duration
