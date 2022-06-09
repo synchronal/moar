@@ -12,9 +12,10 @@ defmodule Moar.Duration do
   @seconds_per_hour 60 * 60
   @seconds_per_day 60 * 60 * 24
 
-  @units_desc [day: "d", hour: "h", minute: "m", second: "s", millisecond: "ms", microsecond: "us", nanosecond: "ns"]
-  @units_map Map.new(@units_desc)
-  @units_names Keyword.keys(@units_desc)
+  @units_kw_desc [day: "d", hour: "h", minute: "m", second: "s", millisecond: "ms", microsecond: "us", nanosecond: "ns"]
+  @units_map Map.new(@units_kw_desc)
+  @units_desc Keyword.keys(@units_kw_desc)
+  @units_asc @units_desc |> Enum.reverse()
 
   @type t() :: {time :: number(), unit :: time_unit()}
   @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
@@ -23,6 +24,8 @@ defmodule Moar.Duration do
   Converts a `{duration, time_unit}` tuple into a numeric duration, rounding down to the nearest whole number.
 
   Uses `System.convert_time_unit/3` under the hood; see its documentation for more details.
+
+  It is similar to `shift/1` but this function returns an integer value, while `shift/1` returns a duration tuple.
 
   ```elixir
   iex> Moar.Duration.convert({121, :second}, :minute)
@@ -37,6 +40,53 @@ defmodule Moar.Duration do
   def convert(duration, :hour), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_hour)
   def convert(duration, :day), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_day)
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
+
+  @doc """
+  If possible, shifts `duration` to a higher time unit that is more readable to a human. Returns `duration`
+  unchanged if it cannot be exactly shifted.
+
+  ```elixir
+  iex> Moar.Duration.humanize({60000, :millisecond})
+  {1, :minute}
+
+  iex> Moar.Duration.humanize({48, :hour})
+  {2, :day}
+
+  iex> Moar.Duration.humanize({49, :hour})
+  {49, :hour}
+  ```
+  """
+  @spec humanize(t(), [time_unit()]) :: t()
+  def humanize({_time, current_unit} = duration, [head_unit | remaining_units] = _units \\ @units_asc) do
+    cond do
+      Enum.empty?(remaining_units) ->
+        duration
+
+      current_unit == head_unit ->
+        [next_unit | _] = remaining_units
+        up = shift(duration, next_unit)
+        down = shift(up, current_unit)
+
+        if down == duration,
+          do: humanize(up, remaining_units),
+          else: humanize(duration, remaining_units)
+
+      true ->
+        humanize(duration, remaining_units)
+    end
+  end
+
+  @doc """
+  Shifts `duration` to `time_unit`. It is similar to `convert/1` but this function returns a duration tuple,
+  while `convert/1` just returns an integer value.
+
+  ```elixir
+  iex> Moar.Duration.shift({121, :second}, :minute)
+  {2, :minute}
+  ```
+  """
+  @spec shift(t(), time_unit()) :: t()
+  def shift(duration, to_unit), do: {convert(duration, to_unit), to_unit}
 
   @doc """
   Converts a `{duration, time_unit}` tuple into a compact string.
@@ -74,5 +124,5 @@ defmodule Moar.Duration do
   Returns the list of duration unit names in descending order.
   """
   @spec units() :: [time_unit()]
-  def units, do: @units_names
+  def units, do: @units_desc
 end

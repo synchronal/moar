@@ -3,6 +3,8 @@
 ## Unreleased changes
 
 - `Moar.Duration.to_short_string/1` converts duration to short strings like `"3s"`.
+- Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`,
+  and `Moar.Duration.shift/1` which is like `Moar.Duration.convert/1` but returns a duration tuple.
 
 ## 1.11.0
 
