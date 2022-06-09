@@ -22,6 +22,7 @@ end
 
 ## Similar libraries
 
+* [Bunch](https://hexdocs.pm/bunch/readme.html)
 * [Swiss](https://hexdocs.pm/swiss/readme.html)
 
 ## A quick tour
@@ -32,6 +33,7 @@ end
   (which can be a number or time duration).
 * `assert_recent` asserts that a datetime is pretty close to now.
 * `assert_that` asserts that a pre-condition and post-condition are true after performing an action.
+* `refute_that` asserts that a condition didn't change after performing an action.
 
 `Moar.Atom`
 * `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to convert an
@@ -48,7 +50,11 @@ end
 `Moar.Duration`
 * is a `{time, unit}` tuple (like `{27, :minute}`) and supports the regular `t:System.time_unit/0` values and also
   `:minute`, `:hour`, and `:day`.
-* `convert` converts between various time units.
+* `ago` returns the duration between a given datetime and now.
+* `between` returns the duration between two datetimes.
+* `convert` converts a duration to a new time unit, returning only the value.
+* `humanize` converts the duration to the highest possible time unit.
+* `shift` converts a duration to a new time unit.
 * `to_string` renders a duration into a string like `"27 minutes"`.
 
 `Moar.Enum`
