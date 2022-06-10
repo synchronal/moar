@@ -90,7 +90,7 @@ defmodule Moar.Duration do
   defp approx(duration, [head_unit | tail_units] = _units_desc) do
     new_duration = {new_time, _new_unit} = shift(duration, head_unit)
 
-    if new_time >= 2 || length(tail_units) == 0,
+    if new_time >= 2 || tail_units == [],
       do: new_duration,
       else: approx(duration, tail_units)
   end
