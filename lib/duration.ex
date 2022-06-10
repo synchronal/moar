@@ -136,6 +136,32 @@ defmodule Moar.Duration do
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
+  Formats a duration. Supports `:long` or `:short` format.
+
+  ```elixir
+  iex> Moar.Duration.format({1, :second}, :long)
+  "1 second"
+
+  iex> Moar.Duration.format({25, :millisecond}, :long)
+  "25 milliseconds"
+
+  iex> Moar.Duration.format({1, :second}, :short)
+  "1s"
+
+  iex> Moar.Duration.format({25, :millisecond}, :short)
+  "25ms"
+  ```
+  """
+  @spec format(t(), :long | :short) :: binary()
+  def format({1, unit}, :long), do: "1 #{unit_name(unit)}"
+  def format({-1, unit}, :long), do: "-1 #{unit_name(unit)}"
+  def format({time, unit}, :long), do: "#{time} #{unit_name(unit)}s"
+
+  def format({1, unit}, :short), do: "1#{short_unit_name(unit)}"
+  def format({-1, unit}, :short), do: "-1#{short_unit_name(unit)}"
+  def format({time, unit}, :short), do: "#{time}#{short_unit_name(unit)}"
+
+  @doc """
   If possible, shifts `duration` to a higher time unit that is more readable to a human. Returns `duration`
   unchanged if it cannot be exactly shifted.
 
@@ -189,36 +215,10 @@ defmodule Moar.Duration do
   def shift(duration, to_unit), do: {convert(duration, to_unit), to_unit}
 
   @doc """
-  Converts a `{duration, time_unit}` tuple into a compact string.
-
-  ```elixir
-  iex> Moar.Duration.to_short_string({1, :second})
-  "1s"
-
-  iex> Moar.Duration.to_short_string({25, :millisecond})
-  "25ms"
-  ```
+  Shortcut to `format(duration, :long)`. See `format/2`.
   """
-  @spec to_short_string({duration :: t(), unit :: time_unit()}) :: String.t()
-  def to_short_string({1, unit}), do: "1#{short_unit_name(unit)}"
-  def to_short_string({-1, unit}), do: "-1#{short_unit_name(unit)}"
-  def to_short_string({time, unit}), do: "#{time}#{short_unit_name(unit)}"
-
-  @doc """
-  Converts a `{duration, time_unit}` tuple into a string.
-
-  ```elixir
-  iex> Moar.Duration.to_string({1, :second})
-  "1 second"
-
-  iex> Moar.Duration.to_string({25, :millisecond})
-  "25 milliseconds"
-  ```
-  """
-  @spec to_string({duration :: t(), unit :: time_unit()}) :: String.t()
-  def to_string({1, unit}), do: "1 #{unit_name(unit)}"
-  def to_string({-1, unit}), do: "-1 #{unit_name(unit)}"
-  def to_string({time, unit}), do: "#{time} #{unit_name(unit)}s"
+  @spec to_string(t()) :: String.t()
+  def to_string(duration), do: format(duration, :long)
 
   @doc """
   Returns the list of duration unit names in descending order.

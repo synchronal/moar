@@ -54,6 +54,7 @@ end
 * `approx` shifts the duration to a simple approximate value.
 * `between` returns the duration between two datetimes.
 * `convert` converts a duration to a new time unit, returning only the value.
+* `format` formats a duration in long (`"3 seconds"`) or short (`"3s"`) format.
 * `humanize` converts the duration to the highest possible time unit.
 * `shift` converts a duration to a new time unit.
 * `to_string` renders a duration into a string like `"27 minutes"`.
