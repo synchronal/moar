@@ -7,6 +7,7 @@
   and `Moar.Duration.shift/1` which is like `Moar.Duration.convert/1` but returns a duration tuple.
 - Add `Moar.Duration.ago/1` which returns the duration between a given datetime and now.
 - Add `Moar.Duration.between/2` which returns the duration between two datetimes.
+- Add `Moar.Duration.approx/1` which shifts a duration to a simpler approximate value.
 
 ## 1.11.0
 

@@ -51,6 +51,7 @@ end
 * is a `{time, unit}` tuple (like `{27, :minute}`) and supports the regular `t:System.time_unit/0` values and also
   `:minute`, `:hour`, and `:day`.
 * `ago` returns the duration between a given datetime and now.
+* `approx` shifts the duration to a simple approximate value.
 * `between` returns the duration between two datetimes.
 * `convert` converts a duration to a new time unit, returning only the value.
 * `humanize` converts the duration to the highest possible time unit.

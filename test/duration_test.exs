@@ -22,6 +22,29 @@ defmodule Moar.DurationTest do
     end
   end
 
+  describe "approx" do
+    test "when the time is exactly 1, the duration is unchanged" do
+      assert Moar.Duration.approx({1, :second}) == {1, :second}
+      assert Moar.Duration.approx({1, :hour}) == {1, :hour}
+    end
+
+    test "shifts to a higher unit when the higher unit's time value would be >= 2" do
+      assert Moar.Duration.approx({10, :second}) == {10, :second}
+      assert Moar.Duration.approx({119, :second}) == {119, :second}
+      assert Moar.Duration.approx({120, :second}) == {2, :minute}
+      assert Moar.Duration.approx({121, :second}) == {2, :minute}
+      assert Moar.Duration.approx({2, :minute}) == {2, :minute}
+      assert Moar.Duration.approx({119, :minute}) == {119, :minute}
+      assert Moar.Duration.approx({120, :minute}) == {2, :hour}
+      assert Moar.Duration.approx({2, :hour}) == {2, :hour}
+      assert Moar.Duration.approx({47, :hour}) == {47, :hour}
+      assert Moar.Duration.approx({48, :hour}) == {2, :day}
+      assert Moar.Duration.approx({2, :day}) == {2, :day}
+      assert Moar.Duration.approx({45, :day}) == {45, :day}
+      assert Moar.Duration.approx({59, :day}) == {59, :day}
+    end
+  end
+
   describe "between" do
     test "returns the duration between two dates, in the largest possible unit" do
       earlier = ~U[2020-01-01T00:00:00.000000Z]

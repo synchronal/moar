@@ -35,6 +35,33 @@ defmodule Moar.Duration do
   def ago(%module{} = datetime), do: between(datetime, module.utc_now())
 
   @doc """
+  Shifts `duration` to an approximately equal duration that's simpler. For example, `{121, :second}` would get
+  shifted to `{2, :minute}`.
+
+  If the time value of the duration is exactly 1, the duration is returned unchanged: `{1, :minute}` => `{1, :minute}`.
+  Otherwise, the duration is shifted to the highest unit where the time value is >= 2.
+
+  ```elixir
+  iex> Moar.Duration.approx({1, :minute})
+  {1, :minute}
+
+  iex> Moar.Duration.approx({7300, :second})
+  {2, :hour}
+  ```
+  """
+  @spec approx(t()) :: t()
+  def approx({1, _unit} = duration), do: duration
+  def approx(duration), do: approx(duration, @units_desc)
+
+  defp approx(duration, [head_unit | tail_units] = _units_desc) do
+    new_duration = {new_time, _new_unit} = shift(duration, head_unit)
+
+    if new_time >= 2 || length(tail_units) == 0,
+      do: new_duration,
+      else: approx(duration, tail_units)
+  end
+
+  @doc """
   Returns the duration between `earlier` and `later`, in the largest possible unit.
 
   `earlier` and `later` can be ISO8601-formatted strings, `DateTime`s, or `NaiveDateTime`s.
