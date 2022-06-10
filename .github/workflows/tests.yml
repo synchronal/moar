@@ -186,7 +186,7 @@ jobs:
           path: _build
           key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
       - name: Publish to Hex
-        uses: ./.github/publish
+        uses: synchronal/hex-publish-action@v1
         with:
           name: moar
           key: ${{ secrets.HEX_PM_KEY }}
