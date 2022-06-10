@@ -40,8 +40,11 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.approx({47, :hour}) == {47, :hour}
       assert Moar.Duration.approx({48, :hour}) == {2, :day}
       assert Moar.Duration.approx({2, :day}) == {2, :day}
-      assert Moar.Duration.approx({45, :day}) == {45, :day}
-      assert Moar.Duration.approx({59, :day}) == {59, :day}
+      assert Moar.Duration.approx({7, :day}) == {7, :day}
+      assert Moar.Duration.approx({60, :day}) == {2, :approx_month}
+      assert Moar.Duration.approx({12, :approx_month}) == {12, :approx_month}
+      assert Moar.Duration.approx({23, :approx_month}) == {23, :approx_month}
+      assert Moar.Duration.approx({24, :approx_month}) == {2, :approx_year}
     end
   end
 
@@ -76,6 +79,9 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.convert({121, :second}, :minute) == 2
       assert Moar.Duration.convert({121, :minute}, :hour) == 2
       assert Moar.Duration.convert({49, :hour}, :day) == 2
+      assert Moar.Duration.convert({60, :day}, :approx_month) == 2
+      assert Moar.Duration.convert({360, :day}, :approx_year) == 1
+      assert Moar.Duration.convert({12, :approx_month}, :approx_year) == 1
     end
   end
 
@@ -87,6 +93,8 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.humanize({60, :second}) == {1, :minute}
       assert Moar.Duration.humanize({60, :minute}) == {1, :hour}
       assert Moar.Duration.humanize({24, :hour}) == {1, :day}
+      assert Moar.Duration.humanize({30, :day}) == {1, :approx_month}
+      assert Moar.Duration.humanize({12, :approx_month}) == {1, :approx_year}
     end
 
     test "can increase the unit more than one step" do
@@ -117,6 +125,8 @@ defmodule Moar.DurationTest do
 
   describe "to_short_string" do
     test "converts a duration to a short (non-localized) string" do
+      assert Moar.Duration.to_short_string({25, :approx_year}) == "25yr"
+      assert Moar.Duration.to_short_string({25, :approx_month}) == "25mo"
       assert Moar.Duration.to_short_string({25, :day}) == "25d"
       assert Moar.Duration.to_short_string({25, :hour}) == "25h"
       assert Moar.Duration.to_short_string({25, :minute}) == "25m"
@@ -125,13 +135,33 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.to_short_string({25, :microsecond}) == "25us"
       assert Moar.Duration.to_short_string({25, :nanosecond}) == "25ns"
     end
+
+    test "supports negative times and plurals" do
+      assert Moar.Duration.to_short_string({1, :second}) == "1s"
+      assert Moar.Duration.to_short_string({-1, :minute}) == "-1m"
+      assert Moar.Duration.to_short_string({23, :hour}) == "23h"
+      assert Moar.Duration.to_short_string({-23, :hour}) == "-23h"
+    end
   end
 
   describe "to_string" do
     test "converts a duration to a (non-localized) string" do
+      assert Moar.Duration.to_string({25, :approx_year}) == "25 years"
+      assert Moar.Duration.to_string({25, :approx_month}) == "25 months"
+      assert Moar.Duration.to_string({25, :day}) == "25 days"
+      assert Moar.Duration.to_string({25, :hour}) == "25 hours"
+      assert Moar.Duration.to_string({25, :minute}) == "25 minutes"
+      assert Moar.Duration.to_string({25, :second}) == "25 seconds"
+      assert Moar.Duration.to_string({25, :millisecond}) == "25 milliseconds"
+      assert Moar.Duration.to_string({25, :microsecond}) == "25 microseconds"
+      assert Moar.Duration.to_string({25, :nanosecond}) == "25 nanoseconds"
+    end
+
+    test "supports negative times and plurals" do
       assert Moar.Duration.to_string({1, :second}) == "1 second"
       assert Moar.Duration.to_string({-1, :minute}) == "-1 minute"
       assert Moar.Duration.to_string({23, :hour}) == "23 hours"
+      assert Moar.Duration.to_string({-23, :hour}) == "-23 hours"
     end
   end
 end

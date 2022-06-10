@@ -5,20 +5,50 @@ defmodule Moar.Duration do
   A duration is a `{time, unit}` tuple.
 
   The time is a number and the unit is one of:
-  `:nanosecond`, `:microsecond`, `:millisecond`, `:second`, `:minute`, `:hour`, `:day`.
+  * `:nanosecond`
+  * `:microsecond`
+  * `:millisecond`
+  * `:second`
+  * `:minute`
+  * `:hour`
+  * `:day`
+  * `:approx_month` (30 days)
+  * `:approx_year` (360 days)
   """
 
   @seconds_per_minute 60
-  @seconds_per_hour 60 * 60
-  @seconds_per_day 60 * 60 * 24
+  @seconds_per_hour @seconds_per_minute * 60
+  @seconds_per_day @seconds_per_hour * 24
+  @seconds_per_approx_month @seconds_per_day * 30
+  @seconds_per_approx_year @seconds_per_approx_month * 12
 
-  @units_kw_desc [day: "d", hour: "h", minute: "m", second: "s", millisecond: "ms", microsecond: "us", nanosecond: "ns"]
-  @units_map Map.new(@units_kw_desc)
+  @units_kw_desc [
+    approx_year: {"yr", "year"},
+    approx_month: {"mo", "month"},
+    day: {"d", "day"},
+    hour: {"h", "hour"},
+    minute: {"m", "minute"},
+    second: {"s", "second"},
+    millisecond: {"ms", "millisecond"},
+    microsecond: {"us", "microsecond"},
+    nanosecond: {"ns", "nanosecond"}
+  ]
   @units_desc Keyword.keys(@units_kw_desc)
   @units_asc @units_desc |> Enum.reverse()
+  @units_to_short_names Map.new(@units_kw_desc, fn {unit, {short_name, _}} -> {unit, short_name} end)
+  @units_to_names Map.new(@units_kw_desc, fn {unit, {_, name}} -> {unit, name} end)
 
   @type t() :: {time :: number(), unit :: time_unit()}
-  @type time_unit() :: :nanosecond | :microsecond | :millisecond | :second | :minute | :hour | :day
+  @type time_unit() ::
+          :nanosecond
+          | :microsecond
+          | :millisecond
+          | :second
+          | :minute
+          | :hour
+          | :day
+          | :approx_month
+          | :approx_year
 
   @doc """
   Returns the duration between `datetime` and now, in the largest possible unit.
@@ -96,9 +126,13 @@ defmodule Moar.Duration do
   def convert({time, :minute}, to_unit), do: convert({time * @seconds_per_minute, :second}, to_unit)
   def convert({time, :hour}, to_unit), do: convert({time * @seconds_per_hour, :second}, to_unit)
   def convert({time, :day}, to_unit), do: convert({time * @seconds_per_day, :second}, to_unit)
+  def convert({time, :approx_month}, to_unit), do: convert({time * @seconds_per_approx_month, :second}, to_unit)
+  def convert({time, :approx_year}, to_unit), do: convert({time * @seconds_per_approx_year, :second}, to_unit)
   def convert(duration, :minute), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_minute)
   def convert(duration, :hour), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_hour)
   def convert(duration, :day), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_day)
+  def convert(duration, :approx_month), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_approx_month)
+  def convert(duration, :approx_year), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_approx_year)
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
@@ -166,9 +200,9 @@ defmodule Moar.Duration do
   ```
   """
   @spec to_short_string({duration :: t(), unit :: time_unit()}) :: String.t()
-  def to_short_string({1, unit}), do: "1#{@units_map[unit]}"
-  def to_short_string({-1, unit}), do: "-1#{@units_map[unit]}"
-  def to_short_string({time, unit}), do: "#{time}#{@units_map[unit]}"
+  def to_short_string({1, unit}), do: "1#{short_unit_name(unit)}"
+  def to_short_string({-1, unit}), do: "-1#{short_unit_name(unit)}"
+  def to_short_string({time, unit}), do: "#{time}#{short_unit_name(unit)}"
 
   @doc """
   Converts a `{duration, time_unit}` tuple into a string.
@@ -182,13 +216,18 @@ defmodule Moar.Duration do
   ```
   """
   @spec to_string({duration :: t(), unit :: time_unit()}) :: String.t()
-  def to_string({1, unit}), do: "1 #{unit}"
-  def to_string({-1, unit}), do: "-1 #{unit}"
-  def to_string({time, unit}), do: "#{time} #{unit}s"
+  def to_string({1, unit}), do: "1 #{unit_name(unit)}"
+  def to_string({-1, unit}), do: "-1 #{unit_name(unit)}"
+  def to_string({time, unit}), do: "#{time} #{unit_name(unit)}s"
 
   @doc """
   Returns the list of duration unit names in descending order.
   """
   @spec units() :: [time_unit()]
   def units, do: @units_desc
+
+  # # #
+
+  defp short_unit_name(unit), do: @units_to_short_names[unit]
+  defp unit_name(unit), do: @units_to_names[unit]
 end

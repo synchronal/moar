@@ -8,6 +8,7 @@
 - Add `Moar.Duration.ago/1` which returns the duration between a given datetime and now.
 - Add `Moar.Duration.between/2` which returns the duration between two datetimes.
 - Add `Moar.Duration.approx/1` which shifts a duration to a simpler approximate value.
+- `Moar.Duration` supports more time units: `:approx_month` (30 days), and `approx_year` (12 approx_months).
 
 ## 1.11.0
 
