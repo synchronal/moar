@@ -39,7 +39,13 @@ defmodule Moar.MixProject do
     ]
   end
 
-  defp dialyzer, do: [plt_add_apps: [:ex_unit]]
+  defp dialyzer do
+    [
+      plt_add_apps: [:ex_unit],
+      plt_add_deps: :app_tree,
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
+    ]
+  end
 
   defp docs do
     [

@@ -5,6 +5,7 @@
 /cover/
 /deps/
 /doc/
+/priv/plts/
 /tmp/
 /_build/
 erl_crash.dump
