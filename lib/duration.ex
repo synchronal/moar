@@ -68,6 +68,10 @@ defmodule Moar.Duration do
   Shifts `duration` to an approximately equal duration that's simpler. For example, `{121, :second}` would get
   shifted to `{2, :minute}`.
 
+  > #### Warning {: .warning}
+  >
+  > This function is lossy because it intentionally loses precision.
+
   If the time value of the duration is exactly 1, the duration is returned unchanged: `{1, :minute}` => `{1, :minute}`.
   Otherwise, the duration is shifted to the highest unit where the time value is >= 2.
 
@@ -111,7 +115,7 @@ defmodule Moar.Duration do
 
   > #### Warning {: .warning}
   >
-  > This function loses data because it rounds down to the nearest whole number.
+  > This function is lossy because it rounds down to the nearest whole number.
 
   Uses `System.convert_time_unit/3` under the hood; see its documentation for more details.
 
@@ -204,7 +208,7 @@ defmodule Moar.Duration do
 
   > #### Warning {: .warning}
   >
-  > This function loses data because it rounds down to the nearest whole number.
+  > This function is lossy because it rounds down to the nearest whole number.
 
   ```elixir
   iex> Moar.Duration.shift({121, :second}, :minute)
