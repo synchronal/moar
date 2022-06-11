@@ -105,6 +105,10 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({-23, :hour}, :long) == "-23 hours"
     end
 
+    test "defaults to :long" do
+      assert Moar.Duration.format({25, :approx_year}) == "25 years"
+    end
+
     test ":short converts a duration to a short (non-localized) string" do
       assert Moar.Duration.format({25, :approx_year}, :short) == "25yr"
       assert Moar.Duration.format({25, :approx_month}, :short) == "25mo"
@@ -124,42 +128,61 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({-23, :hour}, :short) == "-23h"
     end
 
-    test "accepts ':suffix' option" do
-      assert Moar.Duration.format({25, :minute}, :long, suffix: "yonder") == "25 minutes yonder"
+    test "accepts a suffix" do
+      assert Moar.Duration.format({25, :minute}, "yonder") == "25 minutes yonder"
+      assert Moar.Duration.format({25, :minute}, :long, "yonder") == "25 minutes yonder"
+      assert Moar.Duration.format({25, :minute}, :short, "yonder") == "25m yonder"
     end
 
-    test "accepts ':ago' transformation" do
-      assert Moar.Duration.format({25, :minute}, :long, transform: :ago) == "25 minutes ago"
+    test "accepts an ':ago' transformation, which adds an 'ago' suffix" do
+      assert Moar.Duration.format({25, :minute}, :ago) == "25 minutes ago"
+      assert Moar.Duration.format({25, :minute}, :long, :ago) == "25 minutes ago"
+      assert Moar.Duration.format({25, :minute}, :short, :ago) == "25m ago"
     end
 
-    test "accepts ':ago' transformation with a datetime" do
+    test "accepts an ':ago' transformation with a datetime" do
       datetime = DateTime.utc_now() |> Moar.DateTime.add({-25, :minute})
-      assert Moar.Duration.format(datetime, :long, transform: [:ago, :approx]) == "25 minutes ago"
+      assert Moar.Duration.format(datetime, :long, [:ago, :approx]) == "25 minutes ago"
+      assert Moar.Duration.format(datetime, :long, [:approx, :ago]) == "25 minutes ago"
     end
 
     test "':ago' transformation suffix can be overridden" do
-      assert Moar.Duration.format({25, :minute}, :long, transform: :ago, suffix: "back") == "25 minutes back"
+      assert Moar.Duration.format({25, :minute}, :ago, "back") == "25 minutes back"
+      assert Moar.Duration.format({25, :minute}, :long, :ago, "back") == "25 minutes back"
+      assert Moar.Duration.format({25, :minute}, :short, :ago, "back") == "25m back"
     end
 
-    test "accepts ':humanize' transformation" do
-      assert Moar.Duration.format({60, :minute}, :long, transform: :humanize) == "1 hour"
+    test "accepts a ':humanize' transformation" do
+      assert Moar.Duration.format({60, :minute}, :humanize) == "1 hour"
+      assert Moar.Duration.format({60, :minute}, :long, :humanize) == "1 hour"
+      assert Moar.Duration.format({60, :minute}, :short, :humanize) == "1h"
     end
 
-    test "accepts combination of ':ago' and ':humanize'" do
-      assert Moar.Duration.format({60, :minute}, :long, transform: [:humanize, :ago]) == "1 hour ago"
+    test "accepts a combination of ':ago' and ':humanize'" do
+      assert Moar.Duration.format({60, :minute}, [:humanize, :ago]) == "1 hour ago"
+      assert Moar.Duration.format({60, :minute}, [:ago, :humanize]) == "1 hour ago"
+      assert Moar.Duration.format({60, :minute}, [:humanize, :ago], "yonder") == "1 hour yonder"
+      assert Moar.Duration.format({60, :minute}, :long, [:humanize, :ago]) == "1 hour ago"
+      assert Moar.Duration.format({60, :minute}, :short, [:humanize, :ago]) == "1h ago"
+      assert Moar.Duration.format({60, :minute}, :short, [:humanize, :ago], "yonder") == "1h yonder"
     end
 
     test "accepts ':approx' transformation" do
-      assert Moar.Duration.format({300, :minute}, :long, transform: :approx) == "5 hours"
+      assert Moar.Duration.format({300, :minute}, :approx) == "5 hours"
+      assert Moar.Duration.format({300, :minute}, :approx, "from now") == "5 hours from now"
+      assert Moar.Duration.format({300, :minute}, :long, :approx) == "5 hours"
+      assert Moar.Duration.format({300, :minute}, :short, :approx) == "5h"
+      assert Moar.Duration.format({300, :minute}, :short, :approx, "from now") == "5h from now"
     end
 
     test "accepts combination of ':ago' and ':approx'" do
-      assert Moar.Duration.format({300, :minute}, :long, transform: [:approx, :ago]) == "5 hours ago"
+      assert Moar.Duration.format({300, :minute}, :long, [:approx, :ago]) == "5 hours ago"
+      assert Moar.Duration.format({300, :minute}, :long, [:ago, :approx]) == "5 hours ago"
     end
 
     test "raises when an unknown transformation is requested" do
       assert_raise RuntimeError, "Unknown transformation: glorp", fn ->
-        Moar.Duration.format({300, :minute}, :long, transform: [:humanize, :glorp, :ago])
+        Moar.Duration.format({300, :minute}, :long, [:humanize, :glorp, :ago])
       end
     end
   end

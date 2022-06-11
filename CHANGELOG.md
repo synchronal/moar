@@ -8,7 +8,8 @@
 - Add `Moar.Duration.between/2` which returns the duration between two datetimes.
 - Add `Moar.Duration.approx/1` which shifts a duration to a simpler approximate value.
 - `Moar.Duration` supports more time units: `:approx_month` (30 days), and `approx_year` (12 approx_months).
-- Add `Moar.Duration.format/2` which formats a duration in either long (`"3 seconds"`) or short (`"3s"`) format.
+- Add `Moar.Duration.format/2` which formats a duration in either long (`"3 seconds"`) or short (`"3s"`) format,
+  with optional transformers and suffix.
 
 ## 1.11.0
 

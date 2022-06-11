@@ -38,7 +38,15 @@ defmodule Moar.Duration do
   @units_to_short_names Map.new(@units_kw_desc, fn {unit, {short_name, _}} -> {unit, short_name} end)
   @units_to_names Map.new(@units_kw_desc, fn {unit, {_, name}} -> {unit, name} end)
 
+  @type date_time_ish() :: DateTime.t() | NaiveDateTime.t() | binary()
+
+  @type format_style() :: :long | :short
+
+  @type format_transformer() :: :ago | :approx | :humanize
+  @type format_transformers() :: format_transformer() | [format_transformer()]
+
   @type t() :: {time :: number(), unit :: time_unit()}
+
   @type time_unit() ::
           :nanosecond
           | :microsecond
@@ -60,7 +68,7 @@ defmodule Moar.Duration do
   {121, :minute}
   ```
   """
-  @spec ago(DateTime.t() | NaiveDateTime.t() | binary()) :: t()
+  @spec ago(date_time_ish()) :: t()
   def ago(datetime) when is_binary(datetime), do: datetime |> Moar.DateTime.from_iso8601!() |> ago()
   def ago(%module{} = datetime), do: between(datetime, module.utc_now())
 
@@ -107,7 +115,7 @@ defmodule Moar.Duration do
   {121, :minute}
   ```
   """
-  @spec between(DateTime.t() | NaiveDateTime.t() | binary(), DateTime.t() | NaiveDateTime.t() | binary()) :: t()
+  @spec between(date_time_ish(), date_time_ish()) :: t()
   def between(earlier, later), do: {Moar.Difference.diff(later, earlier), :microsecond} |> humanize()
 
   @doc """
@@ -140,23 +148,59 @@ defmodule Moar.Duration do
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
-  Formats a duration. Supports `:long` or `:short` style.
+  Formats a duration in either a long or short style, with optional transformers and an optional suffix.
+
+  (This describes `format/2`, `format/3`, and `format/4`).
+
+  * The first parameter is a duration tuple, unless one of the transformers is `:ago`, in which case
+    it can be a `DateTime`, `NaiveDateTime`, or an ISO8601-formatted string.
+  * The next parameter is the style:
+    * `:long` produces something like `"25 seconds"`.
+    * `:short` produces something like `"25s"`.
+    * If this parameter is omitted, `:long` format is used.
+  * The next parameter is a transformer or a list of transformers, which can include:
+    * `:ago` transforms via `ago/1`
+    * `:approx` transforms via `approx/1`
+    * `:humanize` transforms via `humanize/1`
+    * If this parameter is omitted, no transformations are applied.
+  * The next parameter is a suffix which, if specified, will be appended to the formatted result.
+    If the `:ago` transformer is specified and a suffix is not specified, the suffix will default to `"ago"`.
+    
+  Not all parameters need to be specified; `format({5, :minute}, "ago")` is equivalent to
+  `format({5, :minute}, :long, [], "ago")`.
 
   ```elixir
-  iex> Moar.Duration.format({1, :second}, :long)
+  iex> Moar.Duration.format({1, :second})
   "1 second"
 
-  iex> Moar.Duration.format({25, :millisecond}, :long)
-  "25 milliseconds"
+  iex> Moar.Duration.format({120, :second})
+  "120 seconds"
 
-  iex> Moar.Duration.format({1, :second}, :short)
-  "1s"
+  iex> Moar.Duration.format({120, :second}, :long)
+  "120 seconds"
 
-  iex> Moar.Duration.format({25, :millisecond}, :short)
-  "25ms"
+  iex> Moar.Duration.format({120, :second}, :short)
+  "120s"
+
+  iex> Moar.Duration.format({120, :second}, "yonder")
+  "120 seconds yonder"
+
+  iex> Moar.Duration.format({120, :second}, :humanize)
+  "2 minutes"
+
+  iex> Moar.Duration.format({120, :second}, :humanize, "yonder")
+  "2 minutes yonder"
+
+  iex> DateTime.utc_now()
+  ...> |> Moar.DateTime.add({-310, :second})
+  ...> |> Moar.Duration.format(:short, [:ago, :approx], "henceforth")
+  "5m henceforth"
   ```
   """
-  @spec format(t(), :long | :short) :: binary()
+  @spec format(t() | date_time_ish(), format_style() | format_transformer() | binary()) :: binary()
+  @format_styles [:long, :short]
+  def format(duration, style_or_transformers_or_suffix \\ :long)
+
   def format({1, unit}, :long), do: "1 #{unit_name(unit)}"
   def format({-1, unit}, :long), do: "-1 #{unit_name(unit)}"
   def format({time, unit}, :long), do: "#{time} #{unit_name(unit)}s"
@@ -165,10 +209,29 @@ defmodule Moar.Duration do
   def format({-1, unit}, :short), do: "-1#{short_unit_name(unit)}"
   def format({time, unit}, :short), do: "#{time}#{short_unit_name(unit)}"
 
-  def format(duration_or_datetime, style, opts) do
-    opts = Moar.Opts.take(opts, [:suffix, transform: []])
-    transformers = List.wrap(opts.transform)
-    suffix = if !opts.suffix && :ago in transformers, do: "ago", else: opts.suffix
+  def format(duration_or_datetime, transformers_or_suffix)
+      when transformers_or_suffix not in @format_styles,
+      do: format(duration_or_datetime, :long, transformers_or_suffix)
+
+  @doc "See docs for `format/2`."
+  @spec format(t() | date_time_ish(), format_transformers() | format_style(), binary() | format_transformers()) ::
+          binary()
+  def format(duration_or_datetime, transformers, suffix)
+      when transformers not in @format_styles,
+      do: format(duration_or_datetime, :long, transformers, suffix)
+
+  def format(duration_or_datetime, style, transformers_or_suffix)
+      when style in @format_styles and is_binary(transformers_or_suffix),
+      do: format(duration_or_datetime, style, [], transformers_or_suffix)
+
+  def format(duration_or_datetime, style, transformers_or_suffix),
+    do: format(duration_or_datetime, style, transformers_or_suffix, nil)
+
+  @doc "See docs for `format/2`."
+  @spec format(t() | date_time_ish(), format_style(), format_transformers(), binary() | nil) :: binary()
+  def format(duration_or_datetime, style, transformers, suffix) do
+    transformers = List.wrap(transformers) |> Enum.sort(fn a, _b -> a == :ago end)
+    suffix = if :ago in transformers, do: suffix || "ago", else: suffix
 
     formatted =
       Enum.reduce(transformers, duration_or_datetime, fn
