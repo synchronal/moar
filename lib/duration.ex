@@ -140,7 +140,7 @@ defmodule Moar.Duration do
   def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
 
   @doc """
-  Formats a duration. Supports `:long` or `:short` format.
+  Formats a duration. Supports `:long` or `:short` style.
 
   ```elixir
   iex> Moar.Duration.format({1, :second}, :long)
@@ -164,6 +164,26 @@ defmodule Moar.Duration do
   def format({1, unit}, :short), do: "1#{short_unit_name(unit)}"
   def format({-1, unit}, :short), do: "-1#{short_unit_name(unit)}"
   def format({time, unit}, :short), do: "#{time}#{short_unit_name(unit)}"
+
+  def format(duration_or_datetime, style, opts) do
+    opts = Moar.Opts.take(opts, [:suffix, transform: []])
+    transformers = List.wrap(opts.transform)
+    suffix = if !opts.suffix && :ago in transformers, do: "ago", else: opts.suffix
+
+    formatted =
+      Enum.reduce(transformers, duration_or_datetime, fn
+        :approx, acc -> approx(acc)
+        :ago, {_time, _unit} = duration -> duration
+        :ago, acc -> ago(acc)
+        :humanize, acc -> humanize(acc)
+        other, _acc -> raise "Unknown transformation: #{other}"
+      end)
+      |> format(style)
+
+    if suffix,
+      do: [formatted, " ", suffix] |> Kernel.to_string(),
+      else: formatted
+  end
 
   @doc """
   If possible, shifts `duration` to a higher time unit that is more readable to a human. Returns `duration`
