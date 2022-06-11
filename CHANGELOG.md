@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.12.0
+
 - Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`,
   and `Moar.Duration.shift/1` which is like `Moar.Duration.convert/1` but returns a duration tuple.
 - Add `Moar.Duration.ago/1` which returns the duration between a given datetime and now.
