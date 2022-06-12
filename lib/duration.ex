@@ -150,25 +150,28 @@ defmodule Moar.Duration do
   @doc """
   Formats a duration in either a long or short style, with optional transformers and an optional suffix.
 
-  (This describes `format/2`, `format/3`, and `format/4`).
-
-  * The first parameter is a duration tuple, unless one of the transformers is `:ago`, in which case
+  * The first argument is a duration tuple, unless one of the transformers is `:ago`, in which case
     it can be a `DateTime`, `NaiveDateTime`, or an ISO8601-formatted string.
-  * The next parameter is the style:
-    * `:long` produces something like `"25 seconds"`.
-    * `:short` produces something like `"25s"`.
-    * If this parameter is omitted, `:long` format is used.
-  * The next parameter is a transformer or a list of transformers, which can include:
+  * The second argument is optional and is the style, transformer, list of transformers, or suffix.
+  * The third argument is optional and is the transformer, list of transformers, or suffix.
+  * The fourth argument is optional and is the suffix.
+
+  Styles:
+    * `:long`, which formats like `"25 seconds"`.
+    * `:short`, which formats like `"25s"`.
+    * Defaults to `:long`
+    
+  Transformers:
     * `:ago` transforms via `ago/1`
     * `:approx` transforms via `approx/1`
     * `:humanize` transforms via `humanize/1`
-    * If this parameter is omitted, no transformations are applied.
-  * The next parameter is a suffix which, if specified, will be appended to the formatted result.
-    If the `:ago` transformer is specified and a suffix is not specified, the suffix will default to `"ago"`.
+    * If no transformers are specified, no transformations are applied.
     
-  Not all parameters need to be specified; `format({5, :minute}, "ago")` is equivalent to
-  `format({5, :minute}, :long, [], "ago")`.
-
+  Suffix:
+    * A string that will be appended to the formatted result.
+    * If the `:ago` transformer is specified and a suffix is not specified, the suffix will default to `"ago"`.
+      To use the "ago" transformer with no suffix, specify an empty string as the suffix (`nil` will not suffice).
+    
   ```elixir
   iex> Moar.Duration.format({1, :second})
   "1 second"
@@ -197,55 +200,52 @@ defmodule Moar.Duration do
   "5m henceforth"
   ```
   """
-  @spec format(t() | date_time_ish(), format_style() | format_transformer() | binary()) :: binary()
   @format_styles [:long, :short]
-  def format(duration, style_or_transformers_or_suffix \\ :long)
+  @spec format(
+          t() | date_time_ish(),
+          format_style() | format_transformers() | binary() | nil,
+          format_transformers() | binary() | nil,
+          binary() | nil
+        ) :: binary()
+  def format(duration_or_datetime, style_transformers_or_suffix \\ nil, transformers_or_suffix \\ nil, suffix \\ nil) do
+    {style, transformers, suffix} =
+      [style_transformers_or_suffix, transformers_or_suffix, suffix]
+      |> Enum.reduce({nil, nil, nil}, fn
+        style, acc when style in @format_styles ->
+          put_elem(acc, 0, style)
 
-  def format({1, unit}, :long), do: "1 #{unit_name(unit)}"
-  def format({-1, unit}, :long), do: "-1 #{unit_name(unit)}"
-  def format({time, unit}, :long), do: "#{time} #{unit_name(unit)}s"
+        transformers, acc when is_list(transformers) or (is_atom(transformers) and not is_nil(transformers)) ->
+          transformers = List.wrap(transformers) |> Enum.sort(fn a, _b -> a == :ago end)
+          acc = put_elem(acc, 1, transformers)
+          if :ago in transformers, do: put_elem(acc, 2, [" ", "ago"]), else: acc
 
-  def format({1, unit}, :short), do: "1#{short_unit_name(unit)}"
-  def format({-1, unit}, :short), do: "-1#{short_unit_name(unit)}"
-  def format({time, unit}, :short), do: "#{time}#{short_unit_name(unit)}"
+        "" = _suffix, acc ->
+          put_elem(acc, 2, "")
 
-  def format(duration_or_datetime, transformers_or_suffix)
-      when transformers_or_suffix not in @format_styles,
-      do: format(duration_or_datetime, :long, transformers_or_suffix)
+        suffix, acc when is_binary(suffix) ->
+          put_elem(acc, 2, [" ", suffix])
 
-  @doc "See docs for `format/2`."
-  @spec format(t() | date_time_ish(), format_transformers() | format_style(), binary() | format_transformers()) ::
-          binary()
-  def format(duration_or_datetime, transformers, suffix)
-      when transformers not in @format_styles,
-      do: format(duration_or_datetime, :long, transformers, suffix)
+        nil, acc ->
+          acc
+      end)
 
-  def format(duration_or_datetime, style, transformers_or_suffix)
-      when style in @format_styles and is_binary(transformers_or_suffix),
-      do: format(duration_or_datetime, style, [], transformers_or_suffix)
-
-  def format(duration_or_datetime, style, transformers_or_suffix),
-    do: format(duration_or_datetime, style, transformers_or_suffix, nil)
-
-  @doc "See docs for `format/2`."
-  @spec format(t() | date_time_ish(), format_style(), format_transformers(), binary() | nil) :: binary()
-  def format(duration_or_datetime, style, transformers, suffix) do
-    transformers = List.wrap(transformers) |> Enum.sort(fn a, _b -> a == :ago end)
-    suffix = if :ago in transformers, do: suffix || "ago", else: suffix
-
-    formatted =
-      Enum.reduce(transformers, duration_or_datetime, fn
+    {time, unit} =
+      transformers
+      |> List.wrap()
+      |> Enum.reduce(duration_or_datetime, fn
         :approx, acc -> approx(acc)
         :ago, {_time, _unit} = duration -> duration
         :ago, acc -> ago(acc)
         :humanize, acc -> humanize(acc)
         other, _acc -> raise "Unknown transformation: #{other}"
       end)
-      |> format(style)
 
-    if suffix,
-      do: [formatted, " ", suffix] |> Kernel.to_string(),
-      else: formatted
+    unit_name =
+      if style == :short,
+        do: @units_to_short_names[unit],
+        else: [" ", Moar.String.pluralize(time, @units_to_names[unit], &(&1 <> "s"))]
+
+    [Kernel.to_string(time), unit_name, suffix] |> Moar.Enum.compact() |> Kernel.to_string()
   end
 
   @doc """
@@ -312,9 +312,4 @@ defmodule Moar.Duration do
   """
   @spec units() :: [time_unit()]
   def units, do: @units_desc
-
-  # # #
-
-  defp short_unit_name(unit), do: @units_to_short_names[unit]
-  defp unit_name(unit), do: @units_to_names[unit]
 end

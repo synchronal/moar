@@ -152,6 +152,11 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({25, :minute}, :short, :ago, "back") == "25m back"
     end
 
+    test "':ago' transformation suffix can be removed with an empty suffix string, but not a nil" do
+      assert Moar.Duration.format({25, :minute}, :ago, nil) == "25 minutes ago"
+      assert Moar.Duration.format({25, :minute}, :ago, "") == "25 minutes"
+    end
+
     test "accepts a ':humanize' transformation" do
       assert Moar.Duration.format({60, :minute}, :humanize) == "1 hour"
       assert Moar.Duration.format({60, :minute}, :long, :humanize) == "1 hour"
