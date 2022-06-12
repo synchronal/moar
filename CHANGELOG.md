@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.String.pluralize/3` to pluralize strings.
+
 ## 1.12.0
 
 - Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`,

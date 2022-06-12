@@ -52,6 +52,33 @@ defmodule Moar.String do
   end
 
   @doc """
+  Pluralizes a string.
+
+  When `count` is -1 or 1, returns the second argument (the singular string).
+
+  Otherwise, returns the third argument (the pluralized string), or if the third argument is a function,
+  calls the function with the singular string as an argument.
+
+  ```elixir
+  iex> Moar.String.pluralize(1, "fish", "fishies")
+  "fish"
+
+  iex> Moar.String.pluralize(2, "fish", "fishies")
+  "fishies"
+
+  iex> Moar.String.pluralize(2, "fish", fn singular -> singular <> "ies" end)
+  "fishies"
+
+  iex> Moar.String.pluralize(2, "fish", &(&1 <> "ies"))
+  "fishies"
+  ```
+  """
+  @spec pluralize(number(), binary(), binary() | function()) :: binary()
+  def pluralize(count, singular, _plural) when count in [-1, 1], do: singular
+  def pluralize(_count, _singular, plural) when is_binary(plural), do: plural
+  def pluralize(_count, string, pluralizer) when is_function(pluralizer), do: pluralizer.(string)
+
+  @doc """
   Compares the two binaries in constant-time to avoid timing attacks.
   See: <http://codahale.com/a-lesson-in-timing-attacks/>.
 
