@@ -14,6 +14,17 @@ defmodule Moar.Duration do
   * `:day`
   * `:approx_month` (30 days)
   * `:approx_year` (360 days)
+
+  > #### Note {: .info}
+  >
+  > This module is naive and intentionally doesn't account for real-world calendars and all of their complexity,
+  > such as leap years, leap days, daylight saving time, past and future calendar oddities, etc.
+  >
+  > As ["Falsehoods programmers believe about time"](https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca)
+  > says, "If you think you understand everything about time, you're probably doing it wrong."
+  >
+  > See [`Cldr.Calendar.Duration`](https://hexdocs.pm/ex_cldr_calendars/Cldr.Calendar.Duration.html) for one example
+  > of a full-featured library that is far more likely to be correct.
   """
 
   @seconds_per_minute 60
@@ -193,6 +204,12 @@ defmodule Moar.Duration do
 
   iex> Moar.Duration.format({120, :second}, :humanize, "yonder")
   "2 minutes yonder"
+
+  iex> Moar.Duration.format({310, :second})
+  "310 seconds"
+
+  iex> Moar.Duration.format({310, :second}, :approx)
+  "5 minutes"
 
   iex> DateTime.utc_now()
   ...> |> Moar.DateTime.add({-310, :second})

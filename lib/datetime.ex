@@ -1,12 +1,25 @@
 defmodule Moar.DateTime do
   # @related [test](/test/datetime_test.exs)
 
-  @moduledoc "DateTime-related functions."
+  @moduledoc """
+  DateTime-related functions. See also `Moar.NaiveDateTime`.
+  """
 
   @doc """
-  Like `DateTime.add` but takes a `Moar.Duration`.
+  Like `DateTime.add/2` but takes a `Moar.Duration`.
 
-  See also `Moar.NaiveDateTime`.
+  See also `Moar.NaiveDateTime.add/2`.
+
+  > #### Note {: .info}
+  >
+  > This function is naive and intentionally doesn't account for real-world calendars and all of their complexity,
+  > such as leap years, leap days, daylight saving time, past and future calendar oddities, etc.
+  >
+  > As ["Falsehoods programmers believe about time"](https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca)
+  > says, "If you think you understand everything about time, you're probably doing it wrong."
+  >
+  > See [`Cldr.Calendar.plus/2`](https://hexdocs.pm/ex_cldr_calendars/Cldr.Calendar.html#plus/2) for one example
+  > of a function that is far more likely to be correct.
 
   ```elixir
   iex> start = ~U[2022-01-01T00:00:00Z]
