@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.13.1
+
+- Doc updates
+
 ## 1.13.0
 
 - Add `Moar.String.pluralize/3` to pluralize strings.
