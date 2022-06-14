@@ -141,14 +141,13 @@ defmodule Moar.AssertionsTest do
     test "is happy when the experiment works as expected" do
       {:ok, agent} = Agent.start(fn -> 0 end)
 
-      assert_that(Agent.update(agent, fn s -> s + 1 end),
+      assert_that Agent.update(agent, fn s -> s + 1 end),
         changes: Agent.get(agent, fn s -> s end),
         from: 0,
         to: 1
-      )
     end
 
-    test "complains when the precondition is not fulfilled" do
+    test "flunks when the precondition is not fulfilled" do
       {:ok, agent} = Agent.start(fn -> 0 end)
 
       assert_raise ExUnit.AssertionError,
@@ -161,15 +160,14 @@ defmodule Moar.AssertionsTest do
                    right: 9
                    """,
                    fn ->
-                     assert_that(Agent.update(agent, fn s -> s + 1 end),
+                     assert_that Agent.update(agent, fn s -> s + 1 end),
                        changes: Agent.get(agent, fn s -> s end),
                        from: 9,
                        to: 1
-                     )
                    end
     end
 
-    test "complains when the postcondition is not fulfilled" do
+    test "flunks when the postcondition is not fulfilled" do
       {:ok, agent} = Agent.start(fn -> 0 end)
 
       assert_raise ExUnit.AssertionError,
@@ -182,11 +180,34 @@ defmodule Moar.AssertionsTest do
                    right: 2
                    """,
                    fn ->
-                     assert_that(Agent.update(agent, fn s -> s + 1 end),
+                     assert_that Agent.update(agent, fn s -> s + 1 end),
                        changes: Agent.get(agent, fn s -> s end),
                        from: 0,
                        to: 2
-                     )
+                   end
+    end
+
+    test "passes without :from if something changed" do
+      {:ok, agent} = Agent.start(fn -> 0 end)
+
+      assert_that Agent.update(agent, fn s -> s + 1 end),
+        changes: Agent.get(agent, fn s -> s end),
+        to: 1
+    end
+
+    test "flunks without :from when nothing changes" do
+      assert_raise ExUnit.AssertionError,
+                   """
+
+
+                   Post-condition failed
+                   code: assert post_condition != pre_condition
+                   left: 1
+                   """,
+                   fn ->
+                     assert_that :ok,
+                       changes: 1,
+                       to: 1
                    end
     end
   end

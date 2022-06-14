@@ -137,9 +137,13 @@ defmodule Moar.Assertions do
   ...>     changes: Agent.get(agent, fn s -> s end),
   ...>     from: 0,
   ...>     to: 1
+  ...>
+  iex> assert_that Agent.update(agent, fn s -> s + 1 end),
+  ...>     changes: Agent.get(agent, fn s -> s end),
+  ...>     to: 2
   ```
   """
-  @spec assert_that(any, [{:changes, any} | {:from, any} | {:to, any}, ...]) :: {:__block__, [], [...]}
+  @spec assert_that(any(), changes: any(), from: any(), to: any()) :: Macro.t()
   defmacro assert_that(command, changes: check, from: from, to: to) do
     quote do
       try do
@@ -153,6 +157,28 @@ defmodule Moar.Assertions do
 
       try do
         assert unquote(check) == unquote(to)
+      rescue
+        error in ExUnit.AssertionError ->
+          reraise %{error | message: "Post-condition failed"}, __STACKTRACE__
+      end
+    end
+  end
+
+  defmacro assert_that(command, changes: check, to: to) do
+    quote location: :keep do
+      pre_condition = unquote(check)
+      unquote(command)
+      post_condition = unquote(check)
+
+      try do
+        assert post_condition == unquote(to)
+      rescue
+        error in ExUnit.AssertionError ->
+          reraise %{error | message: "Post-condition failed"}, __STACKTRACE__
+      end
+
+      try do
+        assert post_condition != pre_condition
       rescue
         error in ExUnit.AssertionError ->
           reraise %{error | message: "Post-condition failed"}, __STACKTRACE__

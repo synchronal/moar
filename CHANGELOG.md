@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Add `Moar.Assertions.assert_that/2` without the `:from` assertion.
 - Add `Moar.String.to_case/2`.
 
 ## 1.13.1
