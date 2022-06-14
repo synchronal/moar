@@ -101,6 +101,7 @@ end
   common slug formats.
 * `squish` collapses consecutive whitespace characters.
 * `surround` wraps a string with the given characters.
+* `to_case` converts text to `:camel_case`, `:lower_camel_case`, or `:snake_case`.
 * `to_integer` converts a string to an integer with a few handy options.
 * `trim` is like `String.trim/1` but handles `nil` values.
 * `truncate_at` truncates a string at the last instance of a substring that results in the truncated string

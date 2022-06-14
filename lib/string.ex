@@ -5,6 +5,8 @@ defmodule Moar.String do
 
   use Bitwise
 
+  @type string_case() :: :camel_case | :lower_camel_case | :snake_case
+
   @doc """
   Dasherizes `term`. A shortcut to `slug(term, "-")`.
 
@@ -186,6 +188,52 @@ defmodule Moar.String do
   @spec surround(binary(), binary(), binary()) :: binary()
   def surround(s, prefix, suffix),
     do: prefix <> s <> suffix
+
+  @doc """
+  Change the case of a string.
+
+  ```elixir
+  iex> Moar.String.to_case("text_with_case", :camel_case)
+  "TextWithCase"
+  iex> Moar.String.to_case("textWithCase", :camel_case)
+  "TextWithCase"
+  iex> Moar.String.to_case("some random text", :camel_case)
+  "SomeRandomText"
+
+  iex> Moar.String.to_case("text_with_case", :lower_camel_case)
+  "textWithCase"
+  iex> Moar.String.to_case("textWithCase", :lower_camel_case)
+  "textWithCase"
+  iex> Moar.String.to_case("some random text", :lower_camel_case)
+  "someRandomText"
+
+  iex> Moar.String.to_case("text_with_case", :snake_case)
+  "text_with_case"
+  iex> Moar.String.to_case("textWithCase", :snake_case)
+  "text_with_case"
+  iex> Moar.String.to_case("some random text", :snake_case)
+  "some_random_text"
+  ````
+  """
+  @spec to_case(binary(), string_case()) :: binary()
+  def to_case(s, :camel_case),
+    do:
+      s
+      |> to_case(:lower_camel_case)
+      |> String.replace(~r[^(\w)], fn char -> String.upcase(char) end)
+
+  def to_case(s, :lower_camel_case),
+    do:
+      s
+      |> to_case(:snake_case)
+      |> String.replace(~r[_(\w)], fn "_" <> char -> String.upcase(char) end)
+
+  def to_case(s, :snake_case),
+    do:
+      s
+      |> underscore()
+      |> String.trim()
+      |> String.replace_leading("_", "")
 
   @doc """
   Converts a string to an integer. Returns `nil` if the argument is `nil` or empty string.

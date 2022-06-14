@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.String.to_case/2`.
+
 ## 1.13.1
 
 - Doc updates

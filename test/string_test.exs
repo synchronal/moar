@@ -122,6 +122,44 @@ defmodule Moar.StringTest do
     test "allows nil", do: nil |> Moar.String.squish() |> assert_eq(nil)
   end
 
+  describe "to_case" do
+    test "changes lowerCamelCase to snake_case" do
+      assert "textWithSomeThings" |> Moar.String.to_case(:snake_case) == "text_with_some_things"
+    end
+
+    test "changes CamelCase to snake_case" do
+      assert "TextWithSomeThings" |> Moar.String.to_case(:snake_case) == "text_with_some_things"
+    end
+
+    test "changes multi-cased to snake_case" do
+      assert "  text with SomeThings  " |> Moar.String.to_case(:snake_case) == "text_with_some_things"
+    end
+
+    test "changes lowerCamelCase to CamelCase" do
+      assert "textWithSomeThings" |> Moar.String.to_case(:camel_case) == "TextWithSomeThings"
+    end
+
+    test "changes snake_case to CamelCase" do
+      assert "text_with_some_things" |> Moar.String.to_case(:camel_case) == "TextWithSomeThings"
+    end
+
+    test "changes multi-cased to CamelCase" do
+      assert "  text with SomeThings  " |> Moar.String.to_case(:camel_case) == "TextWithSomeThings"
+    end
+
+    test "changes CamelCase to lowerCamelCase" do
+      assert "TextWithSomeThings" |> Moar.String.to_case(:lower_camel_case) == "textWithSomeThings"
+    end
+
+    test "changes snake_case to lowerCamelCase" do
+      assert "text_with_some_things" |> Moar.String.to_case(:lower_camel_case) == "textWithSomeThings"
+    end
+
+    test "changes multi-cased to lowerCamelCase" do
+      assert "  text with SomeThings  " |> Moar.String.to_case(:lower_camel_case) == "textWithSomeThings"
+    end
+  end
+
   describe "to_integer" do
     test "doesn't blow up on nil" do
       assert Moar.String.to_integer(nil) == nil
