@@ -27,6 +27,12 @@ defmodule Moar.NaiveDateTimeTest do
     end
   end
 
+  describe "subtract" do
+    test "subtracts a duration from a naivedatetime" do
+      assert Moar.NaiveDateTime.subtract(~N[2022-01-01T00:00:55Z], {55, :second}) == ~N[2022-01-01T00:00:00Z]
+    end
+  end
+
   describe "to_iso8601_rounded" do
     test "formats with no partial seconds" do
       date = %NaiveDateTime{
@@ -40,6 +46,18 @@ defmodule Moar.NaiveDateTimeTest do
       }
 
       assert date |> Moar.NaiveDateTime.to_iso8601_rounded() == "2000-02-29T23:00:07"
+    end
+  end
+
+  describe "utc_now" do
+    test "accepts `:plus` option which returns utc_now plus the given duration" do
+      one_minute_hence = NaiveDateTime.utc_now() |> NaiveDateTime.add(60, :second)
+      Moar.NaiveDateTime.utc_now(plus: {1, :minute}) |> assert_eq(one_minute_hence, within: {1, :second})
+    end
+
+    test "accepts `:minus` option which returns utc_now minus the given duration" do
+      one_minute_ago = NaiveDateTime.utc_now() |> NaiveDateTime.add(-60, :second)
+      Moar.NaiveDateTime.utc_now(minus: {1, :minute}) |> assert_eq(one_minute_ago, within: {1, :second})
     end
   end
 end

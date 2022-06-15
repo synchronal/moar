@@ -40,9 +40,10 @@ end
   atom to an atom or a string to a string.
   
 `Moar.DateTime` and `Moar.NaiveDateTime`
-* `add` can add a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
+* `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
 * `from_iso8601!` raises if the string is not in ISO 8601 format.
 * `to_iso8601_rounded` converts to an ISO 8601 string, truncated to the second.
+* `utc_now` takes `plus` and `minus` options to get the current time plus or minus some duration.
 
 `Moar.Difference`
 * a protocol that defines `diff(a, b)` along with implementations for datetimes.

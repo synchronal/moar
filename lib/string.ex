@@ -213,7 +213,7 @@ defmodule Moar.String do
   "text_with_case"
   iex> Moar.String.to_case("some random text", :snake_case)
   "some_random_text"
-  ````
+  ```
   """
   @spec to_case(binary(), string_case()) :: binary()
   def to_case(s, :camel_case),

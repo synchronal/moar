@@ -8,7 +8,7 @@ defmodule Moar.NaiveDateTime do
   @doc """
   Like `NaiveDateTime.add/2` but takes a `Moar.Duration`.
 
-  See also `Moar.DateTime.add/2`.
+  See also `subtract/1` and `Moar.DateTime.add/2`.
 
   > #### Note {: .info}
   >
@@ -57,6 +57,32 @@ defmodule Moar.NaiveDateTime do
   end
 
   @doc """
+  Subtracts `duration` from `date_time`.
+
+  See also `add/1` and `Moar.DateTime.subtract/2`.
+
+  > #### Note {: .info}
+  >
+  > This function is naive and intentionally doesn't account for real-world calendars and all of their complexity,
+  > such as leap years, leap days, daylight saving time, past and future calendar oddities, etc.
+  >
+  > As ["Falsehoods programmers believe about time"](https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca)
+  > says, "If you think you understand everything about time, you're probably doing it wrong."
+  >
+  > See [`Cldr.Calendar.minus/4`](https://hexdocs.pm/ex_cldr_calendars/Cldr.Calendar.html#minus/4) for one example
+  > of a function that is far more likely to be correct.
+
+  ```elixir
+  iex> start = ~N[2022-01-01T00:03:00]
+  iex> Moar.NaiveDateTime.subtract(start, {3, :minute})
+  ~N[2022-01-01T00:00:00]
+  ```
+  """
+  @spec subtract(NaiveDateTime.t(), Moar.Duration.t()) :: NaiveDateTime.t()
+  def subtract(date_time, {time, unit} = _duration),
+    do: NaiveDateTime.add(date_time, Moar.Duration.convert({-1 * time, unit}, :millisecond), :millisecond)
+
+  @doc """
   Like `NaiveDateTime.to_iso8601/1` but rounds to the nearest second first.
 
   ```elixir
@@ -66,4 +92,17 @@ defmodule Moar.NaiveDateTime do
   """
   @spec to_iso8601_rounded(date_time :: NaiveDateTime.t()) :: String.t()
   def to_iso8601_rounded(date), do: date |> NaiveDateTime.truncate(:second) |> NaiveDateTime.to_iso8601()
+
+  @doc """
+  Returns the current UTC time plus or minus the given duration.
+
+  ```elixir
+  iex> Moar.NaiveDateTime.utc_now(minus: {10, :second})
+  ...> |> Moar.Duration.format([:approx, :ago])
+  "10 seconds ago"
+  ```
+  """
+  @spec utc_now([plus: Moar.Duration.t()] | [minus: Moar.Duration.t()]) :: NaiveDateTime.t()
+  def utc_now(plus: duration), do: NaiveDateTime.utc_now() |> add(duration)
+  def utc_now(minus: duration), do: NaiveDateTime.utc_now() |> subtract(duration)
 end

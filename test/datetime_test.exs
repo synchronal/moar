@@ -29,6 +29,12 @@ defmodule Moar.DateTimeTest do
     end
   end
 
+  describe "subtract" do
+    test "subtracts a duration from a datetime" do
+      assert Moar.DateTime.subtract(~U[2022-01-01T00:00:55Z], {55, :second}) == ~U[2022-01-01T00:00:00Z]
+    end
+  end
+
   describe "to_iso8601_rounded" do
     test "formats with no partial seconds" do
       date = %DateTime{
@@ -46,6 +52,18 @@ defmodule Moar.DateTimeTest do
       }
 
       assert date |> Moar.DateTime.to_iso8601_rounded() == "2000-02-29T23:00:07-04:00"
+    end
+  end
+
+  describe "utc_now" do
+    test "accepts `:plus` option which returns utc_now plus the given duration" do
+      one_minute_hence = DateTime.utc_now() |> DateTime.add(60, :second)
+      Moar.DateTime.utc_now(plus: {1, :minute}) |> assert_eq(one_minute_hence, within: {1, :second})
+    end
+
+    test "accepts `:minus` option which returns utc_now minus the given duration" do
+      one_minute_ago = DateTime.utc_now() |> DateTime.add(-60, :second)
+      Moar.DateTime.utc_now(minus: {1, :minute}) |> assert_eq(one_minute_ago, within: {1, :second})
     end
   end
 end
