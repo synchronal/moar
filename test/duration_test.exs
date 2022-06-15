@@ -7,17 +7,17 @@ defmodule Moar.DurationTest do
 
   describe "ago" do
     test "returns the duration between a DateTime and now, in the largest possible unit" do
-      earlier = Moar.DateTime.add(DateTime.utc_now(), {-121, :minute})
+      earlier = Moar.DateTime.subtract(DateTime.utc_now(), {121, :minute})
       assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
     end
 
     test "works with NaiveDateTimes" do
-      earlier = Moar.NaiveDateTime.add(NaiveDateTime.utc_now(), {-121, :minute})
+      earlier = Moar.NaiveDateTime.subtract(NaiveDateTime.utc_now(), {121, :minute})
       assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
     end
 
     test "works with ISO 8601 strings" do
-      earlier = Moar.DateTime.add(DateTime.utc_now(), {-121, :minute}) |> DateTime.to_iso8601()
+      earlier = Moar.DateTime.subtract(DateTime.utc_now(), {121, :minute}) |> DateTime.to_iso8601()
       assert Moar.Duration.ago(earlier) |> Moar.Duration.shift(:minute) == {121, :minute}
     end
   end
@@ -134,27 +134,39 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({25, :minute}, :short, "yonder") == "25m yonder"
     end
 
-    test "accepts an ':ago' transformation, which adds an 'ago' suffix" do
+    test "accepts an ':ago' or ':from_now' transformation, which adds an 'ago' or 'from now' suffix" do
       assert Moar.Duration.format({25, :minute}, :ago) == "25 minutes ago"
       assert Moar.Duration.format({25, :minute}, :long, :ago) == "25 minutes ago"
       assert Moar.Duration.format({25, :minute}, :short, :ago) == "25m ago"
+      assert Moar.Duration.format({25, :minute}, :from_now) == "25 minutes from now"
+      assert Moar.Duration.format({25, :minute}, :long, :from_now) == "25 minutes from now"
+      assert Moar.Duration.format({25, :minute}, :short, :from_now) == "25m from now"
     end
 
-    test "accepts an ':ago' transformation with a datetime" do
-      datetime = DateTime.utc_now() |> Moar.DateTime.add({-25, :minute})
-      assert Moar.Duration.format(datetime, :long, [:ago, :approx]) == "25 minutes ago"
-      assert Moar.Duration.format(datetime, :long, [:approx, :ago]) == "25 minutes ago"
+    test "accepts an ':ago' or ':from_now' transformation with a datetime" do
+      earlier = DateTime.utc_now() |> Moar.DateTime.subtract({25, :minute})
+      assert Moar.Duration.format(earlier, :long, [:ago, :approx]) == "25 minutes ago"
+      assert Moar.Duration.format(earlier, :long, [:approx, :ago]) == "25 minutes ago"
+
+      later = DateTime.utc_now() |> Moar.DateTime.add({25, :minute})
+      assert Moar.Duration.format(later, :long, [:from_now, :approx]) == "24 minutes from now"
+      assert Moar.Duration.format(later, :long, [:approx, :from_now]) == "24 minutes from now"
     end
 
-    test "':ago' transformation suffix can be overridden" do
+    test "':ago' and ':from_now' transformation suffix can be overridden" do
       assert Moar.Duration.format({25, :minute}, :ago, "back") == "25 minutes back"
       assert Moar.Duration.format({25, :minute}, :long, :ago, "back") == "25 minutes back"
       assert Moar.Duration.format({25, :minute}, :short, :ago, "back") == "25m back"
+      assert Moar.Duration.format({25, :minute}, :from_now, "henceforth") == "25 minutes henceforth"
+      assert Moar.Duration.format({25, :minute}, :long, :from_now, "henceforth") == "25 minutes henceforth"
+      assert Moar.Duration.format({25, :minute}, :short, :from_now, "henceforth") == "25m henceforth"
     end
 
-    test "':ago' transformation suffix can be removed with an empty suffix string, but not a nil" do
+    test "':ago' and ':from_now' transformation suffix can be removed with an empty suffix string, but not a nil" do
       assert Moar.Duration.format({25, :minute}, :ago, nil) == "25 minutes ago"
       assert Moar.Duration.format({25, :minute}, :ago, "") == "25 minutes"
+      assert Moar.Duration.format({25, :minute}, :from_now, nil) == "25 minutes from now"
+      assert Moar.Duration.format({25, :minute}, :from_now, "") == "25 minutes"
     end
 
     test "accepts a ':humanize' transformation" do
@@ -163,13 +175,19 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({60, :minute}, :short, :humanize) == "1h"
     end
 
-    test "accepts a combination of ':ago' and ':humanize'" do
+    test "accepts a combination of ':ago' or ':from_now' and ':humanize'" do
       assert Moar.Duration.format({60, :minute}, [:humanize, :ago]) == "1 hour ago"
       assert Moar.Duration.format({60, :minute}, [:ago, :humanize]) == "1 hour ago"
       assert Moar.Duration.format({60, :minute}, [:humanize, :ago], "yonder") == "1 hour yonder"
       assert Moar.Duration.format({60, :minute}, :long, [:humanize, :ago]) == "1 hour ago"
       assert Moar.Duration.format({60, :minute}, :short, [:humanize, :ago]) == "1h ago"
       assert Moar.Duration.format({60, :minute}, :short, [:humanize, :ago], "yonder") == "1h yonder"
+      assert Moar.Duration.format({60, :minute}, [:humanize, :from_now]) == "1 hour from now"
+      assert Moar.Duration.format({60, :minute}, [:from_now, :humanize]) == "1 hour from now"
+      assert Moar.Duration.format({60, :minute}, [:humanize, :from_now], "henceforth") == "1 hour henceforth"
+      assert Moar.Duration.format({60, :minute}, :long, [:humanize, :from_now]) == "1 hour from now"
+      assert Moar.Duration.format({60, :minute}, :short, [:humanize, :from_now]) == "1h from now"
+      assert Moar.Duration.format({60, :minute}, :short, [:humanize, :from_now], "henceforth") == "1h henceforth"
     end
 
     test "accepts ':approx' transformation" do
@@ -180,15 +198,34 @@ defmodule Moar.DurationTest do
       assert Moar.Duration.format({300, :minute}, :short, :approx, "from now") == "5h from now"
     end
 
-    test "accepts combination of ':ago' and ':approx'" do
+    test "accepts combination of ':ago' or ':from_now' and ':approx'" do
       assert Moar.Duration.format({300, :minute}, :long, [:approx, :ago]) == "5 hours ago"
       assert Moar.Duration.format({300, :minute}, :long, [:ago, :approx]) == "5 hours ago"
+      assert Moar.Duration.format({300, :minute}, :long, [:approx, :from_now]) == "5 hours from now"
+      assert Moar.Duration.format({300, :minute}, :long, [:from_now, :approx]) == "5 hours from now"
     end
 
     test "raises when an unknown transformation is requested" do
       assert_raise RuntimeError, "Unknown transformation: glorp", fn ->
         Moar.Duration.format({300, :minute}, :long, [:humanize, :glorp, :ago])
       end
+    end
+  end
+
+  describe "from_now" do
+    test "returns the duration between now and a DateTime now, in the largest possible unit" do
+      later = Moar.DateTime.add(DateTime.utc_now(), {122, :minute})
+      assert Moar.Duration.from_now(later) |> Moar.Duration.approx() == {2, :hour}
+    end
+
+    test "works with NaiveDateTimes" do
+      later = Moar.NaiveDateTime.add(NaiveDateTime.utc_now(), {122, :minute})
+      assert Moar.Duration.from_now(later) |> Moar.Duration.approx() == {2, :hour}
+    end
+
+    test "works with ISO 8601 strings" do
+      later = Moar.DateTime.add(DateTime.utc_now(), {122, :minute}) |> DateTime.to_iso8601()
+      assert Moar.Duration.from_now(later) |> Moar.Duration.approx() == {2, :hour}
     end
   end
 

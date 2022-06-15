@@ -74,8 +74,13 @@ defmodule Moar.Duration do
 
   `datetime` can be an ISO8601-formatted string, a `DateTime`, or a `NaiveDateTime`.
 
+  See also `from_now/1`.
+
   ```elixir
-  iex> DateTime.utc_now() |> Moar.DateTime.add({-121, :minute}) |> Moar.Duration.ago() |> Moar.Duration.shift(:minute)
+  iex> DateTime.utc_now()
+  ...> |> Moar.DateTime.subtract({121, :minute})
+  ...> |> Moar.Duration.ago()
+  ...> |> Moar.Duration.shift(:minute)
   {121, :minute}
   ```
   """
@@ -224,17 +229,22 @@ defmodule Moar.Duration do
           format_transformers() | binary() | nil,
           binary() | nil
         ) :: binary()
-  def format(duration_or_datetime, style_transformers_or_suffix \\ nil, transformers_or_suffix \\ nil, suffix \\ nil) do
+  def format(duration_or_datetime, style_or_transformers_or_suffix \\ nil, transformers_or_suffix \\ nil, suffix \\ nil) do
     {style, transformers, suffix} =
-      [style_transformers_or_suffix, transformers_or_suffix, suffix]
+      [style_or_transformers_or_suffix, transformers_or_suffix, suffix]
       |> Enum.reduce({nil, nil, nil}, fn
         style, acc when style in @format_styles ->
           put_elem(acc, 0, style)
 
         transformers, acc when is_list(transformers) or (is_atom(transformers) and not is_nil(transformers)) ->
-          transformers = List.wrap(transformers) |> Enum.sort(fn a, _b -> a == :ago end)
+          transformers = List.wrap(transformers) |> Enum.sort(fn a, _b -> a in [:ago, :from_now] end)
           acc = put_elem(acc, 1, transformers)
-          if :ago in transformers, do: put_elem(acc, 2, [" ", "ago"]), else: acc
+
+          cond do
+            :ago in transformers -> put_elem(acc, 2, [" ", "ago"])
+            :from_now in transformers -> put_elem(acc, 2, [" ", "from now"])
+            true -> acc
+          end
 
         "" = _suffix, acc ->
           put_elem(acc, 2, "")
@@ -253,6 +263,8 @@ defmodule Moar.Duration do
         :approx, acc -> approx(acc)
         :ago, {_time, _unit} = duration -> duration
         :ago, acc -> ago(acc)
+        :from_now, {_time, _unit} = duration -> duration
+        :from_now, acc -> from_now(acc)
         :humanize, acc -> humanize(acc)
         other, _acc -> raise "Unknown transformation: #{other}"
       end)
@@ -264,6 +276,25 @@ defmodule Moar.Duration do
 
     [Kernel.to_string(time), unit_name, suffix] |> Moar.Enum.compact() |> Kernel.to_string()
   end
+
+  @doc """
+  Returns the duration between now and `datetime`, in the largest possible unit.
+
+  `datetime` can be an ISO8601-formatted string, a `DateTime`, or a `NaiveDateTime`.
+
+  See also `ago/1`.
+
+  ```elixir
+  iex> DateTime.utc_now()
+  ...> |> Moar.DateTime.add({121, :minute})
+  ...> |> Moar.Duration.from_now()
+  ...> |> Moar.Duration.approx()
+  {2, :hour}
+  ```
+  """
+  @spec from_now(date_time_ish()) :: t()
+  def from_now(datetime) when is_binary(datetime), do: datetime |> Moar.DateTime.from_iso8601!() |> from_now()
+  def from_now(%module{} = datetime), do: between(module.utc_now(), datetime)
 
   @doc """
   If possible, shifts `duration` to a higher time unit that is more readable to a human. Returns `duration`

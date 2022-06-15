@@ -100,6 +100,10 @@ defmodule Moar.DateTime do
   Returns the current UTC time plus or minus the given duration.
 
   ```elixir
+  iex> Moar.DateTime.utc_now(plus: {10500, :millisecond})
+  ...> |> Moar.Duration.format([:approx, :from_now])
+  "10 seconds from now"
+
   iex> Moar.DateTime.utc_now(minus: {10, :second})
   ...> |> Moar.Duration.format([:approx, :ago])
   "10 seconds ago"
