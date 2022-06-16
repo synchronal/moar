@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.15.0
+
 - Add `Moar.DateTime.subtract/2` and `Moar.NaiveDateTime.subtract/2`.
 - Add `Moar.DateTime.utc_now/1` and `Moar.NaiveDateTime.utc_now/1` which allow adding and subtracting from "now".
 - Add `Moar.Duration.from_now/1` and a `:from_now` transformer to `Moar.Duration.format/4`.
