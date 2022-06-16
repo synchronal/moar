@@ -1,3 +1,9 @@
+defmodule Moar.Duration.Unit do
+  @moduledoc false
+  require Record
+  Record.defrecord(:unit, name: nil, long: nil, short: nil, conversion: nil)
+end
+
 defmodule Moar.Duration do
   # @related [test](/test/duration_test.exs)
 
@@ -27,27 +33,31 @@ defmodule Moar.Duration do
   > of a full-featured library that is far more likely to be correct.
   """
 
-  @seconds_per_minute 60
-  @seconds_per_hour @seconds_per_minute * 60
-  @seconds_per_day @seconds_per_hour * 24
-  @seconds_per_approx_month @seconds_per_day * 30
-  @seconds_per_approx_year @seconds_per_approx_month * 12
+  import Moar.Duration.Unit
 
-  @units_kw_desc [
-    approx_year: {"yr", "year"},
-    approx_month: {"mo", "month"},
-    day: {"d", "day"},
-    hour: {"h", "hour"},
-    minute: {"m", "minute"},
-    second: {"s", "second"},
-    millisecond: {"ms", "millisecond"},
-    microsecond: {"us", "microsecond"},
-    nanosecond: {"ns", "nanosecond"}
-  ]
-  @units_desc Keyword.keys(@units_kw_desc)
-  @units_asc @units_desc |> Enum.reverse()
-  @units_to_short_names Map.new(@units_kw_desc, fn {unit, {short_name, _}} -> {unit, short_name} end)
-  @units_to_names Map.new(@units_kw_desc, fn {unit, {_, name}} -> {unit, name} end)
+  @approx_year unit(name: :approx_year, long: "year", short: "yr", conversion: {12, :approx_month})
+  @approx_month unit(name: :approx_month, long: "month", short: "mo", conversion: {30, :day})
+  @day unit(name: :day, long: "day", short: "d", conversion: {24, :hour})
+  @hour unit(name: :hour, long: "hour", short: "h", conversion: {60, :minute})
+  @minute unit(name: :minute, long: "minute", short: "m", conversion: {60, :second})
+  @second unit(name: :second, long: "second", short: "s", conversion: {1000, :millisecond})
+  @millisecond unit(name: :millisecond, long: "millisecond", short: "ms", conversion: {1000, :microsecond})
+  @microsecond unit(name: :microsecond, long: "microsecond", short: "us", conversion: {1000, :nanosecond})
+  @nanosecond unit(name: :nanosecond, long: "nanosecond", short: "ns", conversion: nil)
+
+  @units_desc [@approx_year, @approx_month, @day, @hour, @minute, @second, @millisecond, @microsecond, @nanosecond]
+  @unit_names_desc Enum.map(@units_desc, fn record -> unit(record, :name) end)
+  @units_asc Enum.reverse(@units_desc)
+  @unit_names_asc Enum.map(@units_asc, fn record -> unit(record, :name) end)
+  @unit_map Map.new(@units_desc, fn record -> {unit(record, :name), record} end)
+
+  @seconds_per_minute unit(@minute, :conversion) |> elem(0)
+  @seconds_per_hour (unit(@hour, :conversion) |> elem(0)) * @seconds_per_minute
+  @seconds_per_day (unit(@day, :conversion) |> elem(0)) * @seconds_per_hour
+  @seconds_per_approx_month (unit(@approx_month, :conversion) |> elem(0)) * @seconds_per_day
+  @seconds_per_approx_year (unit(@approx_year, :conversion) |> elem(0)) * @seconds_per_approx_month
+
+  # # #
 
   @type date_time_ish() :: DateTime.t() | NaiveDateTime.t() | binary()
 
@@ -109,7 +119,7 @@ defmodule Moar.Duration do
   """
   @spec approx(t()) :: t()
   def approx({1, _unit} = duration), do: duration
-  def approx(duration), do: approx(duration, @units_desc)
+  def approx(duration), do: approx(duration, @unit_names_desc)
 
   defp approx(duration, [head_unit | tail_units] = _units_desc) do
     new_duration = {new_time, _new_unit} = shift(duration, head_unit)
@@ -271,8 +281,8 @@ defmodule Moar.Duration do
 
     unit_name =
       if style == :short,
-        do: @units_to_short_names[unit],
-        else: [" ", Moar.String.pluralize(time, @units_to_names[unit], &(&1 <> "s"))]
+        do: unit(@unit_map[unit], :short),
+        else: [" ", Moar.String.pluralize(time, unit(@unit_map[unit], :long), &(&1 <> "s"))]
 
     [Kernel.to_string(time), unit_name, suffix] |> Moar.Enum.compact() |> Kernel.to_string()
   end
@@ -312,7 +322,7 @@ defmodule Moar.Duration do
   ```
   """
   @spec humanize(t()) :: t()
-  def humanize(duration), do: humanize(duration, @units_asc)
+  def humanize(duration), do: humanize(duration, @unit_names_asc)
 
   defp humanize({_time, current_unit} = duration, [head_unit | remaining_units] = _units) do
     cond do
@@ -354,10 +364,4 @@ defmodule Moar.Duration do
   """
   @spec to_string(t()) :: String.t()
   def to_string(duration), do: format(duration, :long)
-
-  @doc """
-  Returns the list of duration unit names in descending order.
-  """
-  @spec units() :: [time_unit()]
-  def units, do: @units_desc
 end
