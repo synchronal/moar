@@ -15,7 +15,7 @@ The package can be installed by adding `moar` to your list of dependencies in `m
 ```elixir
 def deps do
   [
-    {:moar, "~> 1.15"}
+    {:moar, "~> 1.16"}
   ]
 end
 ```
@@ -56,8 +56,9 @@ end
 * `between` returns the duration between two datetimes.
 * `convert` converts a duration to a new time unit, returning only the value.
 * `format` formats a duration in long (`"3 seconds"`) or short (`"3s"`) format with optional transformers and suffix.
+* `from_now` returns a duration between now and a given datetime.
 * `humanize` converts the duration to the highest possible time unit.
-* `shift` converts a duration to a new time unit.
+* `shift`, `shift_up`, and `shift_down` convert a duration to a new time unit.
 * `to_string` renders a duration into a string like `"27 minutes"`.
 
 `Moar.Enum`
