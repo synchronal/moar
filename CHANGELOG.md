@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Duration.shift_down/1` and `Moar.Duration.shift_up/1`
+
 ## 1.15.0
 
 - Add `Moar.DateTime.subtract/2` and `Moar.NaiveDateTime.subtract/2`.

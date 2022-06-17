@@ -51,12 +51,6 @@ defmodule Moar.Duration do
   @unit_names_asc Enum.map(@units_asc, fn record -> unit(record, :name) end)
   @unit_map Map.new(@units_desc, fn record -> {unit(record, :name), record} end)
 
-  @seconds_per_minute unit(@minute, :conversion) |> elem(0)
-  @seconds_per_hour (unit(@hour, :conversion) |> elem(0)) * @seconds_per_minute
-  @seconds_per_day (unit(@day, :conversion) |> elem(0)) * @seconds_per_hour
-  @seconds_per_approx_month (unit(@approx_month, :conversion) |> elem(0)) * @seconds_per_day
-  @seconds_per_approx_year (unit(@approx_year, :conversion) |> elem(0)) * @seconds_per_approx_month
-
   # # #
 
   @type date_time_ish() :: DateTime.t() | NaiveDateTime.t() | binary()
@@ -161,17 +155,7 @@ defmodule Moar.Duration do
   ```
   """
   @spec convert(from :: t(), to :: time_unit()) :: number()
-  def convert({time, :minute}, to_unit), do: convert({time * @seconds_per_minute, :second}, to_unit)
-  def convert({time, :hour}, to_unit), do: convert({time * @seconds_per_hour, :second}, to_unit)
-  def convert({time, :day}, to_unit), do: convert({time * @seconds_per_day, :second}, to_unit)
-  def convert({time, :approx_month}, to_unit), do: convert({time * @seconds_per_approx_month, :second}, to_unit)
-  def convert({time, :approx_year}, to_unit), do: convert({time * @seconds_per_approx_year, :second}, to_unit)
-  def convert(duration, :minute), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_minute)
-  def convert(duration, :hour), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_hour)
-  def convert(duration, :day), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_day)
-  def convert(duration, :approx_month), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_approx_month)
-  def convert(duration, :approx_year), do: convert(duration, :second) |> Integer.floor_div(@seconds_per_approx_year)
-  def convert({time, from_unit}, to_unit), do: System.convert_time_unit(time, from_unit, to_unit)
+  def convert(from_duration, to_unit), do: shift(from_duration, to_unit) |> elem(0)
 
   @doc """
   Formats a duration in either a long or short style, with optional transformers and an optional suffix.
@@ -357,10 +341,67 @@ defmodule Moar.Duration do
   ```
   """
   @spec shift(t(), time_unit()) :: t()
-  def shift(duration, to_unit), do: {convert(duration, to_unit), to_unit}
+  def shift({_time, from_unit} = duration, to_unit) when from_unit == to_unit,
+    do: duration
+
+  def shift({_time, from_unit} = duration, to_unit) do
+    from_index = Enum.find_index(@unit_names_desc, &(&1 == from_unit))
+    to_index = Enum.find_index(@unit_names_desc, &(&1 == to_unit))
+
+    if from_index < to_index,
+      do: shift_down(duration) |> shift(to_unit),
+      else: shift_up(duration) |> shift(to_unit)
+  end
 
   @doc """
-  Shortcut to `format(duration, :long)`. See `format/2`.
+  Shifts `duration` to the next smaller unit. Raises if it's already at the smallest unit (nanosecond).
+
+  ```elixir
+  iex> Moar.Duration.shift_down({1, :hour})
+  {60, :minute}
+  ```
+  """
+  @spec shift_down(t()) :: t()
+  def shift_down({time, from_unit} = duration) do
+    case unit(@unit_map[from_unit], :conversion) do
+      nil ->
+        raise "Cannot shift #{inspect(duration)} to a smaller unit because #{from_unit} is the smallest supported unit."
+
+      {conversion_multiplier, conversion_unit} ->
+        {time * conversion_multiplier, conversion_unit}
+    end
+  end
+
+  @doc """
+  Shifts `duration` to the next larger unit. Raises if it's already at the largest unit (approx_year).
+  Rounds the result towards zero.
+
+  > #### Warning {: .warning}
+  >
+  > This function is lossy because it rounds down to the nearest whole number.
+
+  ```elixir
+  iex> Moar.Duration.shift_up({60, :minute})
+  {1, :hour}
+
+  iex> Moar.Duration.shift_up({125, :minute})
+  {2, :hour}
+  ```
+  """
+  def shift_up({time, from_unit} = duration) do
+    from_index = Enum.find_index(@unit_names_desc, &(&1 == from_unit))
+
+    if from_index == 0 do
+      raise "Cannot shift #{inspect(duration)} to a larger unit because #{from_unit} is the largest supported unit."
+    else
+      higher_unit = Enum.at(@units_desc, from_index - 1)
+      {conversion_multiplier, _conversion_unit} = unit(higher_unit, :conversion)
+      {div(time, conversion_multiplier), unit(higher_unit, :name)}
+    end
+  end
+
+  @doc """
+  Shortcut to `format(duration, :long)`. See `format/4`.
   """
   @spec to_string(t()) :: String.t()
   def to_string(duration), do: format(duration, :long)

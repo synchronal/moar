@@ -257,13 +257,55 @@ defmodule Moar.DurationTest do
   end
 
   describe "shift" do
-    test "changes a duration to a different time unit" do
-      assert Moar.Duration.shift({1, :second}, :millisecond) == {1000, :millisecond}
-      assert Moar.Duration.shift({23, :second}, :millisecond) == {23_000, :millisecond}
-      assert Moar.Duration.shift({1001, :millisecond}, :second) == {1, :second}
-      assert Moar.Duration.shift({121, :second}, :minute) == {2, :minute}
+    test "does nothing if the duration is already in the right unit" do
+      assert Moar.Duration.shift({25, :second}, :second) == {25, :second}
+    end
+
+    test "can shift a duration to a smaller unit" do
+      assert Moar.Duration.shift({1, :hour}, :minute) == {60, :minute}
+      assert Moar.Duration.shift({1, :hour}, :second) == {3600, :second}
+      assert Moar.Duration.shift({1, :hour}, :millisecond) == {3_600_000, :millisecond}
+    end
+
+    test "can shift a duration to a larger unit" do
+      assert Moar.Duration.shift({60, :minute}, :hour) == {1, :hour}
+      assert Moar.Duration.shift({1440, :minute}, :day) == {1, :day}
+    end
+
+    test "when shifting up, rounds towards zero" do
+      assert Moar.Duration.shift({61, :minute}, :hour) == {1, :hour}
       assert Moar.Duration.shift({121, :minute}, :hour) == {2, :hour}
-      assert Moar.Duration.shift({49, :hour}, :day) == {2, :day}
+    end
+  end
+
+  describe "shift_down" do
+    test "shifts a duration to the next lower unit" do
+      assert Moar.Duration.shift_down({1, :hour}) == {60, :minute}
+      assert Moar.Duration.shift_down({1, :second}) == {1000, :millisecond}
+    end
+
+    test "cannot shift below nanosecond" do
+      assert_raise RuntimeError,
+                   "Cannot shift {1, :nanosecond} to a smaller unit because nanosecond is the smallest supported unit.",
+                   fn -> Moar.Duration.shift_down({1, :nanosecond}) end
+    end
+  end
+
+  describe "shift_up" do
+    test "shifts a duration to the next higher unit" do
+      assert Moar.Duration.shift_up({60, :minute}) == {1, :hour}
+      assert Moar.Duration.shift_up({24, :hour}) == {1, :day}
+    end
+
+    test "cannot shift above approx_year" do
+      assert_raise RuntimeError,
+                   "Cannot shift {1, :approx_year} to a larger unit because approx_year is the largest supported unit.",
+                   fn -> Moar.Duration.shift_up({1, :approx_year}) end
+    end
+
+    test "rounds towards zero" do
+      assert Moar.Duration.shift_up({1, :minute}) == {0, :hour}
+      assert Moar.Duration.shift_up({61, :minute}) == {1, :hour}
     end
   end
 
