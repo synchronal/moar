@@ -1,9 +1,3 @@
-defmodule Moar.Duration.Unit do
-  @moduledoc false
-  require Record
-  Record.defrecord(:unit, name: nil, long: nil, short: nil, conversion: nil)
-end
-
 defmodule Moar.Duration do
   # @related [test](/test/duration_test.exs)
 
@@ -33,23 +27,65 @@ defmodule Moar.Duration do
   > of a full-featured library that is far more likely to be correct.
   """
 
-  import Moar.Duration.Unit
+  defmodule UnitRecord do
+    @moduledoc false
+    require Record
+    Record.defrecord(:unit, name: nil, long: nil, short: nil, conversion: nil)
+  end
 
-  @approx_year unit(name: :approx_year, long: "year", short: "yr", conversion: {12, :approx_month})
-  @approx_month unit(name: :approx_month, long: "month", short: "mo", conversion: {30, :day})
-  @day unit(name: :day, long: "day", short: "d", conversion: {24, :hour})
-  @hour unit(name: :hour, long: "hour", short: "h", conversion: {60, :minute})
-  @minute unit(name: :minute, long: "minute", short: "m", conversion: {60, :second})
-  @second unit(name: :second, long: "second", short: "s", conversion: {1000, :millisecond})
-  @millisecond unit(name: :millisecond, long: "millisecond", short: "ms", conversion: {1000, :microsecond})
-  @microsecond unit(name: :microsecond, long: "microsecond", short: "us", conversion: {1000, :nanosecond})
-  @nanosecond unit(name: :nanosecond, long: "nanosecond", short: "ns", conversion: nil)
+  defmodule Unit do
+    @moduledoc false
+    import UnitRecord
 
-  @units_desc [@approx_year, @approx_month, @day, @hour, @minute, @second, @millisecond, @microsecond, @nanosecond]
-  @unit_names_desc Enum.map(@units_desc, fn record -> unit(record, :name) end)
-  @units_asc Enum.reverse(@units_desc)
-  @unit_names_asc Enum.map(@units_asc, fn record -> unit(record, :name) end)
-  @unit_map Map.new(@units_desc, fn record -> {unit(record, :name), record} end)
+    @approx_year unit(name: :approx_year, long: "year", short: "yr", conversion: {12, :approx_month})
+    @approx_month unit(name: :approx_month, long: "month", short: "mo", conversion: {30, :day})
+    @day unit(name: :day, long: "day", short: "d", conversion: {24, :hour})
+    @hour unit(name: :hour, long: "hour", short: "h", conversion: {60, :minute})
+    @minute unit(name: :minute, long: "minute", short: "m", conversion: {60, :second})
+    @second unit(name: :second, long: "second", short: "s", conversion: {1000, :millisecond})
+    @millisecond unit(name: :millisecond, long: "millisecond", short: "ms", conversion: {1000, :microsecond})
+    @microsecond unit(name: :microsecond, long: "microsecond", short: "us", conversion: {1000, :nanosecond})
+    @nanosecond unit(name: :nanosecond, long: "nanosecond", short: "ns", conversion: nil)
+
+    @units_desc [@approx_year, @approx_month, @day, @hour, @minute, @second, @millisecond, @microsecond, @nanosecond]
+    @unit_names_desc Enum.map(@units_desc, fn record -> unit(record, :name) end)
+    @units_asc Enum.reverse(@units_desc)
+    @unit_names_asc Enum.map(@units_asc, fn record -> unit(record, :name) end)
+    @unit_map Map.new(@units_desc, fn record -> {unit(record, :name), record} end)
+
+    # # #
+
+    def conversion(unit_name) when is_atom(unit_name), do: @unit_map[unit_name] |> conversion()
+    def conversion(unit_record), do: unit(unit_record, :conversion)
+
+    def long_name(unit_name) when is_atom(unit_name), do: @unit_map[unit_name] |> long_name()
+    def long_name(unit_record), do: unit(unit_record, :long)
+
+    def multiplier(unit_name) when is_atom(unit_name), do: @unit_map[unit_name] |> multiplier()
+    def multiplier(unit_record), do: conversion(unit_record) |> elem(0)
+
+    def name(unit_name) when is_atom(unit_name), do: unit_name
+    def name(unit_record), do: unit(unit_record, :name)
+
+    def names(:asc), do: @unit_names_asc
+    def names(:desc), do: @unit_names_desc
+
+    def short_name(unit_name) when is_atom(unit_name), do: @unit_map[unit_name] |> short_name()
+    def short_name(unit_record), do: unit(unit_record, :short)
+
+    # # #
+
+    def larger(unit_name) when unit_name in @unit_names_desc do
+      case Enum.find_index(@unit_names_desc, &(&1 == unit_name)) do
+        0 -> nil
+        index -> Enum.at(@units_desc, index - 1)
+      end
+    end
+
+    def larger?(unit_a, unit_b) do
+      Enum.find_index(@unit_names_desc, &(&1 == unit_a)) < Enum.find_index(@unit_names_desc, &(&1 == unit_b))
+    end
+  end
 
   # # #
 
@@ -113,7 +149,7 @@ defmodule Moar.Duration do
   """
   @spec approx(t()) :: t()
   def approx({1, _unit} = duration), do: duration
-  def approx(duration), do: approx(duration, @unit_names_desc)
+  def approx(duration), do: approx(duration, Unit.names(:desc))
 
   defp approx(duration, [head_unit | tail_units] = _units_desc) do
     new_duration = {new_time, _new_unit} = shift(duration, head_unit)
@@ -265,8 +301,8 @@ defmodule Moar.Duration do
 
     unit_name =
       if style == :short,
-        do: unit(@unit_map[unit], :short),
-        else: [" ", Moar.String.pluralize(time, unit(@unit_map[unit], :long), &(&1 <> "s"))]
+        do: Unit.short_name(unit),
+        else: [" ", Moar.String.pluralize(time, Unit.long_name(unit), &(&1 <> "s"))]
 
     [Kernel.to_string(time), unit_name, suffix] |> Moar.Enum.compact() |> Kernel.to_string()
   end
@@ -306,7 +342,7 @@ defmodule Moar.Duration do
   ```
   """
   @spec humanize(t()) :: t()
-  def humanize(duration), do: humanize(duration, @unit_names_asc)
+  def humanize(duration), do: humanize(duration, Unit.names(:asc))
 
   defp humanize({_time, current_unit} = duration, [head_unit | remaining_units] = _units) do
     cond do
@@ -345,10 +381,7 @@ defmodule Moar.Duration do
     do: duration
 
   def shift({_time, from_unit} = duration, to_unit) do
-    from_index = Enum.find_index(@unit_names_desc, &(&1 == from_unit))
-    to_index = Enum.find_index(@unit_names_desc, &(&1 == to_unit))
-
-    if from_index < to_index,
+    if Unit.larger?(from_unit, to_unit),
       do: shift_down(duration) |> shift(to_unit),
       else: shift_up(duration) |> shift(to_unit)
   end
@@ -363,7 +396,7 @@ defmodule Moar.Duration do
   """
   @spec shift_down(t()) :: t()
   def shift_down({time, from_unit} = duration) do
-    case unit(@unit_map[from_unit], :conversion) do
+    case Unit.conversion(from_unit) do
       nil ->
         raise "Cannot shift #{inspect(duration)} to a smaller unit because #{from_unit} is the smallest supported unit."
 
@@ -389,14 +422,12 @@ defmodule Moar.Duration do
   ```
   """
   def shift_up({time, from_unit} = duration) do
-    from_index = Enum.find_index(@unit_names_desc, &(&1 == from_unit))
+    case Unit.larger(from_unit) do
+      nil ->
+        raise "Cannot shift #{inspect(duration)} to a larger unit because #{from_unit} is the largest supported unit."
 
-    if from_index == 0 do
-      raise "Cannot shift #{inspect(duration)} to a larger unit because #{from_unit} is the largest supported unit."
-    else
-      higher_unit = Enum.at(@units_desc, from_index - 1)
-      {conversion_multiplier, _conversion_unit} = unit(higher_unit, :conversion)
-      {div(time, conversion_multiplier), unit(higher_unit, :name)}
+      larger_unit ->
+        {div(time, Unit.multiplier(larger_unit)), Unit.name(larger_unit)}
     end
   end
 
