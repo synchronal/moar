@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.18.1
+
 - Fix `Moar.Assertions.refute_that` to work with checks that do not implement `String.Chars`.
 
 ## 1.18.0
