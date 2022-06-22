@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.18.0
+
 - Add `Moar.Tuple.reduce/1`
 
 ## 1.17.0
