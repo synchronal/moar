@@ -214,6 +214,9 @@ defmodule Moar.Assertions do
   ...>
   iex> refute_that Function.identity(1),
   ...>     changes: Agent.get(agent, fn s -> s end)
+
+  iex> refute_that Function.identity(1),
+  ...>     changes: %{a: 1}
   ```
   """
   @spec refute_that(any, [{:changes, any}]) :: Macro.t()
@@ -225,8 +228,8 @@ defmodule Moar.Assertions do
 
       assert before == later, """
       Post-condition failed
-      before: #{before}
-      after: #{later}
+      before: #{inspect(before)}
+      after: #{inspect(later)}
       """
     end
   end

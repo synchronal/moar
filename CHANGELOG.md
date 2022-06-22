@@ -2,17 +2,19 @@
 
 ## Unreleased changes
 
+- Fix `Moar.Assertions.refute_that` to work with checks that do not implement `String.Chars`.
+
 ## 1.18.0
 
-- Add `Moar.Tuple.reduce/1`
+- Add `Moar.Tuple.reduce/1`.
 
 ## 1.17.0
 
-- Add `ignore_whitespace: :leading_and_trailing` option to `Moar.Assertions.assert_eq`
+- Add `ignore_whitespace: :leading_and_trailing` option to `Moar.Assertions.assert_eq`.
 
 ## 1.16.0
 
-- Add `Moar.Duration.shift_down/1` and `Moar.Duration.shift_up/1`
+- Add `Moar.Duration.shift_down/1` and `Moar.Duration.shift_up/1`.
 
 ## 1.15.0
 
