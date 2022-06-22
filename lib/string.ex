@@ -274,12 +274,9 @@ defmodule Moar.String do
     do: s |> to_integer() |> Moar.Term.presence(default)
 
   @doc "Like `String.trim/1` but returns `nil` if the argument is nil."
-  @spec trim(nil | binary()) :: binary()
-  def trim(nil),
-    do: nil
-
-  def trim(s) when is_binary(s),
-    do: Elixir.String.trim(s)
+  @spec trim(nil | binary()) :: nil | binary()
+  def trim(nil), do: nil
+  def trim(s) when is_binary(s), do: Elixir.String.trim(s)
 
   @doc """
   Truncates `s` at the last instance of `at`, causing the string to be at most `limit` characters.
