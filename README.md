@@ -29,8 +29,8 @@ end
 
 `Moar.Assertions`
 * `assert_eq` is a pipeable equality assertion, with options such as the ability to ignore order when comparing
-  lists, returning a different value than what was passed in, and asserting that a value is within some delta
-  (which can be a number or time duration).
+  lists, ignore whitespace when comparing strings, returning a different value than what was passed in, and asserting
+  that a value is within some delta (which can be a number or time duration).
 * `assert_recent` asserts that a datetime is pretty close to now.
 * `assert_that` asserts that a pre-condition and post-condition are true after performing an action.
 * `refute_that` asserts that a condition didn't change after performing an action.

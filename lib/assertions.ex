@@ -7,6 +7,7 @@ defmodule Moar.Assertions do
 
   @type assert_eq_opts() ::
           {:ignore_order, boolean()}
+          | {:ignore_whitespace, :leading_and_trailing}
           | {:returning, any()}
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
@@ -22,6 +23,8 @@ defmodule Moar.Assertions do
   Options:
 
   * `ignore_order: boolean` - if the `left` and `right` values are lists, ignores the order when checking equality.
+  * `ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
+    trailing space when checking equality.
   * `returning: value` - returns `value` if the assertion passes, rather than returning the `left` value.
   * `within: delta` - asserts that the `left` and `right` values are within `delta` of each other.
   * `within: {delta, time_unit}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
@@ -34,6 +37,12 @@ defmodule Moar.Assertions do
 
   iex> %{a: 1} |> Map.put(:b, 2) |> assert_eq(%{a: 1, b: 2})
   %{a: 1, b: 2}
+
+  iex> assert_eq([1, 2], [2, 1], ignore_order: true)
+  [1, 2]
+
+  iex> assert_eq("foo bar", "  foo bar\\n", ignore_whitespace: :leading_and_trailing)
+  "foo bar"
 
   iex> map = %{a: 1, b: 2}
   iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
@@ -88,6 +97,15 @@ defmodule Moar.Assertions do
           filter_map(left, right, Keyword.get(opts, :only, :all), Keyword.get(opts, :except, :none))
 
         assert filtered_left == filtered_right
+
+      Keyword.has_key?(opts, :ignore_whitespace) ->
+        if !is_binary(left) || !is_binary(right),
+          do: raise("assert_eq can only ignore whitespace when comparing strings")
+
+        if Keyword.get(opts, :ignore_whitespace) != :leading_and_trailing,
+          do: raise("if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`")
+
+        assert String.trim(left) == String.trim(right)
 
       true ->
         assert left == right

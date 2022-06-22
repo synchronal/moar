@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `ignore_whitespace: :leading_and_trailing` option to `Moar.Assertions.assert_eq`
+
 ## 1.16.0
 
 - Add `Moar.Duration.shift_down/1` and `Moar.Duration.shift_up/1`

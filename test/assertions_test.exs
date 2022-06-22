@@ -68,6 +68,30 @@ defmodule Moar.AssertionsTest do
       assert_eq([1, 2, 3], [3, 2, 1], ignore_order: true)
     end
 
+    test "when the arguments are strings, the `ignore_whitespace` option accepts `:leading_and_trailing`" do
+      assert_eq(" foo bar", "foo bar    ", ignore_whitespace: :leading_and_trailing)
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo     bar    ", ignore_whitespace: :leading_and_trailing)
+      end
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo zzz    ", ignore_whitespace: :leading_and_trailing)
+      end
+    end
+
+    test "when the arguments are not strings, the `ignore_whitespace` option is not allowed" do
+      assert_raise RuntimeError,
+                   "assert_eq can only ignore whitespace when comparing strings",
+                   fn -> assert_eq(0, 0, ignore_whitespace: :leading_and_trailing) end
+    end
+
+    test "no other value is allowed for `ignore_whitespace`" do
+      assert_raise RuntimeError,
+                   "if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`",
+                   fn -> assert_eq("a", "a", ignore_whitespace: :pie) end
+    end
+
     test "when the arguments are DateTimes" do
       assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-01T00:00:00Z])
       assert_raise ExUnit.AssertionError, fn -> assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-02T00:00:00Z]) end
