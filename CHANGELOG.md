@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Tuple.reduce/1`
+
 ## 1.17.0
 
 - Add `ignore_whitespace: :leading_and_trailing` option to `Moar.Assertions.assert_eq`

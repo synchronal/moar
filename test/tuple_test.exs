@@ -5,6 +5,16 @@ defmodule Moar.TupleTest do
 
   doctest Moar.Tuple
 
+  describe "consolidate" do
+    test "converts a list of {atom, element} tuples to a map" do
+      assert Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}]) == %{ok: [1, 2]}
+    end
+
+    test "collects multiple keys" do
+      assert Moar.Tuple.reduce([{:ok, 1}, {:error, 2}, {:ok, 3}, {:error, 4}]) == %{ok: [1, 3], error: [2, 4]}
+    end
+  end
+
   describe "from_list!" do
     test "converts a list of {atom, element} tuples to an {atom, [element]} tuple" do
       assert Moar.Tuple.from_list!([{:ok, 1}, {:ok, 2}]) == {:ok, [1, 2]}

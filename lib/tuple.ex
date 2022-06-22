@@ -30,4 +30,23 @@ defmodule Moar.Tuple do
       keys -> raise "Expected all items in the list to have have the same first element, but got: #{inspect(keys)}"
     end
   end
+
+  @doc """
+  Reduces a list of tuples to map where values are consolidated by the first element of each input tuple.
+
+  ```elixir
+  iex> Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}])
+  %{ok: [1, 2]}
+
+  iex> Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}, {:error, 3}, {:ok, 4}])
+  %{ok: [1, 2, 4], error: [3]}
+  ```
+  """
+  @spec reduce([any()]) :: map()
+  def reduce(list) do
+    Enum.reduce(list, %{}, fn {k, v}, acc ->
+      Map.update(acc, k, [v], fn list -> [v | list] end)
+    end)
+    |> Map.new(fn {k, v} -> {k, Enum.reverse(v)} end)
+  end
 end

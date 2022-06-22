@@ -121,4 +121,5 @@ end
 
 `Moar.Tuple`
 * `from_list!` converts a list of tuples like `[{:ok, 1}, {:ok, 2}, {:ok, 3}]` to a tuple like `{:ok, [1, 2, 3]}`
+* `reduce` converts a list of tuples like `[{:ok, 1}, {:error, 2}]` to a map like `%{ok: [1], error: [2]}`
 
