@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.String.append_unless_blank/2`.
+
 ## 1.18.1
 
 - Fix `Moar.Assertions.refute_that` to work with checks that do not implement `String.Chars`.

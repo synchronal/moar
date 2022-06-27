@@ -5,6 +5,23 @@ defmodule Moar.StringTest do
 
   doctest Moar.String
 
+  describe "append_unless_blank" do
+    test "appends when the prefix is a string" do
+      assert Moar.String.append_unless_blank("prefix", "-suffix") == "prefix-suffix"
+    end
+
+    test "does not append when the prefix is blank" do
+      assert Moar.String.append_unless_blank("", "-suffix") == ""
+      assert Moar.String.append_unless_blank(nil, "-suffix") == nil
+    end
+
+    test "accepts a nil suffix" do
+      assert Moar.String.append_unless_blank("prefix", nil) == "prefix"
+      assert Moar.String.append_unless_blank("", nil) == ""
+      assert Moar.String.append_unless_blank(nil, nil) == nil
+    end
+  end
+
   describe "inner_truncate" do
     test "works with nil" do
       assert Moar.String.inner_truncate(nil, 10) == nil
