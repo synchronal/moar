@@ -8,8 +8,7 @@ defmodule Moar.String do
   @type string_case() :: :camel_case | :lower_camel_case | :snake_case
 
   @doc """
-  Appends `suffix` to `prefix` unless `prefix` is blank according to `Moar.Term.blank?/1`. If `suffix` is blank,
-  `prefix` is returned unchanged.
+  Appends `suffix` to `string` unless `string` is blank according to `Moar.Term.blank?/1`.
 
   ```elixir
   iex> Moar.String.append_unless_blank("foo", "-bar")
@@ -22,10 +21,10 @@ defmodule Moar.String do
   nil
   """
   @spec append_unless_blank(binary() | nil, binary() | nil) :: binary()
-  def append_unless_blank(prefix, suffix) do
-    if Moar.Term.present?(prefix) && Moar.Term.present?(suffix),
-      do: prefix <> suffix,
-      else: prefix
+  def append_unless_blank(string, suffix) do
+    if Moar.Term.present?(string) && Moar.Term.present?(suffix),
+      do: string <> suffix,
+      else: string
   end
 
   @doc """

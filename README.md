@@ -97,7 +97,7 @@ end
 * `retry_until` and `retry_for` run the given function repeatedly until it returns a truthy value.
 
 `Moar.String`
-* `append_unless_blank` appends one string to another unless either of them are blank.
+* `append_unless_blank` appends a suffix to a string, unless the string is blank.
 * `inner_truncate` removes the middle of a string to make it the desired length.
 * `secure_compare` compares two strings in constant time.
 * `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for

@@ -6,17 +6,17 @@ defmodule Moar.StringTest do
   doctest Moar.String
 
   describe "append_unless_blank" do
-    test "appends when the prefix is a string" do
-      assert Moar.String.append_unless_blank("prefix", "-suffix") == "prefix-suffix"
+    test "appends when the string is not blank" do
+      assert Moar.String.append_unless_blank("string", "-suffix") == "string-suffix"
     end
 
-    test "does not append when the prefix is blank" do
+    test "does not append when the string is blank" do
       assert Moar.String.append_unless_blank("", "-suffix") == ""
       assert Moar.String.append_unless_blank(nil, "-suffix") == nil
     end
 
     test "accepts a nil suffix" do
-      assert Moar.String.append_unless_blank("prefix", nil) == "prefix"
+      assert Moar.String.append_unless_blank("string", nil) == "string"
       assert Moar.String.append_unless_blank("", nil) == ""
       assert Moar.String.append_unless_blank(nil, nil) == nil
     end

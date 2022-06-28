@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Clarify documentation for `Moar.String.append_unless_blank/2`.
+
 ## 1.19.0
 
 - Add `Moar.String.append_unless_blank/2`.
