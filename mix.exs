@@ -58,7 +58,7 @@ defmodule Moar.MixProject do
   defp elixirc_paths(_), do: ["lib"]
 
   defp extra_applications(:test), do: [:crypto, :logger]
-  defp extra_applications(_), do: [:logger]
+  defp extra_applications(_), do: [:crypto, :logger]
 
   defp package do
     [

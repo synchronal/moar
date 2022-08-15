@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Add `:crypto` to declared extra applications.
 - Clarify documentation for `Moar.String.append_unless_blank/2`.
 
 ## 1.19.0
