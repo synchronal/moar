@@ -7,6 +7,8 @@ defmodule Moar.Retry do
   These functions are particularly useful in higher-level tests, though they can be used for any
   kind of waiting.
 
+  See also the [retry](https://hex.pm/packages/retry) Hex package. 
+
   One use of `rescue_for/3` in a test is to wait until an assertion succeeds:
 
   ```elixir
