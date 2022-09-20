@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+source ".medic/_support/cecho.sh"
+source ".medic/_support/step.sh"
+
+set -e
+
+deps="${@:1}"
+
+if [ -z "${deps}" ] ; then
+  cecho --bright-bold-red "USAGE:" --white "${0} <package-name> ..."
+  exit 1
+fi
+
+step_with_output "Update ${deps}" "mix deps.update ${deps}"
+step_with_output "Run tests" "mix test"
+step_with_output "Commit change" "git commit mix.lock -m 'update elixir deps: ${deps}'"
+step_with_output "Contents of new commit" "git show HEAD --unified=1"
