@@ -3,7 +3,7 @@ defmodule Moar.String do
 
   @moduledoc "String-related functions."
 
-  use Bitwise
+  import Bitwise
 
   @type string_case() :: :camel_case | :lower_camel_case | :snake_case
 
