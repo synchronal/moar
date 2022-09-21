@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.String.to_integer/1` will return the argument without complaint when it is already an integer.
+
 ## 1.19.1
 
 - Add `:crypto` to declared extra applications.

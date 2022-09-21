@@ -257,9 +257,16 @@ defmodule Moar.String do
 
   @doc """
   Converts a string to an integer. Returns `nil` if the argument is `nil` or empty string.
+  Returns the argument without complaint if it is already an integer.
 
   ```elixir
   iex> Moar.String.to_integer("12,345")
+  12_345
+
+  iex> Moar.String.to_integer("")
+  nil
+
+  iex> Moar.String.to_integer(12_345)
   12_345
   ```
   """
@@ -269,6 +276,9 @@ defmodule Moar.String do
 
   def to_integer(""),
     do: nil
+
+  def to_integer(integer) when is_integer(integer),
+    do: integer
 
   def to_integer(s) when is_binary(s),
     do: s |> trim() |> Elixir.String.replace(",", "") |> Elixir.String.to_integer()

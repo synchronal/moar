@@ -190,6 +190,10 @@ defmodule Moar.StringTest do
       assert Moar.String.to_integer(" 12,345  ") == 12_345
     end
 
+    test "when given an integer, returns it" do
+      assert Moar.String.to_integer(12_345) == 12_345
+    end
+
     test "can be very lenient" do
       assert Moar.String.to_integer("  12,3m 456,,@789   ", :lenient) == 123_456_789
     end
