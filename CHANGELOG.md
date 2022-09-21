@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.19.2
+
 - `Moar.String.to_integer/1` will return the argument without complaint when it is already an integer.
 
 ## 1.19.1
