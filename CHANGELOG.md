@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.19.3
+
 - Add link to related library "siiibo/assert_match"
 
 ## 1.19.2
