@@ -1,7 +1,12 @@
 defmodule Moar.Assertions do
   # @related [test](/test/assertions_test.exs)
 
-  @moduledoc "ExUnit assertions."
+  @moduledoc """
+  ExUnit assertions.
+
+  See also: [siiibo/assert_match](https://github.com/siiibo/assert_match) which is similar to this module's
+  `assert_eq` function but with pattern matching.
+  """
 
   import ExUnit.Assertions
 

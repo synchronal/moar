@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add link to related library "siiibo/assert_match"
+
 ## 1.19.2
 
 - `Moar.String.to_integer/1` will return the argument without complaint when it is already an integer.
