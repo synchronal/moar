@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.20.0
+
 - Add `Moar.Map.put_if_blank/3`
 
 ## 1.19.3
