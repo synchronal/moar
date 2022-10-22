@@ -159,6 +159,33 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "put_if_blank" do
+    test "adds the key/value pair if the key does not exist in the map" do
+      assert Moar.Map.put_if_blank(%{a: 1}, :b, 2) == %{a: 1, b: 2}
+    end
+
+    test "adds the key/value pair if the value in the map is nil" do
+      assert Moar.Map.put_if_blank(%{a: 1, b: nil}, :b, 2) == %{a: 1, b: 2}
+    end
+
+    test "adds the key/value pair if the value in the map is blank" do
+      assert Moar.Map.put_if_blank(%{a: 1, b: []}, :b, 2) == %{a: 1, b: 2}
+      assert Moar.Map.put_if_blank(%{a: 1, b: ""}, :b, 2) == %{a: 1, b: 2}
+      assert Moar.Map.put_if_blank(%{a: 1, b: %{}}, :b, 2) == %{a: 1, b: 2}
+    end
+
+    test "does not add the key/value pair if the value in the map is not blank" do
+      assert Moar.Map.put_if_blank(%{a: 1, b: 3}, :b, 2) == %{a: 1, b: 3}
+      assert Moar.Map.put_if_blank(%{a: 1, b: [3]}, :b, 2) == %{a: 1, b: [3]}
+      assert Moar.Map.put_if_blank(%{a: 1, b: %{x: 3}}, :b, 2) == %{a: 1, b: %{x: 3}}
+    end
+
+    test "a keyword list is first converted into a map" do
+      assert Moar.Map.put_if_blank([a: 1], :b, 2) == %{a: 1, b: 2}
+      assert Moar.Map.put_if_blank([a: 1, b: 3], :b, 2) == %{a: 1, b: 3}
+    end
+  end
+
   describe "rename_key" do
     test "renames a key" do
       %{"color" => "red", "size" => "medium"}

@@ -76,6 +76,7 @@ end
 * `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, and
   `stringify_keys` does the opposite.
 * `merge` and `deep_merge` merge maps, and can also convert enumerables into maps before merging.
+* `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via `Moar.Term.blank?/1`)
 * `rename_key` and `rename_keys` rename keys in a map.
 * `transform` transforms a key or multiple keys with a transformer function.
 

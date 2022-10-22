@@ -119,6 +119,32 @@ defmodule Moar.Map do
     do: Map.merge(Enum.into(a, %{}), Enum.into(b, %{}))
 
   @doc """
+  Puts a key/value pair into the given map if the key is not alredy in the map, or if the value in the map is
+  blank as defined by `Moar.Term.blank?/1`.
+
+  Also, the `map` parameter can be any enumerable that can be turned into a map via `Enum.into/2`.
+
+  ```elixir
+  iex> %{a: 1} |> Moar.Map.put_if_blank(:b, 2)
+  %{a: 1, b: 2}
+
+  iex> %{a: 1, b: nil} |> Moar.Map.put_if_blank(:b, 2)
+  %{a: 1, b: 2}
+
+  iex> %{a: 1, b: 3} |> Moar.Map.put_if_blank(:b, 2)
+  %{a: 1, b: 3}
+  ```
+  """
+  @spec put_if_blank(map() | keyword(), any(), any()) :: map()
+  def put_if_blank(map, key, value) do
+    map = Enum.into(map, %{})
+
+    if Map.get(map, key) |> Moar.Term.present?(),
+      do: map,
+      else: Map.put(map, key, value)
+  end
+
+  @doc """
   Returns a copy of `map` with `old_key_name` changed to `new_key_name`.
 
   ```elixir

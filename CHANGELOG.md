@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.put_if_blank/3`
+
 ## 1.19.3
 
 - Add link to related library "siiibo/assert_match"
