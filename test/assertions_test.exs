@@ -171,6 +171,15 @@ defmodule Moar.AssertionsTest do
         to: 1
     end
 
+    test "accepts a zero-arity function as the command (first parameter)" do
+      {:ok, agent} = Agent.start(fn -> 0 end)
+
+      assert_that (fn -> Agent.update(agent, fn s -> s + 1 end) end).(),
+        changes: Agent.get(agent, fn s -> s end),
+        from: 0,
+        to: 1
+    end
+
     test "flunks when the precondition is not fulfilled" do
       {:ok, agent} = Agent.start(fn -> 0 end)
 

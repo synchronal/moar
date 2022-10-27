@@ -151,6 +151,8 @@ defmodule Moar.Assertions do
   @doc """
   Asserts that a pre-condition and a post-condition are true after performing an action.
 
+  To use an anonymous function as the action, wrap it in parentheses and call it with `.()`.
+
   ## Examples
 
   ```elixir
@@ -164,6 +166,10 @@ defmodule Moar.Assertions do
   iex> assert_that Agent.update(agent, fn s -> s + 1 end),
   ...>     changes: Agent.get(agent, fn s -> s end),
   ...>     to: 2
+  ...>
+  iex> assert_that (fn -> Agent.update(agent, fn s -> s + 1 end) end).(),
+  ...>     changes: Agent.get(agent, fn s -> s end),
+  ...>     to: 3
   ```
   """
   @spec assert_that(any(), changes: any(), from: any(), to: any()) :: Macro.t()
