@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Atom.atomize/1`
+
 ## 1.20.0
 
 - Add `Moar.Map.put_if_blank/3`

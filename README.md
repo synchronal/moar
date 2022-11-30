@@ -36,6 +36,8 @@ end
 * `refute_that` asserts that a condition didn't change after performing an action.
 
 `Moar.Atom`
+* `atomize` when given an atom, returns it; when given a string, converts it to an atom, replacing non-alphanumeric
+  characters with underscores.
 * `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to convert an
   atom to an atom or a string to a string.
   

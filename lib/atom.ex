@@ -4,6 +4,24 @@ defmodule Moar.Atom do
   @moduledoc "Atom-related functions."
 
   @doc """
+  Given an atom, returns the atom. Given a string, converts it into an atom, converting non-alphanumeric characters
+  into underscores (via `Moar.String.slug/2`).
+
+  ## Examples
+
+  ```
+  iex> Moar.Atom.atomize(:my_atom)
+  :my_atom
+
+  iex> Moar.Atom.atomize("my-atom")
+  :my_atom
+  ```
+  """
+  @spec atomize(atom() | binary()) :: atom()
+  def atomize(atom) when is_atom(atom), do: atom
+  def atomize(binary) when is_binary(binary), do: binary |> Moar.String.slug("_") |> from_string()
+
+  @doc """
   Converts a string to an atom (via `String.to_atom/1`), and returns atoms unchanged.
 
   Useful when you aren't sure ahead of time whether you have a string or an atom.
