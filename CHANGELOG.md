@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.21.0
+
 - Add `Moar.Atom.atomize/1`
 
 ## 1.20.0
