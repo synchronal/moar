@@ -11,8 +11,10 @@ defmodule Moar.Assertions do
   import ExUnit.Assertions
 
   @type assert_eq_opts() ::
-          {:ignore_order, boolean()}
+          {:except, list()}
+          | {:ignore_order, boolean()}
           | {:ignore_whitespace, :leading_and_trailing}
+          | {:only, list()}
           | {:returning, any()}
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
