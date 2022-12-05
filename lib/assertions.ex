@@ -27,9 +27,11 @@ defmodule Moar.Assertions do
 
   Options:
 
+  * `except: ~w[a b]a` - when comparing maps, remove these keys from each map if present.
   * `ignore_order: boolean` - if the `left` and `right` values are lists, ignores the order when checking equality.
   * `ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
     trailing space when checking equality.
+  * `only: ~w[a b]a` - when comparing maps, filter each map to only these keys.
   * `returning: value` - returns `value` if the assertion passes, rather than returning the `left` value.
   * `within: delta` - asserts that the `left` and `right` values are within `delta` of each other.
   * `within: {delta, time_unit}` - like `within: delta` but performs time comparisons in the specified `time_unit`.

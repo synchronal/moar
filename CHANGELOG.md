@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `:only` and `:except` to documentation for `assert_eq`.
+
 ## 1.21.0
 
 - Add `Moar.Atom.atomize/1`
