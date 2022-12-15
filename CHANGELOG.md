@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.22.0
+
 - `assert_that` and `refute_that` return the result of the action
 - Add `:only` and `:except` to documentation for `assert_eq`.
 
