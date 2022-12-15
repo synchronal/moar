@@ -19,6 +19,7 @@ defmodule Moar.String do
 
   iex> Moar.String.append_unless_blank(nil, "-bar")
   nil
+  ```
   """
   @spec append_unless_blank(binary() | nil, binary() | nil) :: binary()
   def append_unless_blank(string, suffix) do
