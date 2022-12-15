@@ -153,7 +153,8 @@ defmodule Moar.Assertions do
     do: assert_eq(datetime, DateTime.utc_now() |> DateTime.to_iso8601(), within: recency)
 
   @doc """
-  Asserts that a pre-condition and a post-condition are true after performing an action.
+  Asserts that a pre-condition and a post-condition are true after performing an action,
+  returning the result of the action.
 
   To use an anonymous function as the action, wrap it in parentheses and call it with `.()`.
 
@@ -166,14 +167,17 @@ defmodule Moar.Assertions do
   ...>     changes: Agent.get(agent, fn s -> s end),
   ...>     from: 0,
   ...>     to: 1
+  :ok
   ...>
   iex> assert_that Agent.update(agent, fn s -> s + 1 end),
   ...>     changes: Agent.get(agent, fn s -> s end),
   ...>     to: 2
+  :ok
   ...>
   iex> assert_that (fn -> Agent.update(agent, fn s -> s + 1 end) end).(),
   ...>     changes: Agent.get(agent, fn s -> s end),
   ...>     to: 3
+  :ok
   ```
   """
   @spec assert_that(any(), changes: any(), from: any(), to: any()) :: Macro.t()
@@ -186,7 +190,7 @@ defmodule Moar.Assertions do
           reraise %{error | message: "Pre-condition failed"}, __STACKTRACE__
       end
 
-      unquote(command)
+      return_value = unquote(command)
 
       try do
         assert unquote(check) == unquote(to)
@@ -194,13 +198,15 @@ defmodule Moar.Assertions do
         error in ExUnit.AssertionError ->
           reraise %{error | message: "Post-condition failed"}, __STACKTRACE__
       end
+
+      return_value
     end
   end
 
   defmacro assert_that(command, changes: check, to: to) do
     quote location: :keep do
       pre_condition = unquote(check)
-      unquote(command)
+      return_value = unquote(command)
       post_condition = unquote(check)
 
       try do
@@ -216,11 +222,13 @@ defmodule Moar.Assertions do
         error in ExUnit.AssertionError ->
           reraise %{error | message: "Post-condition failed"}, __STACKTRACE__
       end
+
+      return_value
     end
   end
 
   @doc """
-  Refute that a condition is changed after performing an action.
+  Refute that a condition is changed after performing an action, returning the result of the action.
 
   ## Examples
 
@@ -229,16 +237,18 @@ defmodule Moar.Assertions do
   ...>
   iex> refute_that Function.identity(1),
   ...>     changes: Agent.get(agent, fn s -> s end)
+  1
 
-  iex> refute_that Function.identity(1),
+  iex> refute_that Function.identity(5),
   ...>     changes: %{a: 1}
+  5
   ```
   """
   @spec refute_that(any, [{:changes, any}]) :: Macro.t()
   defmacro refute_that(command, changes: check) do
     quote do
       before = unquote(check)
-      unquote(command)
+      return_value = unquote(command)
       later = unquote(check)
 
       assert before == later, """
@@ -246,6 +256,8 @@ defmodule Moar.Assertions do
       before: #{inspect(before)}
       after: #{inspect(later)}
       """
+
+      return_value
     end
   end
 

@@ -248,7 +248,8 @@ defmodule Moar.AssertionsTest do
   describe "refute_that" do
     test "passes when the action does not change the test condition" do
       {:ok, agent} = Agent.start(fn -> 0 end)
-      refute_that(Function.identity(1), changes: Agent.get(agent, fn s -> s end))
+      return_value = refute_that(Function.identity(1), changes: Agent.get(agent, fn s -> s end))
+      assert return_value == 1
     end
 
     test "fails when the action changes the test condition" do
