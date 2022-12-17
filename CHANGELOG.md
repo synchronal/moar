@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.23.0
+
 - Add `between?/2` and `recent?/2` to `Moar.DateTime`
 
 ## 1.22.0
