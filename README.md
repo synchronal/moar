@@ -43,7 +43,9 @@ end
   
 `Moar.DateTime` and `Moar.NaiveDateTime`
 * `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
+* `between?` determines whether a datetime is between two other datetimes.
 * `from_iso8601!` raises if the string is not in ISO 8601 format.
+* `recent?` returns true if the given datetime was at most one minute ago.
 * `to_iso8601_rounded` converts to an ISO 8601 string, truncated to the second.
 * `utc_now` takes `plus` and `minus` options to get the current time plus or minus some duration.
 

@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `between?/2` and `recent?/2` to `Moar.DateTime`
+
 ## 1.22.0
 
 - `assert_that` and `refute_that` return the result of the action

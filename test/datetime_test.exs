@@ -29,6 +29,38 @@ defmodule Moar.DateTimeTest do
     end
   end
 
+  describe "between?" do
+    test "returns true if the DateTime is between two datetimes (inclusive)" do
+      one = ~U[2022-01-01T01:00:00Z]
+      two = ~U[2022-01-01T02:00:00Z]
+      three = ~U[2022-01-01T03:00:00Z]
+      four = ~U[2022-01-01T04:00:00Z]
+
+      assert Moar.DateTime.between?(two, {one, three})
+      assert Moar.DateTime.between?(two, {two, three})
+      assert Moar.DateTime.between?(two, {one, two})
+      refute Moar.DateTime.between?(two, {three, four})
+      refute Moar.DateTime.between?(four, {two, three})
+    end
+  end
+
+  describe "recent?" do
+    test "returns true if the DateTime is within the last minute" do
+      fifty_nine_seconds_ago = Moar.DateTime.utc_now(minus: {59, :second})
+      sixty_one_seconds_ago = Moar.DateTime.utc_now(minus: {61, :second})
+
+      assert Moar.DateTime.recent?(fifty_nine_seconds_ago)
+      refute Moar.DateTime.recent?(sixty_one_seconds_ago)
+    end
+
+    test "accepts a duration" do
+      sixty_one_seconds_ago = Moar.DateTime.utc_now(minus: {61, :second})
+
+      refute Moar.DateTime.recent?(sixty_one_seconds_ago)
+      assert Moar.DateTime.recent?(sixty_one_seconds_ago, {62, :second})
+    end
+  end
+
   describe "subtract" do
     test "subtracts a duration from a datetime" do
       assert Moar.DateTime.subtract(~U[2022-01-01T00:00:55Z], {55, :second}) == ~U[2022-01-01T00:00:00Z]

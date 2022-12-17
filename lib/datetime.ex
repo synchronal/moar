@@ -32,6 +32,22 @@ defmodule Moar.DateTime do
     do: DateTime.add(date_time, Moar.Duration.convert(duration, :millisecond), :millisecond)
 
   @doc """
+  Returns true if `date_time` is inclusively inside `range` which is a tuple containing a start datetime and an end
+  datetime.
+
+  ```elixir
+  iex> Moar.DateTime.between?(~U[2022-01-01T02:00:00Z], {~U[2022-01-01T01:00:00Z], ~U[2022-01-01T03:00:00Z]})
+  true
+
+  iex> Moar.DateTime.between?(~U[2022-01-01T04:00:00Z], {~U[2022-01-01T01:00:00Z], ~U[2022-01-01T03:00:00Z]})
+  false
+  ```
+  """
+  @spec between?(DateTime.t(), {DateTime.t(), DateTime.t()}) :: boolean()
+  def between?(date_time, {range_start, range_end} = _range),
+    do: DateTime.compare(date_time, range_start) in [:eq, :gt] && DateTime.compare(date_time, range_end) in [:eq, :lt]
+
+  @doc """
   Like `DateTime.from_iso8601/1` but raises if the string cannot be parsed.
 
   ```elixir
@@ -58,6 +74,24 @@ defmodule Moar.DateTime do
         raise ArgumentError, ~s|Invalid ISO8601 format: "#{date_time_string}"|
     end
   end
+
+  @doc """
+  Returns true if `date_time` is no older than `duration` ago (which defaults to 1 minute).
+
+  ```elixir
+  iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(minus: {30, :second}))
+  true
+
+  iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(minus: {5, :minute}))
+  false
+
+  iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(minus: {5, :minute}), {1, :hour})
+  true
+  ```
+  """
+  @spec recent?(DateTime.t(), Moar.Duration.t() | nil) :: boolean()
+  def recent?(date_time, duration \\ {1, :minute}),
+    do: DateTime.diff(date_time, DateTime.utc_now(), :microsecond) >= -1 * Moar.Duration.convert(duration, :microsecond)
 
   @doc """
   Subtracts `duration` from `date_time`.
