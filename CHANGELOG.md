@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.24.0
+
 - `Moar.Map.deep_merge/3` accepts a function to resolve merge conflicts.
 
 ## 1.23.0
