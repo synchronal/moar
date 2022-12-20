@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Map.deep_merge/3` accepts a function to resolve merge conflicts.
+
 ## 1.23.0
 
 - Add `between?/2` and `recent?/2` to `Moar.DateTime`

@@ -88,19 +88,31 @@ defmodule Moar.Map do
   @doc """
   Deeply merges two enumerables into a single map.
 
+  Optionally accepts `conflict_fn` which gets called when both enumerables have values at the same keypath.
+  It receives the conflicting values from each enumerable and is expected to return the winning value.
+
   ```elixir
   iex> Moar.Map.deep_merge(%{fruit: %{apples: 3, bananas: 5}, veggies: %{carrots: 10}}, [fruit: [cherries: 20]])
   %{fruit: %{apples: 3, bananas: 5, cherries: 20}, veggies: %{carrots: 10}}
+
+  iex> Moar.Map.deep_merge(%{a: %{b: 1}}, %{a: %{b: 2}})
+  %{a: %{b: 2}}
+
+  iex> Moar.Map.deep_merge(%{a: %{b: 1}}, %{a: %{b: 2}}, fn x, _y -> x end)
+  %{a: %{b: 1}}
+
+  iex> Moar.Map.deep_merge(%{a: %{b: 1}}, %{a: %{b: 2}}, fn x, y -> [x, y] end)
+  %{a: %{b: [1, 2]}}
   ```
   """
-  @spec deep_merge(Enum.t(), Enum.t()) :: map()
-  def deep_merge(a, b),
-    do: deep_merge(nil, a, b)
+  @spec deep_merge(Enum.t(), Enum.t(), (any(), any() -> any())) :: map()
+  def deep_merge(a, b, conflict_fn \\ fn _val1, val2 -> val2 end),
+    do: deep_merge(nil, a, b, conflict_fn)
 
-  defp deep_merge(_key, a, b) do
+  defp deep_merge(_key, a, b, conflict_fn) do
     if Moar.Protocol.implements?(a, Enumerable) && Moar.Protocol.implements?(b, Enumerable),
-      do: Map.merge(Enum.into(a, %{}), Enum.into(b, %{}), &deep_merge/3),
-      else: b
+      do: Map.merge(Map.new(a), Map.new(b), fn k, v1, v2 -> deep_merge(k, v1, v2, conflict_fn) end),
+      else: conflict_fn.(a, b)
   end
 
   @doc """
@@ -116,7 +128,7 @@ defmodule Moar.Map do
     do: Map.merge(a, b)
 
   def merge(a, b),
-    do: Map.merge(Enum.into(a, %{}), Enum.into(b, %{}))
+    do: Map.merge(Map.new(a), Map.new(b))
 
   @doc """
   Puts a key/value pair into the given map if the key is not alredy in the map, or if the value in the map is

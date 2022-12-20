@@ -146,6 +146,34 @@ defmodule Moar.MapTest do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{a: 3}) |> assert_eq(%{a: 3, b: 2})
       %{a: %{b: 1, c: 2}} |> Moar.Map.deep_merge(a: [b: 3]) |> assert_eq(%{a: %{b: 3, c: 2}})
     end
+
+    test "a function can be provided to handle conflicts" do
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3}) |> assert_eq(%{a: 1, b: 3})
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3}, fn _x, y -> y end) |> assert_eq(%{a: 1, b: 3})
+      %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3}, fn x, _y -> x end) |> assert_eq(%{a: 1, b: 2})
+
+      %{a: %{aa: %{aaa: 1}}, b: 2}
+      |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{aaa: 4, ab: 3}}}, fn x, _y -> x end)
+      |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
+    end
+
+    test "the conflict function can be used to not update a value with a blank value" do
+      conflict_fn = fn x, y -> if Moar.Term.blank?(y), do: x, else: y end
+
+      %{a: %{b: %{c: 1}}}
+      |> Moar.Map.deep_merge(%{a: %{b: %{c: ""}}}, conflict_fn)
+      |> assert_eq(%{a: %{b: %{c: 1}}})
+
+      %{a: %{b: %{c: ""}}}
+      |> Moar.Map.deep_merge(%{a: %{b: %{c: 1}}}, conflict_fn)
+      |> assert_eq(%{a: %{b: %{c: 1}}})
+    end
+
+    test "the conflict function can be used to update a list" do
+      %{a: %{b: [1, 2]}}
+      |> Moar.Map.deep_merge(%{a: %{b: 3}}, fn x, y -> x ++ [y] end)
+      |> assert_eq(%{a: %{b: [1, 2, 3]}})
+    end
   end
 
   describe "merge" do
