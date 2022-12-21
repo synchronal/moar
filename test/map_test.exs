@@ -125,9 +125,15 @@ defmodule Moar.MapTest do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
     end
 
-    test "can do a shallow merge of other enumerables" do
+    test "can do a shallow merge of keyword lists" do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(b: 3, c: 4) |> assert_eq(%{a: 1, b: 3, c: 4})
       [a: 1, b: 2] |> Moar.Map.deep_merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
+    end
+
+    test "fails when inputs are not maps or keyword lists" do
+      assert_raise RuntimeError,
+                   "Expected first 2 arguments to be maps or keyword lists, got: %{a: 1} and {:b, 2}",
+                   fn -> assert Moar.Map.deep_merge(%{a: 1}, {:b, 2}) == %{a: 1, b: 2} end
     end
 
     test "can do a deep merge of maps" do
@@ -136,13 +142,13 @@ defmodule Moar.MapTest do
       |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
     end
 
-    test "can do a deep merge of other enumerables" do
+    test "can do a deep merge of keyword lists" do
       [a: [aa: [aaa: 1]], b: 2]
       |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{ab: 3}}})
       |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
     end
 
-    test "non-enumerable values from the second arg replace values from the first arg when keys match" do
+    test "non-map/keyword values from the second arg replace values from the first arg when keys match" do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{a: 3}) |> assert_eq(%{a: 3, b: 2})
       %{a: %{b: 1, c: 2}} |> Moar.Map.deep_merge(a: [b: 3]) |> assert_eq(%{a: %{b: 3, c: 2}})
     end

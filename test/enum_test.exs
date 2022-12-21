@@ -14,6 +14,20 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "is_map_or_keyword" do
+    test "returns true for maps and keywords, false for other things" do
+      assert Moar.Enum.is_map_or_keyword(%{a: 1})
+      assert Moar.Enum.is_map_or_keyword(a: 1)
+      assert Moar.Enum.is_map_or_keyword([{:a, 1}])
+
+      refute Moar.Enum.is_map_or_keyword([:a, 1])
+      refute Moar.Enum.is_map_or_keyword({:a, 1})
+      refute Moar.Enum.is_map_or_keyword(:a)
+      refute Moar.Enum.is_map_or_keyword("")
+      refute Moar.Enum.is_map_or_keyword(nil)
+    end
+  end
+
   describe "isort" do
     test "sorts strings case-insensitively" do
       assert Moar.Enum.isort(["Banana", "apple", "cherry"]) == ["apple", "Banana", "cherry"]

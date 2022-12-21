@@ -86,10 +86,10 @@ defmodule Moar.Map do
     do: not_a_map
 
   @doc """
-  Deeply merges two enumerables into a single map.
+  Deeply merges two maps into a single map. (It will also accept keyword lists and convert them to maps.)
 
   Optionally accepts `conflict_fn` which gets called when both enumerables have values at the same keypath.
-  It receives the conflicting values from each enumerable and is expected to return the winning value.
+  It receives the conflicting values from each map and is expected to return the winning value.
 
   ```elixir
   iex> Moar.Map.deep_merge(%{fruit: %{apples: 3, bananas: 5}, veggies: %{carrots: 10}}, [fruit: [cherries: 20]])
@@ -105,12 +105,15 @@ defmodule Moar.Map do
   %{a: %{b: [1, 2]}}
   ```
   """
-  @spec deep_merge(Enum.t(), Enum.t(), (any(), any() -> any())) :: map()
-  def deep_merge(a, b, conflict_fn \\ fn _val1, val2 -> val2 end),
-    do: deep_merge(nil, a, b, conflict_fn)
+  @spec deep_merge(map() | keyword(), map() | keyword(), (any(), any() -> any())) :: map()
+  def deep_merge(a, b, conflict_fn \\ fn _val1, val2 -> val2 end) do
+    if Moar.Enum.is_map_or_keyword(a) && Moar.Enum.is_map_or_keyword(b),
+      do: deep_merge(nil, a, b, conflict_fn),
+      else: raise("Expected first 2 arguments to be maps or keyword lists, got: #{inspect(a)} and #{inspect(b)}")
+  end
 
   defp deep_merge(_key, a, b, conflict_fn) do
-    if Moar.Protocol.implements?(a, Enumerable) && Moar.Protocol.implements?(b, Enumerable),
+    if Moar.Enum.is_map_or_keyword(a) && Moar.Enum.is_map_or_keyword(b),
       do: Map.merge(Map.new(a), Map.new(b), fn k, v1, v2 -> deep_merge(k, v1, v2, conflict_fn) end),
       else: conflict_fn.(a, b)
   end

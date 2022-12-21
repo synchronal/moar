@@ -21,6 +21,15 @@ defmodule Moar.Enum do
   def first!(enum),
     do: Enum.at(enum, 0) || raise("Expected enumerable to have at least one item")
 
+  @doc """
+  Returns true if the value is a map or a keyword list.
+
+  This cannot be used as a guard because it uses `Keyword.keyword?` under the hood. Also, because of that,
+  it might scan an entire list to see if it's a keyword list, so it might be expensive.
+  """
+  @spec is_map_or_keyword(any()) :: boolean()
+  def is_map_or_keyword(value), do: is_map(value) || (is_list(value) && Keyword.keyword?(value))
+
   @doc "Sorts `enum` case-insensitively. Uses `Enum.sort_by/3` under the hood."
   @spec isort(Enum.t()) :: Enum.t()
   def isort(enum),

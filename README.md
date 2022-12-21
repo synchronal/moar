@@ -69,6 +69,7 @@ end
 * `at` is like `Enum.at` but raises if the index is out of bounds.
 * `compact` rejects nil values.
 * `first!` returns the first item or raises if there isn't a first item.
+* `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be used as a guard).
 * `isort` and `isort_by` sort case-insensitively.
 * `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids extensively for testing.)
 
