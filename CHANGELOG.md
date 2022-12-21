@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.24.1
+
 - Bug fix: `Moar.Map.deep_merge/3` used to try to convert any enumerable into a map before merging, but this caused
   problems when a value was some other kind of enumerable that wasn't meant to be a nested map-like structure.
   Now, it only automatically converts keyword lists to maps.
