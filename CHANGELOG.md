@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.25.0
+
 - Add `Moar.Atom.to_existing_atom/1` which acts like `String.to_existing_atom` but can take an
   atom (or string) as an argument.
 
