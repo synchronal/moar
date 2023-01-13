@@ -2,6 +2,9 @@
 
 ## Unreleased changes
 
+- Add `Moar.Atom.to_existing_atom/1` which acts like `String.to_existing_atom` but can take an
+  atom (or string) as an argument.
+
 ## 1.24.1
 
 - Bug fix: `Moar.Map.deep_merge/3` used to try to convert any enumerable into a map before merging, but this caused

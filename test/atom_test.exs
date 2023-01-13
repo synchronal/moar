@@ -30,4 +30,17 @@ defmodule Moar.AtomTest do
     test "already a string", do: assert(Moar.Atom.to_string("banana") == "banana")
     test "nil", do: assert_raise(ArgumentError, fn -> Moar.Atom.to_string(nil) end)
   end
+
+  describe "to_existing_atom" do
+    test "string when atom exists", do: assert(Moar.Atom.to_existing_atom("banana") == :banana)
+
+    test "string when atom is not existing" do
+      assert_raise ArgumentError, ~r/1st argument: not an already existing atom/, fn ->
+        Moar.Atom.to_existing_atom("qwertyuiop")
+      end
+    end
+
+    test "already an atom", do: assert(Moar.Atom.to_existing_atom(:banana) == :banana)
+    test "nil", do: assert(Moar.Atom.to_existing_atom(nil) == nil)
+  end
 end

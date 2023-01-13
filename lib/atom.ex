@@ -66,4 +66,30 @@ defmodule Moar.Atom do
   def to_string(nil), do: raise(ArgumentError, message: "Unable to convert nil into a string")
   def to_string(a) when is_atom(a), do: Atom.to_string(a)
   def to_string(s) when is_binary(s), do: s
+
+  @doc """
+  Converts a string to an existing atom (via `String.to_existing_atom/1`), and returns atoms unchanged.
+
+  Useful when you aren't sure ahead of time whether you have a string or an atom.
+
+  ## Examples
+
+  ```elixir
+  iex> Moar.Atom.to_existing_atom("foo")
+  :foo
+
+  iex> assert_raise ArgumentError, ~r/not an already existing atom/, fn ->
+  ...>   Moar.Atom.to_existing_atom("sadfasfsfasf")
+  ...> end
+
+  iex> Moar.Atom.to_existing_atom(:baz)
+  :baz
+
+  iex> Moar.Atom.to_existing_atom(nil)
+  nil
+  ```
+  """
+  @spec to_existing_atom(atom() | binary()) :: atom()
+  def to_existing_atom(a) when is_atom(a), do: a
+  def to_existing_atom(s) when is_binary(s), do: String.to_existing_atom(s)
 end

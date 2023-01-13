@@ -40,6 +40,7 @@ end
   characters with underscores.
 * `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to convert an
   atom to an atom or a string to a string.
+* `to_existing_atom` is like `String.to_existing_atom/1` but can accept an atom as a param.
   
 `Moar.DateTime` and `Moar.NaiveDateTime`
 * `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
