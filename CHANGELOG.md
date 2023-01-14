@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.26.0
+
 - Add `Moar.Enum.take_at/2` which returns a list of elements at the given indices.
 
 ## 1.25.0
