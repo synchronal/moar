@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.take_at/2` which returns a list of elements at the given indices.
+
 ## 1.25.0
 
 - Add `Moar.Atom.to_existing_atom/1` which acts like `String.to_existing_atom` but can take an
