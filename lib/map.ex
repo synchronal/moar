@@ -119,6 +119,34 @@ defmodule Moar.Map do
   end
 
   @doc """
+  Takes keys from nested maps.
+
+  ```elixir
+  iex> Moar.Map.deep_take(%{a: 1, b: %{c: 2, d: 3}, z: 9}, [:a, b: [:c]])
+  %{a: 1, b: %{c: 2}}
+  ```
+  """
+  @spec deep_take(map(), [atom() | binary() | {atom() | binary(), list() | map()}] | map()) :: map()
+  def deep_take(map, keys) when is_map(map) and (is_list(keys) or is_map(keys)) do
+    keys
+    |> Enum.reduce(%{}, fn
+      key, acc
+      when (is_atom(key) or is_binary(key)) and is_map_key(map, key) ->
+        Map.put(acc, key, Map.get(map, key))
+
+      {key, nested_keys}, acc
+      when (is_atom(key) or is_binary(key)) and is_map_key(map, key) ->
+        case Map.get(map, key) do
+          nil -> Map.put(acc, key, nil)
+          %{} = submap -> Map.put(acc, key, deep_take(submap, nested_keys))
+        end
+
+      _, acc ->
+        acc
+    end)
+  end
+
+  @doc """
   Merges two enumerables into a single map.
 
   ```elixir

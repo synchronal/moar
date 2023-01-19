@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.deep_take/2` to take from nested maps.
+
 ## 1.26.0
 
 - Add `Moar.Enum.take_at/2` which returns a list of elements at the given indices.

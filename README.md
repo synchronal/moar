@@ -82,6 +82,7 @@ end
 `Moar.Map`
 * `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, and
   `stringify_keys` does the opposite.
+* `deep_take` takes a list of keys and `{key, nested_key}` tuples to take from nested maps.
 * `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge` also accepts
   a function to resolve value conflicts.
 * `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via `Moar.Term.blank?/1`)

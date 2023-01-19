@@ -182,6 +182,48 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "deep_take" do
+    test "takes specific keys from a map" do
+      %{a: 1, b: 2, c: 3, d: 4}
+      |> Moar.Map.deep_take([:b, :c])
+      |> assert_eq(%{b: 2, c: 3})
+    end
+
+    test "accepts keyword list of nested keys to take" do
+      %{a: 1, b: %{d: 4, e: 5}, c: 3}
+      |> Moar.Map.deep_take([:c, b: [:e]])
+      |> assert_eq(%{b: %{e: 5}, c: 3})
+    end
+
+    test "accepts binary keys" do
+      %{"a" => 1, "b" => 2}
+      |> Moar.Map.deep_take(["b"])
+      |> assert_eq(%{"b" => 2})
+
+      %{"a" => 1, "b" => %{"c" => 2, "d" => 3}}
+      |> Moar.Map.deep_take(%{"b" => ["c"]})
+      |> assert_eq(%{"b" => %{"c" => 2}})
+    end
+
+    test "returns nil when the root value for nested keys is nil" do
+      %{a: 1, b: nil, c: 3}
+      |> Moar.Map.deep_take(b: [:e])
+      |> assert_eq(%{b: nil})
+    end
+
+    test "ignores keys that are not in the map" do
+      %{a: 1, b: 2}
+      |> Moar.Map.deep_take([:b, :c, d: [:e]])
+      |> assert_eq(%{b: 2})
+    end
+
+    test "takes to an arbitrary depth" do
+      %{a: %{b: %{c: %{d: %{e: 1, f: 2}, z: 0}, z: 0}, z: 0}, z: 0}
+      |> Moar.Map.deep_take(a: [b: [c: [d: [:e]]]])
+      |> assert_eq(%{a: %{b: %{c: %{d: %{e: 1}}}}})
+    end
+  end
+
   describe "merge" do
     test "with two maps, acts just like Map.merge" do
       %{a: 1, b: 2} |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
