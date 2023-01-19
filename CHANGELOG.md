@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.27.0
+
 - Add `Moar.Map.deep_take/2` to take from nested maps.
 
 ## 1.26.0
