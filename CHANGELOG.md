@@ -2,6 +2,7 @@
 
 ## Unreleased changes
 
+- Add `Moar.Atom.ensure_existing_atoms/2` to check for a list of previously defined atoms.
 - Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
 
 ## 1.27.0

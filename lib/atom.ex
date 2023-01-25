@@ -22,6 +22,31 @@ defmodule Moar.Atom do
   def atomize(binary) when is_binary(binary), do: binary |> Moar.String.slug("_") |> from_string()
 
   @doc """
+  Given a list of strings, returns `:ok` if all values have a corresponding atom that already exists.
+  Otherwise, it returns an error tuple with a list of strings that don't have corresponding atoms.
+
+  Any atom included in the argument will be considered an existing atom.
+
+  ## Examples
+
+  ```
+  iex> :existing_atom
+  iex> Moar.Atom.ensure_existing_atoms(["existing_atom", :another_existing_atom])
+  :ok
+
+  iex> :existing_atom
+  iex> Moar.Atom.ensure_existing_atoms(["existing_atom", :another_existing_atom, "some_nonexisting_atom"])
+  {:error, ["some_nonexisting_atom"]}
+  ```
+  """
+  @spec ensure_existing_atoms([atom() | binary()]) :: :ok | {:error, [binary()]}
+  def ensure_existing_atoms(values) do
+    missing_atoms = Enum.reject(values, &existing_atom?/1)
+
+    if Enum.empty?(missing_atoms), do: :ok, else: {:error, missing_atoms}
+  end
+
+  @doc """
   Given a string, returns `true` if a corresponding atom has been previously defined. Otherwise, returns `false`.
 
   Given an atom, returns `true`.

@@ -19,6 +19,24 @@ defmodule Moar.AtomTest do
     end
   end
 
+  describe "ensure_existing_atoms" do
+    test "returns an ok atom when all strings have corresponding atoms" do
+      _existing_atoms = [:atom1, :atom2, :atom3]
+
+      ~w[atom1 atom2 atom3]
+      |> Moar.Atom.ensure_existing_atoms()
+      |> assert_eq(:ok)
+    end
+
+    test "returns an error tuple when one or more strings do not have corresponding atoms" do
+      _existing_atoms = [:atom1, :atom2, :atom3]
+
+      ~w[atom1 nonexisting1 atom2 nonexisting2 atom3]
+      |> Moar.Atom.ensure_existing_atoms()
+      |> assert_eq({:error, ~w[nonexisting1 nonexisting2]})
+    end
+  end
+
   describe "existing_atom?" do
     test "returns true when given an atom" do
       assert Moar.Atom.existing_atom?(:existing_atom)
