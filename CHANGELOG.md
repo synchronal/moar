@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
+
 ## 1.27.0
 
 - Add `Moar.Map.deep_take/2` to take from nested maps.

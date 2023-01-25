@@ -19,6 +19,22 @@ defmodule Moar.AtomTest do
     end
   end
 
+  describe "existing_atom?" do
+    test "returns true when given an atom" do
+      assert Moar.Atom.existing_atom?(:existing_atom)
+    end
+
+    test "returns true when given a string with a corresponding atom" do
+      _existing_atom = :atom1
+
+      assert Moar.Atom.existing_atom?("atom1")
+    end
+
+    test "returns false when given a string without a corresponding atom" do
+      refute Moar.Atom.existing_atom?("nonexisting_atom")
+    end
+  end
+
   describe "from_string" do
     test "string", do: assert(Moar.Atom.from_string("banana") == :banana)
     test "already an atom", do: assert(Moar.Atom.from_string(:banana) == :banana)

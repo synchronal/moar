@@ -22,6 +22,34 @@ defmodule Moar.Atom do
   def atomize(binary) when is_binary(binary), do: binary |> Moar.String.slug("_") |> from_string()
 
   @doc """
+  Given a string, returns `true` if a corresponding atom has been previously defined. Otherwise, returns `false`.
+
+  Given an atom, returns `true`.
+
+  ## Examples
+
+  ```
+  iex> :existing_atom
+  iex> Moar.Atom.existing_atom?("existing_atom")
+  true
+
+  iex> Moar.Atom.existing_atom?(:another_existing_atom)
+  true
+
+  iex> Moar.Atom.existing_atom?("some_nonexisting_atom")
+  false
+  ```
+  """
+  @spec existing_atom?(atom() | binary()) :: boolean()
+  def existing_atom?(value) when is_atom(value), do: true
+
+  def existing_atom?(value) do
+    String.to_existing_atom(value) && true
+  rescue
+    _ -> false
+  end
+
+  @doc """
   Converts a string to an atom (via `String.to_atom/1`), and returns atoms unchanged.
 
   Useful when you aren't sure ahead of time whether you have a string or an atom.
