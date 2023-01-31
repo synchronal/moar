@@ -22,7 +22,8 @@ defmodule Moar.Assertions do
   Asserts that the `left` and `right` values are equal. Returns the `left` value unless the assertion fails,
   or unless the `:returning` option is used.
 
-  Uses `assert left == right` under the hood.
+  Uses `assert left == right` under the hood, unless `left` is a string and
+  `right` is a Regex, in which case they will be compared using the `=~` operator.
 
   _Style note: the authors prefer to use `assert` in most cases, using `assert_eq` only when the extra options
   are helpful or when they want to make assertions in a pipeline._
