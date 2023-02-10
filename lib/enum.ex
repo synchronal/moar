@@ -21,6 +21,12 @@ defmodule Moar.Enum do
   def first!(enum),
     do: Enum.at(enum, 0) || raise("Expected enumerable to have at least one item")
 
+  @doc "Like `Enum.into` but accepts `nil` as the first argument"
+  @spec into!(nil | Enum.t(), Enum.t()) :: Enum.t()
+  def into!(nil, enumerable), do: enumerable
+  def into!(%_{} = struct, enumerable), do: struct |> Map.from_struct() |> into!(enumerable)
+  def into!(other, enumerable), do: Enum.into(other, enumerable)
+
   @doc """
   Returns true if the value is a map or a keyword list.
 

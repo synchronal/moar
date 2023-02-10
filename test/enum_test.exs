@@ -26,6 +26,22 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "into!" do
+    test "works like Enum.into" do
+      assert Moar.Enum.into!([a: 1], %{}) == %{a: 1}
+      assert Moar.Enum.into!(%{a: 1}, []) == [a: 1]
+    end
+
+    test "converts nil into empty enum" do
+      assert Moar.Enum.into!(nil, %{}) == %{}
+      assert Moar.Enum.into!(nil, []) == []
+    end
+
+    test "accepts structs" do
+      assert ~D[2020-01-02] |> Moar.Enum.into!(%{}) == %{calendar: Calendar.ISO, day: 2, month: 1, year: 2020}
+    end
+  end
+
   describe "is_map_or_keyword" do
     test "returns true for maps and keywords, false for other things" do
       assert Moar.Enum.is_map_or_keyword(%{a: 1})

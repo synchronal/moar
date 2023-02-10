@@ -70,6 +70,7 @@ end
 * `at!` is like `Enum.at` but raises if the index is out of bounds.
 * `compact` rejects nil values.
 * `first!` returns the first item or raises if there isn't a first item.
+* `into!` is like `Enum.into` but allows `nil` as its first argument.
 * `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be used as a guard).
 * `isort` and `isort_by` sort case-insensitively.
 * `take_at` returns a list of elements at the given indices.
