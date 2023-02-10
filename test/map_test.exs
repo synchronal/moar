@@ -233,6 +233,12 @@ defmodule Moar.MapTest do
       %{a: 1, b: 2} |> Moar.Map.merge(b: 3, c: 4) |> assert_eq(%{a: 1, b: 3, c: 4})
       [a: 1, b: 2] |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
     end
+
+    test "supports nil arguments" do
+      assert Moar.Map.merge(%{a: 1}, nil) == %{a: 1}
+      assert Moar.Map.merge(nil, %{b: 1}) == %{b: 1}
+      assert Moar.Map.merge(nil, nil) == %{}
+    end
   end
 
   describe "put_if_blank" do

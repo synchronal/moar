@@ -147,19 +147,22 @@ defmodule Moar.Map do
   end
 
   @doc """
-  Merges two enumerables into a single map.
+  Merges two enumerables into a single map. Supports `nil` values for either enumerable.
 
   ```elixir
   iex> Moar.Map.merge(%{a: 1}, [b: 2])
   %{a: 1, b: 2}
+
+  iex> Moar.Map.merge(nil, [a: 1])
+  %{a: 1}
   ```
   """
-  @spec merge(Enum.t(), Enum.t()) :: map()
+  @spec merge(Enum.t() | nil, Enum.t() | nil) :: map()
   def merge(a, b) when is_map(a) and is_map(b),
     do: Map.merge(a, b)
 
   def merge(a, b),
-    do: Map.merge(Map.new(a), Map.new(b))
+    do: Map.merge(Moar.Enum.into!(a, %{}), Moar.Enum.into!(b, %{}))
 
   @doc """
   Puts a key/value pair into the given map if the key is not alredy in the map, or if the value in the map is
