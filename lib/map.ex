@@ -289,4 +289,38 @@ defmodule Moar.Map do
 
   def transform(map, _, _),
     do: map
+
+  @doc """
+  Validates that the keys of `map` are equal to or a subset of `valid_keys`. In addition to being a list, `valid_keys`
+  can be a map or struct, in which case the keys of the map or struct are used as the list of valid keys.
+
+  It returns the input map, or raises an exception if there are non-allowed keys.
+
+  ```elixir
+  iex> Moar.Map.validate_keys!(%{a: 1, b: 2}, [:a, :b, :c])
+  %{a: 1, b: 2}
+
+  iex> Moar.Map.validate_keys!(%{a: 1, b: 2}, %{a: nil, b: 2, c: :foo})
+  %{a: 1, b: 2}
+
+  iex> Moar.Map.validate_keys!(%{a: 1, b: 2}, [:a, :c])
+  ** (ArgumentError) Non-allowed keys found in map: [:b]
+  ```
+  """
+  @spec validate_keys!(map(), list() | map() | struct()) :: map()
+  def validate_keys!(map, valid_keys) do
+    allowed_keys =
+      cond do
+        is_struct(valid_keys) -> valid_keys |> Map.delete(:__struct__) |> Map.keys()
+        is_map(valid_keys) -> Map.keys(valid_keys)
+        Keyword.keyword?(valid_keys) -> Keyword.keys(valid_keys)
+        is_list(valid_keys) -> valid_keys
+        true -> raise ArgumentError, "Expected a list, map, or struct, got: #{inspect(valid_keys)}"
+      end
+
+    case Map.keys(map) -- allowed_keys do
+      [] -> map
+      extra_keys -> raise ArgumentError, "Non-allowed keys found in map: #{inspect(extra_keys)}"
+    end
+  end
 end

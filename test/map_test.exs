@@ -382,4 +382,54 @@ defmodule Moar.MapTest do
       |> assert_eq(%{{:foo, 1} => "CHICKEN", {:bar, 2} => "cow"})
     end
   end
+
+  describe "validate_keys!" do
+    test "verifies that the map's keys equal or are a subset of the keys in the given list" do
+      map = %{a: 1, b: 2}
+      assert Moar.Map.validate_keys!(map, [:a, :b]) == map
+      assert Moar.Map.validate_keys!(map, [:a, :b, :c]) == map
+
+      assert_raise ArgumentError, "Non-allowed keys found in map: [:b]", fn ->
+        Moar.Map.validate_keys!(map, [:a, :c])
+      end
+    end
+
+    test "verifies that the map's keys equal or are a subset of the keys in the given map" do
+      map = %{a: 1, b: 2}
+      assert Moar.Map.validate_keys!(map, %{a: nil, b: "foo"}) == map
+      assert Moar.Map.validate_keys!(map, %{a: nil, b: "foo", c: :bar}) == map
+
+      assert_raise ArgumentError, "Non-allowed keys found in map: [:b]", fn ->
+        Moar.Map.validate_keys!(map, %{a: nil, c: :bar})
+      end
+    end
+
+    test "verifies that the map's keys equal or are a subset of the keys in the given keyword list" do
+      map = %{a: 1, b: 2}
+      assert Moar.Map.validate_keys!(map, a: nil, b: "foo") == map
+      assert Moar.Map.validate_keys!(map, a: nil, b: "foo", c: :bar) == map
+
+      assert_raise ArgumentError, "Non-allowed keys found in map: [:b]", fn ->
+        Moar.Map.validate_keys!(map, a: nil, c: :bar)
+      end
+    end
+
+    defmodule TestStruct, do: defstruct([:a, :b, :c])
+
+    test "verifies that the map's keys equal or are a subset of the keys in the given struct" do
+      assert Moar.Map.validate_keys!(%{a: 1, b: 2}, %TestStruct{}) == %{a: 1, b: 2}
+
+      assert_raise ArgumentError, "Non-allowed keys found in map: [:d]", fn ->
+        Moar.Map.validate_keys!(%{a: 1, b: 2, d: 4}, %TestStruct{})
+      end
+    end
+
+    test "raises when the list of valid keys is not a map, struct, or list" do
+      map = %{a: 1, b: 2}
+
+      assert_raise ArgumentError, "Expected a list, map, or struct, got: :foo", fn ->
+        Moar.Map.validate_keys!(map, :foo)
+      end
+    end
+  end
 end

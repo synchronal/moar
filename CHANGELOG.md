@@ -6,6 +6,7 @@
 - Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
 - Add `Moar.Enum.into!/2` which is like `Enum.into/2` but accepts `nil` as its first argument.
 - `Moar.Map.merge/2` now accepts `nil` values.
+- Add `Moar.Map.validate_keys!/2` which raises if the given map has keys that are not in the given list.
 
 ## 1.27.0
 

@@ -89,6 +89,7 @@ end
 * `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via `Moar.Term.blank?/1`)
 * `rename_key` and `rename_keys` rename keys in a map.
 * `transform` transforms a key or multiple keys with a transformer function.
+* `validate_keys!` validates that the keys in the map are equal to or a subset of a list of valid keys.
 
 `Moar.Opts`
 * is meant to be used with function options.
