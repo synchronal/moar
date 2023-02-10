@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.28.0
+
 - Add `Moar.Atom.ensure_existing_atoms/2` to check for a list of previously defined atoms.
 - Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
 - Add `Moar.Enum.into!/2` which is like `Enum.into/2` but accepts `nil` as its first argument.
