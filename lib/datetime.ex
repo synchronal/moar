@@ -24,7 +24,7 @@ defmodule Moar.DateTime do
   ```elixir
   iex> start = ~U[2022-01-01T00:00:00Z]
   iex> Moar.DateTime.add(start, {3, :minute})
-  ~U[2022-01-01T00:03:00Z]
+  ~U[2022-01-01T00:03:00.000Z]
   ```
   """
   @spec add(DateTime.t(), Moar.Duration.t()) :: DateTime.t()
@@ -112,7 +112,7 @@ defmodule Moar.DateTime do
   ```elixir
   iex> start = ~U[2022-01-01T00:03:00Z]
   iex> Moar.DateTime.subtract(start, {3, :minute})
-  ~U[2022-01-01T00:00:00Z]
+  ~U[2022-01-01T00:00:00.000Z]
   ```
   """
   @spec subtract(DateTime.t(), Moar.Duration.t()) :: DateTime.t()

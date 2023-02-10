@@ -7,7 +7,7 @@ defmodule Moar.NaiveDateTimeTest do
 
   describe "add" do
     test "adds a duration to a time" do
-      assert Moar.NaiveDateTime.add(~N[2022-01-01T00:00:00], {55, :second}) == ~N[2022-01-01T00:00:55]
+      assert Moar.NaiveDateTime.add(~N[2022-01-01T00:00:00], {55, :second}) == ~N[2022-01-01T00:00:55.000]
     end
   end
 
@@ -29,7 +29,7 @@ defmodule Moar.NaiveDateTimeTest do
 
   describe "subtract" do
     test "subtracts a duration from a naivedatetime" do
-      assert Moar.NaiveDateTime.subtract(~N[2022-01-01T00:00:55Z], {55, :second}) == ~N[2022-01-01T00:00:00Z]
+      assert Moar.NaiveDateTime.subtract(~N[2022-01-01T00:00:55Z], {55, :second}) == ~N[2022-01-01T00:00:00.000Z]
     end
   end
 

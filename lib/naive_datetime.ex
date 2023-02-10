@@ -24,7 +24,7 @@ defmodule Moar.NaiveDateTime do
   ```elixir
   iex> start = ~N[2022-01-01T00:00:00]
   iex> Moar.NaiveDateTime.add(start, {3, :minute})
-  ~N[2022-01-01T00:03:00]
+  ~N[2022-01-01T00:03:00.000]
   ```
   """
   @spec add(NaiveDateTime.t(), Moar.Duration.t()) :: NaiveDateTime.t()
@@ -75,7 +75,7 @@ defmodule Moar.NaiveDateTime do
   ```elixir
   iex> start = ~N[2022-01-01T00:03:00]
   iex> Moar.NaiveDateTime.subtract(start, {3, :minute})
-  ~N[2022-01-01T00:00:00]
+  ~N[2022-01-01T00:00:00.000]
   ```
   """
   @spec subtract(NaiveDateTime.t(), Moar.Duration.t()) :: NaiveDateTime.t()
