@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+source ".medic/_support/cecho.sh"
+source ".medic/_support/check.sh"
+source ".medic/_support/step.sh"
+
+set -e
+
+deps="${@:1}"
+
+check_hex() {
+  step_header "Elixir" "mix hex.outdated"
+  echo ""
+  mix hex.outdated
+}
+
+check_asdf() {
+  echo ""
+  step_header "ASDF" "checking .tool-versions"
+  echo ""
+  
+  while read line; do
+    set $line
+    latest="$(asdf list-all ${1} | grep -e '^\d.*' | tail -1)"
+    
+    if [[ $2 == $latest ]]; then
+      cecho --bright-bold-white "${1}" --white "${2}" --green "${latest} (Up-to-date)"
+    else
+      cecho --bright-bold-white "${1}" --white "${2}" --red "${latest} (Update available)"
+    fi
+  done <.tool-versions
+}
+
+if [ -z "${deps}" ] ; then
+  check_hex && true
+  check_asdf
+  
+  echo ""
+  cecho --bright-bold-red "USAGE:"
+  cecho --white "  list outdated deps:     " --yellow "${0}"
+  cecho --white "  update one or more deps:" --yellow "${0} <package-name> ..."
+  exit 0
+fi
+
+step_with_output "Update ${deps}" "mix deps.update ${deps}"
+step_with_output "Run tests" "mix test"
+
+if [[ "$(git diff --name-only)" == "mix.lock" ]]; then
+  step_with_output "Commit change" "git commit mix.lock -m 'update elixir deps: ${deps}'"
+  step_with_output "Contents of new commit" "git show HEAD --unified=1"
+else
+  echo ""
+  cecho --bright-bold-yellow "Cannot auto-commit because more than just mix.lock was changed"
+  echo ""
+  cecho --white "Make a commit manually. Suggested commit message (it's in the clipboard):"
+  message="update elixir deps: ${deps}"
+  cecho --yellow "$message"
+  localcopy "$message"
+fi
