@@ -48,12 +48,15 @@ defmodule Moar.Enum do
     do: enum |> Enum.sort_by(&(mapper.(&1) |> String.downcase()))
 
   @doc """
-  Returns a list of elements at the given indices. If `:all` is given instead of a list of indices, the entire
-  enum is returned.
+  Returns a list of elements at the given indices, in the given order. If `:all` is given instead of a list of indices,
+  the entire enum is returned.
 
   ```elixir
   iex> Moar.Enum.take_at(["A", "B", "C"], [0, 2])
   ["A", "C"]
+
+  iex> Moar.Enum.take_at(["A", "B", "C"], [2, 0])
+  ["C", "A"]
 
   iex> Moar.Enum.take_at(["A", "B", "C"], :all)
   ["A", "B", "C"]

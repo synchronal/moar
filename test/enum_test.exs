@@ -74,9 +74,10 @@ defmodule Moar.EnumTest do
   end
 
   describe "take_at" do
-    test "returns a list of elements at the given indices" do
+    test "returns a list of elements at the given indices, in the order given" do
       ["A", "B", "C"] |> Moar.Enum.take_at([1]) |> assert_eq(["B"])
       ["A", "B", "C"] |> Moar.Enum.take_at([1, 2]) |> assert_eq(["B", "C"])
+      ["A", "B", "C"] |> Moar.Enum.take_at([2, 1]) |> assert_eq(["C", "B"])
       ["A", "B", "C"] |> Moar.Enum.take_at([1, 4]) |> assert_eq(["B", nil])
     end
 
