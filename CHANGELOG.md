@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.29.0
+
 - Add `Moar.Enum.find_indices/3` which returns the indices of elements in an enum.
 
 ## 1.28.0
