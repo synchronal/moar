@@ -69,6 +69,7 @@ end
 `Moar.Enum`
 * `at!` is like `Enum.at` but raises if the index is out of bounds.
 * `compact` rejects nil values.
+* `find_indices` returns the indices of matching elements
 * `first!` returns the first item or raises if there isn't a first item.
 * `into!` is like `Enum.into` but allows `nil` as its first argument.
 * `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be used as a guard).

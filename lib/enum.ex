@@ -16,6 +16,23 @@ defmodule Moar.Enum do
   def compact(enum),
     do: enum |> Enum.reject(&is_nil(&1))
 
+  @doc """
+  Returns the indices of `elements` in `enum`, using `fun` for comparisons (defaulting to `Kernel.==/2`)
+
+  ```elixir
+  iex> Moar.Enum.find_indices(~w[apple banana cherry], ~w[cherry apple])
+  [2, 0]
+
+  iex> Moar.Enum.find_indices(~w[apple banana cherry], ~w[CHERRY APPLE], fn a, b ->
+  ...>   String.downcase(a) == String.downcase(b)
+  ...> end)
+  [2, 0]
+  ```
+  """
+  @spec find_indices(Enum.t(), [any()], (any(), any() -> boolean())) :: [integer()]
+  def find_indices(enum, elements, fun \\ &Kernel.==/2),
+    do: Enum.map(elements, &Enum.find_index(enum, fn element -> fun.(element, &1) end))
+
   @doc "Returns the first item of `enum`, or raises if it is empty."
   @spec first!(Enum.t()) :: any()
   def first!(enum),

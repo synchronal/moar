@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.find_indices/3` which returns the indices of elements in an enum.
+
 ## 1.28.0
 
 - Add `Moar.Atom.ensure_existing_atoms/2` to check for a list of previously defined atoms.

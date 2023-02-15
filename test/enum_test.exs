@@ -15,6 +15,26 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "find_indices" do
+    test "Returns the indices of the given enum elements" do
+      ~w[apple banana cherry donut]
+      |> Moar.Enum.find_indices(["donut", "banana"])
+      |> assert_eq([3, 1])
+    end
+
+    test "Returns nil for unfound elements" do
+      ~w[apple banana cherry donut]
+      |> Moar.Enum.find_indices(["donut", "banana", "happiness"])
+      |> assert_eq([3, 1, nil])
+    end
+
+    test "accepts a function for comparisons" do
+      ~w[apple banana cherry donut]
+      |> Moar.Enum.find_indices(["DONUT", "BANANA"], fn a, b -> String.downcase(a) == String.downcase(b) end)
+      |> assert_eq([3, 1])
+    end
+  end
+
   describe "first!" do
     test "returns the first item in the enum" do
       assert Moar.Enum.first!(["foo"]) == "foo"
