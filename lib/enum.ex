@@ -45,7 +45,9 @@ defmodule Moar.Enum do
   def into!(other, enumerable), do: Enum.into(other, enumerable)
 
   @doc """
-  Returns true if the value is a map or a keyword list.
+  Returns true if the value is a map or a keyword list. This uses standard Elixir functions for determining
+  if a term is a map or a keyword, and therefore counts an empty list as a keyword list. See also
+  `is_map_or_nonempty_keyword/1`.
 
   This cannot be used as a guard because it uses `Keyword.keyword?` under the hood. Also, because of that,
   it might scan an entire list to see if it's a keyword list, so it might be expensive.
@@ -53,6 +55,13 @@ defmodule Moar.Enum do
   @spec is_map_or_keyword(any()) :: boolean()
   def is_map_or_keyword(value),
     do: is_map(value) || (is_list(value) && Keyword.keyword?(value))
+
+  @doc """
+  Like `is_map_or_keyword/1` but returns false if the term is an empty list.
+  """
+  @spec is_map_or_nonempty_keyword(any()) :: boolean()
+  def is_map_or_nonempty_keyword(value),
+    do: is_map(value) || (is_list(value) && !Enum.empty?(value) && Keyword.keyword?(value))
 
   @doc "Sorts `enum` case-insensitively. Uses `Enum.sort_by/3` under the hood."
   @spec isort(Enum.t()) :: Enum.t()

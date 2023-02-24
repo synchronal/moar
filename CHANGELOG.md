@@ -2,6 +2,11 @@
 
 ## Unreleased changes
 
+- Fixed a bug in `Moar.Map.deep_merge/3`, which would incorrectly convert empty lists to maps when they were
+  map or keyword list values.
+- Add `Moar.Enum.is_map_or_nonempty_keyword/1` which is like `Moar.Enum.is_map_or_keyword/1` but returns
+  false if given an empty list.
+
 ## 1.29.0
 
 - Add `Moar.Enum.find_indices/3` which returns the indices of elements in an enum.

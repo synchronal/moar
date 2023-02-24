@@ -86,7 +86,8 @@ defmodule Moar.Map do
     do: not_a_map
 
   @doc """
-  Deeply merges two maps into a single map. (It will also accept keyword lists and convert them to maps.)
+  Deeply merges two maps into a single map. (It will also accept keyword lists and convert them to maps, as long
+  as they are not empty lists.)
 
   Optionally accepts `conflict_fn` which gets called when both enumerables have values at the same keypath.
   It receives the conflicting values from each map and is expected to return the winning value.
@@ -113,7 +114,7 @@ defmodule Moar.Map do
   end
 
   defp deep_merge(_key, a, b, conflict_fn) do
-    if Moar.Enum.is_map_or_keyword(a) && Moar.Enum.is_map_or_keyword(b),
+    if Moar.Enum.is_map_or_nonempty_keyword(a) && Moar.Enum.is_map_or_nonempty_keyword(b),
       do: Map.merge(Map.new(a), Map.new(b), fn k, v1, v2 -> deep_merge(k, v1, v2, conflict_fn) end),
       else: conflict_fn.(a, b)
   end

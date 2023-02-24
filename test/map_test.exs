@@ -153,6 +153,17 @@ defmodule Moar.MapTest do
       %{a: %{b: 1, c: 2}} |> Moar.Map.deep_merge(a: [b: 3]) |> assert_eq(%{a: %{b: 3, c: 2}})
     end
 
+    test "when the value is an empty list, it stays an empty list" do
+      %{"key" => []} |> Moar.Map.deep_merge(%{"key" => []}) |> assert_eq(%{"key" => []})
+    end
+
+    test "when the value is a regular list, the values are not merged" do
+      %{"key" => [1]} |> Moar.Map.deep_merge(%{"key" => []}) |> assert_eq(%{"key" => []})
+      %{"key" => []} |> Moar.Map.deep_merge(%{"key" => [1]}) |> assert_eq(%{"key" => [1]})
+      %{"key" => [1]} |> Moar.Map.deep_merge(%{"key" => [1]}) |> assert_eq(%{"key" => [1]})
+      %{"key" => [1]} |> Moar.Map.deep_merge(%{"key" => [2]}) |> assert_eq(%{"key" => [2]})
+    end
+
     test "a function can be provided to handle conflicts" do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3}) |> assert_eq(%{a: 1, b: 3})
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3}, fn _x, y -> y end) |> assert_eq(%{a: 1, b: 3})
