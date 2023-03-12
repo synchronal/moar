@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.31.0
+
 - Add `Moar.URI`
 
 ## 1.30.0
