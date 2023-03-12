@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.URI`
+
 ## 1.30.0
 
 - Fixed a bug in `Moar.Map.deep_merge/3`, which would incorrectly convert empty lists to maps when they were

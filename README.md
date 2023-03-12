@@ -137,3 +137,8 @@ end
 * `from_list!` converts a list of tuples like `[{:ok, 1}, {:ok, 2}, {:ok, 3}]` to a tuple like `{:ok, [1, 2, 3]}`
 * `reduce` converts a list of tuples like `[{:ok, 1}, {:error, 2}]` to a map like `%{ok: [1], error: [2]}`
 
+`Moar.URI`
+* `fix` applies some fixes to a URI string.
+* `to_simple_string` returns a string for display purposes, removing the scheme, port, params, and fragment.
+* `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
+* `web_url?` returns true if the scheme is `http` or `https`.
