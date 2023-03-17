@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Assertions.assert_contains/2`
+
 ## 1.31.0
 
 - Add `Moar.URI`

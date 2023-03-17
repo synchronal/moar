@@ -19,6 +19,40 @@ defmodule Moar.Assertions do
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
   @doc """
+  Asserts that the `left` list or map contains all of the items in the `right` list or map,
+  or contains the single `right` element if it's not a list or map.
+
+  ```elixir
+  iex> assert_contains([1, 2, 3], [1, 3])
+  [1, 2, 3]
+
+  iex> assert_contains(%{a: 1, b: 2, c: 3}, %{a: 1, c: 3})
+  %{a: 1, b: 2, c: 3}
+
+  iex> assert_contains([1, 2, 3], 2)
+  [1, 2, 3]
+  """
+  @spec assert_contains(map(), map()) :: map()
+  @spec assert_contains(list(), list() | any()) :: list()
+  def assert_contains(left, right) when is_map(left) and is_map(right) do
+    case Enum.filter(right, &(&1 not in left)) do
+      [] -> left
+      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left)} to contain #{inspect(Map.new(missing))}"
+    end
+  end
+
+  def assert_contains(left, right) when is_list(left) and is_list(right) do
+    case Enum.filter(right, &(&1 not in left)) do
+      [] -> left
+      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left)} to contain #{inspect(missing)}"
+    end
+  end
+
+  def assert_contains(left, right) when is_list(left) and not is_list(right) do
+    assert_contains(left, [right])
+  end
+
+  @doc """
   Asserts that the `left` and `right` values are equal. Returns the `left` value unless the assertion fails,
   or unless the `:returning` option is used.
 

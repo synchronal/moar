@@ -5,6 +5,31 @@ defmodule Moar.AssertionsTest do
 
   doctest Moar.Assertions
 
+  describe "assert_contains" do
+    test "passes when one enum contains another enum or scalar" do
+      [1, 2, 3] |> assert_contains([1, 2, 3])
+      [1, 2, 3] |> assert_contains([1, 3])
+      [1, 2, 3] |> assert_contains(3)
+
+      %{a: 1, b: 2, c: 3} |> assert_contains(%{a: 1, b: 2, c: 3})
+      %{a: 1, b: 2, c: 3} |> assert_contains(%{a: 1, c: 3})
+    end
+
+    test "fails when one enum doesn't contain the other enum or scalar" do
+      assert_raise ExUnit.AssertionError,
+                   "\n\nExpected [1, 2, 3] to contain [4, 5, 6]\n",
+                   fn -> [1, 2, 3] |> assert_contains([4, 5, 6]) end
+
+      assert_raise ExUnit.AssertionError,
+                   "\n\nExpected [1, 2, 3] to contain [4]\n",
+                   fn -> [1, 2, 3] |> assert_contains([1, 2, 4]) end
+
+      assert_raise ExUnit.AssertionError,
+                   "\n\nExpected %{a: 1, b: 2, c: 3} to contain %{d: 4, e: 5}\n",
+                   fn -> %{a: 1, b: 2, c: 3} |> assert_contains(%{b: 2, d: 4, e: 5}) end
+    end
+  end
+
   describe "assert_eq" do
     test "returns its first arg if the assertion passes" do
       assert assert_eq("arg", "arg") == "arg"
