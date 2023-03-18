@@ -20,7 +20,7 @@ defmodule Moar.Assertions do
 
   @doc """
   Asserts that the `left` list or map contains all of the items in the `right` list or map,
-  or contains the single `right` element if it's not a list or map.
+  or contains the single `right` element if it's not a list or map. Returns `left` or raises `ExUnit.AssertionError`.
 
   ```elixir
   iex> assert_contains([1, 2, 3], [1, 3])
@@ -31,6 +31,7 @@ defmodule Moar.Assertions do
 
   iex> assert_contains([1, 2, 3], 2)
   [1, 2, 3]
+  ```
   """
   @spec assert_contains(map(), map()) :: map()
   @spec assert_contains(list(), list() | any()) :: list()
@@ -64,11 +65,11 @@ defmodule Moar.Assertions do
 
   Options:
 
-  * `except: ~w[a b]a` - when comparing maps, remove these keys from each map if present.
+  * `except: ~w[a b]a` - ignore the given keys when comparing maps.
   * `ignore_order: boolean` - if the `left` and `right` values are lists, ignores the order when checking equality.
   * `ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
     trailing space when checking equality.
-  * `only: ~w[a b]a` - when comparing maps, filter each map to only these keys.
+  * `only: ~w[a b]a` - only consider the given keys when comparing maps.
   * `returning: value` - returns `value` if the assertion passes, rather than returning the `left` value.
   * `within: delta` - asserts that the `left` and `right` values are within `delta` of each other.
   * `within: {delta, time_unit}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
@@ -82,11 +83,17 @@ defmodule Moar.Assertions do
   iex> %{a: 1} |> Map.put(:b, 2) |> assert_eq(%{a: 1, b: 2})
   %{a: 1, b: 2}
 
+  iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, except: [:b])
+  %{a: 1, b: 2, c: 3}
+
   iex> assert_eq([1, 2], [2, 1], ignore_order: true)
   [1, 2]
 
   iex> assert_eq("foo bar", "  foo bar\\n", ignore_whitespace: :leading_and_trailing)
   "foo bar"
+
+  iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, only: [:a, :c])
+  %{a: 1, b: 2, c: 3}
 
   iex> map = %{a: 1, b: 2}
   iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
