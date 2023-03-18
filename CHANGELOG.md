@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.32.0
+
 - Add `Moar.Assertions.assert_contains/2`
 - Soft-deprecate `Moar.Assertions.assert_eq`'s `ignore_whitespace: :leading_and_trailing` option in
   favor of `whitespace: :squish` and `whitespace: :trim`
