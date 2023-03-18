@@ -93,7 +93,7 @@ defmodule Moar.AssertionsTest do
       assert_eq([1, 2, 3], [3, 2, 1], ignore_order: true)
     end
 
-    test "when the arguments are strings, the `ignore_whitespace` option accepts `:leading_and_trailing`" do
+    test "(deprecated) when the args are strings, the `ignore_whitespace` option accepts `:leading_and_trailing`" do
       assert_eq(" foo bar", "foo bar    ", ignore_whitespace: :leading_and_trailing)
 
       assert_raise ExUnit.AssertionError, fn ->
@@ -105,16 +105,37 @@ defmodule Moar.AssertionsTest do
       end
     end
 
-    test "when the arguments are not strings, the `ignore_whitespace` option is not allowed" do
+    test "(deprecated) when the arguments are not strings, the `ignore_whitespace` option is not allowed" do
       assert_raise RuntimeError,
                    "assert_eq can only ignore whitespace when comparing strings",
                    fn -> assert_eq(0, 0, ignore_whitespace: :leading_and_trailing) end
     end
 
-    test "no other value is allowed for `ignore_whitespace`" do
+    test "(deprecated) no other value is allowed for `ignore_whitespace`" do
       assert_raise RuntimeError,
                    "if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`",
                    fn -> assert_eq("a", "a", ignore_whitespace: :pie) end
+    end
+
+    test "when the args are strings, the `whitespace` option accepts `:squish`" do
+      assert_eq(" foo bar", "foo bar    ", whitespace: :squish)
+      assert_eq(" foo bar", "foo     bar    ", whitespace: :squish)
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo zzz    ", whitespace: :squish)
+      end
+    end
+
+    test "when the args are strings, the `whitespace` option accepts `:trim`" do
+      assert_eq(" foo bar", "foo bar    ", whitespace: :trim)
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo     bar    ", whitespace: :trim)
+      end
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo zzz    ", whitespace: :trim)
+      end
     end
 
     test "when the arguments are DateTimes" do

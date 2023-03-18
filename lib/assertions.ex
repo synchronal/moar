@@ -16,6 +16,7 @@ defmodule Moar.Assertions do
           | {:ignore_whitespace, :leading_and_trailing}
           | {:only, list()}
           | {:returning, any()}
+          | {:whitespace, :squish | :trim}
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
   @doc """
@@ -67,10 +68,12 @@ defmodule Moar.Assertions do
 
   * `except: ~w[a b]a` - ignore the given keys when comparing maps.
   * `ignore_order: boolean` - if the `left` and `right` values are lists, ignores the order when checking equality.
-  * `ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
-    trailing space when checking equality.
+  * ~~`ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
+    trailing space when checking equality.~~ _deprecated: see `:whitespace` option_
   * `only: ~w[a b]a` - only consider the given keys when comparing maps.
   * `returning: value` - returns `value` if the assertion passes, rather than returning the `left` value.
+  * `whitespace: :squish` - when `left` and `right` are strings, squishes via `Moar.String.squish/1` before comparing.
+  * `whitespace: :trim` - when `left` and `right` are strings, trims via `String.trim/1` before comparing.
   * `within: delta` - asserts that the `left` and `right` values are within `delta` of each other.
   * `within: {delta, time_unit}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
     See `Moar.Duration` for more about time units. If `left` and `right` are strings, they are parsed as ISO8601 dates.
@@ -89,15 +92,15 @@ defmodule Moar.Assertions do
   iex> assert_eq([1, 2], [2, 1], ignore_order: true)
   [1, 2]
 
-  iex> assert_eq("foo bar", "  foo bar\\n", ignore_whitespace: :leading_and_trailing)
-  "foo bar"
-
   iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, only: [:a, :c])
   %{a: 1, b: 2, c: 3}
 
   iex> map = %{a: 1, b: 2}
   iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
   %{a: 1, b: 2}
+
+  iex> assert_eq("foo bar", "  foo bar\\n", whitespace: :trim)
+  "foo bar"
 
   iex> assert_eq(4/28, 0.14, within: 0.01)
   0.14285714285714285
@@ -149,6 +152,7 @@ defmodule Moar.Assertions do
 
         assert filtered_left == filtered_right
 
+      # deprecated
       Keyword.has_key?(opts, :ignore_whitespace) ->
         if !is_binary(left) || !is_binary(right),
           do: raise("assert_eq can only ignore whitespace when comparing strings")
@@ -157,6 +161,16 @@ defmodule Moar.Assertions do
           do: raise("if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`")
 
         assert String.trim(left) == String.trim(right)
+
+      Keyword.has_key?(opts, :whitespace) ->
+        if !is_binary(left) || !is_binary(right),
+          do: raise("assert_eq can only ignore whitespace when comparing strings")
+
+        case Keyword.get(opts, :whitespace) do
+          :trim -> assert String.trim(left) == String.trim(right)
+          :squish -> assert Moar.String.squish(left) == Moar.String.squish(right)
+          _ -> raise "`whitespace` option must be `:squish` or `:trim`"
+        end
 
       true ->
         assert left == right

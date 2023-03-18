@@ -172,7 +172,8 @@ defmodule Moar.String do
     do: slug([term], joiner)
 
   @doc """
-  Trims a string and replaces consecutive whitespace characters with a single space.
+  Trims spaces from the beginning and end of a string, and replaces consecutive whitespace characters with a single
+  space.
 
   ```elixir
   iex> Moar.String.squish("  foo   bar  \tbaz ")
