@@ -18,20 +18,20 @@ defmodule Moar.Map do
   """
   @spec atomize_key(map(), binary() | atom(), (any() -> any()) | nil) :: map()
   def atomize_key(map, key, value_transformer \\ &Function.identity/1) do
-    atomized_key =
-      if is_atom(key) do
-        key
-      else
-        key
-        |> Moar.String.underscore()
-        |> Moar.Atom.from_string()
-        |> tap(fn new_key ->
-          if Map.has_key?(map, new_key),
-            do: raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
-        end)
-      end
-
+    atomized_key = atomized_key(key, map)
     map |> rename_key(key, atomized_key) |> transform(atomized_key, value_transformer)
+  end
+
+  defp atomized_key(key, _map) when is_atom(key), do: key
+
+  defp atomized_key(key, map) when is_binary(key) do
+    key
+    |> Moar.String.underscore()
+    |> Moar.Atom.from_string()
+    |> tap(fn new_key ->
+      if Map.has_key?(map, new_key),
+        do: raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
+    end)
   end
 
   @doc """
