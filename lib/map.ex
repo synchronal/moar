@@ -148,6 +148,19 @@ defmodule Moar.Map do
   end
 
   @doc """
+  Converts a list of maps into a map of maps indexed by the values of one of the map keys.
+  It's a map-specific version of the more generic `Moar.Enum.index_by/2`.
+
+  ```elixir
+  iex> Moar.Map.index_by([%{name: "Alice", tid: "alice"}, %{name: "Billy", tid: "billy"}], :tid)
+  %{"alice" => %{name: "Alice", tid: "alice"}, "billy" => %{name: "Billy", tid: "billy"}}
+  ```
+  """
+  @spec index_by([map()], any()) :: map()
+  def index_by(list_of_maps, key),
+    do: Moar.Enum.index_by(list_of_maps, &Map.get(&1, key))
+
+  @doc """
   Merges two enumerables into a single map. Supports `nil` values for either enumerable.
 
   ```elixir
@@ -188,6 +201,24 @@ defmodule Moar.Map do
 
     if Map.get(map, key) |> Moar.Term.present?(),
       do: map,
+      else: Map.put(map, key, value)
+  end
+
+  @doc """
+  Like `Map.put_new/3` but raises if `key` already exists in `map`.
+
+  ```elixir
+  iex> Moar.Map.put_new!(%{a: 1}, :b, 2)
+  %{a: 1, b: 2}
+
+  iex> Moar.Map.put_new!(%{a: 1, b: 2}, :b, 3)
+  ** (RuntimeError) Map already contains key: :b
+  ```
+  """
+  @spec put_new!(map(), any(), any()) :: map()
+  def put_new!(map, key, value) do
+    if Map.has_key?(map, key),
+      do: raise("Map already contains key: #{inspect(key)}"),
       else: Map.put(map, key, value)
   end
 

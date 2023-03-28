@@ -38,6 +38,19 @@ defmodule Moar.Enum do
   def first!(enum),
     do: Enum.at(enum, 0) || raise("Expected enumerable to have at least one item")
 
+  @doc """
+  Converts an enum into a map of maps indexed by the return value of `index_fun`.
+  See also the similar map-specific `Moar.Map.index_by/2`.
+
+  ```elixir
+  iex> Moar.Enum.index_by([%{name: "Alice", tid: "alice"}, %{name: "Billy", tid: "billy"}], & &1.tid)
+  %{"alice" => %{name: "Alice", tid: "alice"}, "billy" => %{name: "Billy", tid: "billy"}}
+  ```
+  """
+  @spec index_by(Enum.t(), (any() -> any())) :: map()
+  def index_by(enum, index_fun) when is_function(index_fun),
+    do: Enum.reduce(enum, %{}, fn value, acc -> Moar.Map.put_new!(acc, index_fun.(value), value) end)
+
   @doc "Like `Enum.into` but accepts `nil` as the first argument"
   @spec into!(nil | Enum.t(), Enum.t()) :: Enum.t()
   def into!(nil, enumerable), do: enumerable

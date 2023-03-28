@@ -46,6 +46,21 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "index_by" do
+    test "returns a map of `index => value` from an enumerable and an index function" do
+      [%{name: "Alice", tid: "alice"}, %{name: "Billy", tid: "billy"}]
+      |> Moar.Enum.index_by(&String.upcase(&1.tid))
+      |> assert_eq(%{"ALICE" => %{name: "Alice", tid: "alice"}, "BILLY" => %{name: "Billy", tid: "billy"}})
+    end
+
+    test "fails when the keys are not unique" do
+      assert_raise RuntimeError, "Map already contains key: 10", fn ->
+        [%{name: "Alice", age: 10}, %{name: "Billy", age: 11}, %{name: "Cindy", age: 10}]
+        |> Moar.Enum.index_by(& &1.age)
+      end
+    end
+  end
+
   describe "into!" do
     test "works like Enum.into" do
       assert Moar.Enum.into!([a: 1], %{}) == %{a: 1}

@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.index_by/2` and `Moar.Map.index_by/2` which return a new map indexed by a function or
+  key. Inspired by code in: http://johnelmlabs.com/posts/anti-patterns-in-liveview/
+- Add `Moar.Map.put_new!/3` which is like `Map.put_new/3` but raises if the key already exists.
+
 ## 1.32.0
 
 - Add `Moar.Assertions.assert_contains/2`

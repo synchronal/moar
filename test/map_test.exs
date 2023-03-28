@@ -235,6 +235,21 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "index_by" do
+    test "converts a list of maps into a map of maps indexed by the value of a key" do
+      [%{name: "Alice", tid: "alice"}, %{name: "Billy", tid: "billy"}]
+      |> Moar.Map.index_by(:tid)
+      |> assert_eq(%{"alice" => %{name: "Alice", tid: "alice"}, "billy" => %{name: "Billy", tid: "billy"}})
+    end
+
+    test "fails when the keys are not unique" do
+      assert_raise RuntimeError, "Map already contains key: 10", fn ->
+        [%{name: "Alice", age: 10}, %{name: "Billy", age: 11}, %{name: "Cindy", age: 10}]
+        |> Moar.Map.index_by(:age)
+      end
+    end
+  end
+
   describe "merge" do
     test "with two maps, acts just like Map.merge" do
       %{a: 1, b: 2} |> Moar.Map.merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
@@ -276,6 +291,16 @@ defmodule Moar.MapTest do
     test "a keyword list is first converted into a map" do
       assert Moar.Map.put_if_blank([a: 1], :b, 2) == %{a: 1, b: 2}
       assert Moar.Map.put_if_blank([a: 1, b: 3], :b, 2) == %{a: 1, b: 3}
+    end
+  end
+
+  describe "put_new!" do
+    test "puts `key` => `value` into `map` if it does not yet exist" do
+      assert Moar.Map.put_new!(%{a: 1, b: 2}, :c, 3) == %{a: 1, b: 2, c: 3}
+    end
+
+    test "raises if `key` already exists in `map`" do
+      assert_raise RuntimeError, "Map already contains key: :b", fn -> Moar.Map.put_new!(%{a: 1, b: 2}, :b, 3) end
     end
   end
 
