@@ -80,6 +80,7 @@ end
 - `compact` rejects nil values.
 - `find_indices` returns the indices of matching elements
 - `first!` returns the first item or raises if there isn't a first item.
+- `index_by` converts an enum into a list of maps indexed by the given function.
 - `into!` is like `Enum.into` but allows `nil` as its first argument.
 - `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be
   used as a guard).
@@ -98,10 +99,12 @@ end
 - `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms,
   and `stringify_keys` does the opposite.
 - `deep_take` takes a list of keys and `{key, nested_key}` tuples to take from nested maps.
+- `index_by` converts a list of maps into a map of maps indexed by the values of one of the keys.
 - `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge`
   also accepts a function to resolve value conflicts.
 - `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via
   `Moar.Term.blank?/1`)
+- `put_new!` is like `Map.put_new/3` but raises if the key already exists in the map.
 - `rename_key` and `rename_keys` rename keys in a map.
 - `transform` transforms a key or multiple keys with a transformer function.
 - `validate_keys!` validates that the keys in the map are equal to or a subset of a list of valid
