@@ -21,7 +21,7 @@ check_asdf() {
   
   while read line; do
     set $line
-    latest="$(asdf list-all ${1} | grep -e '^\d.*' | tail -1)"
+    latest="$(asdf list-all ${1} | grep -e '^\d.*' | grep -v '\-rc' | tail -1)"
     
     if [[ $2 == $latest ]]; then
       cecho --bright-bold-white "${1}" --white "${2}" --green "${latest} (Up-to-date)"
@@ -37,8 +37,10 @@ if [ -z "${deps}" ] ; then
   
   echo ""
   cecho --bright-bold-red "USAGE:"
-  cecho --white "  list outdated deps:     " --yellow "${0}"
-  cecho --white "  update one or more deps:" --yellow "${0} <package-name> ..."
+  cecho --white "  list outdated deps:             run" --yellow "${0}"
+  cecho --white "  update one or more Elixir deps: run" --yellow "${0} <package-name> ..."
+  cecho --white "  update an ASDF tool:            edit" --yellow ".tool-versions" --white "and run" --yellow "asdf install"
+  
   exit 0
 fi
 
@@ -46,7 +48,7 @@ step_with_output "Update ${deps}" "mix deps.update ${deps}"
 step_with_output "Run tests" "mix test"
 
 if [[ "$(git diff --name-only)" == "mix.lock" ]]; then
-  step_with_output "Commit change" "git commit mix.lock -m 'update elixir deps: ${deps}'"
+  step_with_output "Commit change" "git commit mix.lock -m 'Update elixir deps: ${deps}'"
   step_with_output "Contents of new commit" "git show HEAD --unified=1"
 else
   echo ""
