@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.merge_if_blank/2`.
+
 ## 1.33.0
 
 - Add `Moar.Enum.index_by/2` and `Moar.Map.index_by/2` which return a new map indexed by a function or

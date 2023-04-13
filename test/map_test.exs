@@ -267,6 +267,16 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "merge_if_blank" do
+    test "merges from right where the key is missing in the left map" do
+      assert Moar.Map.merge_if_blank(%{a: 1}, %{a: 100, b: 2}) == %{a: 1, b: 2}
+    end
+
+    test "merges from right where the key is nil or blank in the left map" do
+      assert Moar.Map.merge_if_blank(%{a: 1, b: nil, c: ""}, %{a: 100, b: 2, c: 3}) == %{a: 1, b: 2, c: 3}
+    end
+  end
+
   describe "put_if_blank" do
     test "adds the key/value pair if the key does not exist in the map" do
       assert Moar.Map.put_if_blank(%{a: 1}, :b, 2) == %{a: 1, b: 2}

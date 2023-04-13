@@ -179,6 +179,20 @@ defmodule Moar.Map do
     do: Map.merge(Moar.Enum.into!(a, %{}), Moar.Enum.into!(b, %{}))
 
   @doc """
+  Merges two maps, retaining any existing non-blank values.
+
+  ```elixir
+  iex> Moar.Map.merge_if_blank(%{a: 1, b: nil, c: ""}, %{a: 100, b: 2, c: 3, d: 4})
+  %{a: 1, b: 2, c: 3, d: 4}
+  ```
+  """
+  @spec merge_if_blank(map(), map()) :: map()
+  def merge_if_blank(a, b) when is_map(a) and is_map(b) do
+    existing_values = Map.filter(a, fn {_k, v} -> Moar.Term.present?(v) end)
+    Map.merge(b, existing_values)
+  end
+
+  @doc """
   Puts a key/value pair into the given map if the key is not alredy in the map, or if the value in the map is
   blank as defined by `Moar.Term.blank?/1`.
 

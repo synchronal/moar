@@ -102,6 +102,7 @@ end
 - `index_by` converts a list of maps into a map of maps indexed by the values of one of the keys.
 - `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge`
   also accepts a function to resolve value conflicts.
+- `merge_if_blank` merge maps, retaining existing non-blank values.
 - `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via
   `Moar.Term.blank?/1`)
 - `put_new!` is like `Map.put_new/3` but raises if the key already exists in the map.
