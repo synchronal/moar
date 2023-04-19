@@ -79,6 +79,12 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "compact" do
+    test "removes keys where the value is nil" do
+      assert Moar.Map.compact(%{a: 1, b: nil, c: ""}) == %{a: 1, c: ""}
+    end
+  end
+
   describe "deep_atomize_keys" do
     test "deeply converts keys from strings to atoms" do
       %{"item1" => "chapstick", "item2" => %{"item3" => "mask"}}

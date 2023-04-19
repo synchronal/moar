@@ -61,6 +61,24 @@ defmodule Moar.Map do
     do: Enum.reduce(map, map, fn {k, _v}, acc -> atomize_key(acc, k) end)
 
   @doc """
+  Removes keys from a map where the value is nil.
+
+  ```elixir
+  iex> Moar.Map.compact(%{a: 1, b: nil, c: ""})
+  %{a: 1, c: ""}
+  ```
+  """
+  @spec compact(map()) :: map()
+  def compact(map) when is_map(map),
+    do:
+      Map.new(
+        Enum.reject(map, fn
+          {_k, nil} -> true
+          _ -> false
+        end)
+      )
+
+  @doc """
   Converts keys to atoms, traversing through descendant lists and maps.
 
   Raises if converting a key from a string to an atom would result in a key conflict.

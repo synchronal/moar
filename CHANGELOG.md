@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.compact/1`.
+
 ## 1.34.0
 
 - Add `Moar.Map.merge_if_blank/2`.
