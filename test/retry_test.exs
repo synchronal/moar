@@ -8,14 +8,14 @@ defmodule Moar.RetryTest do
   defmodule Counter do
     use Agent
 
-    def start_link, do: Agent.start_link(fn -> 0 end, name: __MODULE__)
+    def start_link(_opts \\ []), do: Agent.start_link(fn -> 0 end)
     def value(pid), do: Agent.get(pid, & &1)
     def increment(pid), do: Agent.update(pid, &(&1 + 1))
     def tick(pid), do: increment(pid) && value(pid)
   end
 
   setup do
-    {:ok, pid} = Counter.start_link()
+    {:ok, pid} = start_supervised(Counter)
     [counter: pid]
   end
 
