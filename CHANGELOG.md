@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.35.0
+
 - Add `Moar.Map.compact/1`.
 
 ## 1.34.0
