@@ -129,6 +129,11 @@ end
 - `integer` returns a random integer.
 - `string` returns random base64- or base32-encoded string.
 
+`Moar.Regex`
+
+- `named_capture` gets a single named capture.
+- `named_captures` is like `Regex.named_captures/3` but can take the first two args in any order.
+
 `Moar.Retry`
 
 - `rescue_until` and `rescue_for` run the given function repeatedly until it does not raise.
@@ -175,3 +180,9 @@ end
 - `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not
   contain spaces.
 - `web_url?` returns true if the scheme is `http` or `https`.
+
+`Moar.Version`
+
+- `compare` is like `Version.compare/2` but normalizes the versions first.
+- `normalize` appends as many ".0" strings as necessary to create a string with major, minor, and
+  patch numbers.
