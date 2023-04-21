@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.36.0
+
 - Add `Moar.Regex` with `named_capture/3` and `named_captures/3` functions.
 - Add `Moar.Version` with `compare/2` and `normalize/1` functions.
 
