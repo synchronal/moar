@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.37.0
+
 - Add `Moar.Enum.find_indices!` which raises when a member of the expected elements is not found in
   the given enumerable.
 
