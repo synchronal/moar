@@ -79,6 +79,7 @@ end
 - `at!` is like `Enum.at` but raises if the index is out of bounds.
 - `compact` rejects nil values.
 - `find_indices` returns the indices of matching elements
+- `find_indices!` returns the indices of matching elements and raises if any element is not found.
 - `first!` returns the first item or raises if there isn't a first item.
 - `index_by` converts an enum into a list of maps indexed by the given function.
 - `into!` is like `Enum.into` but allows `nil` as its first argument.

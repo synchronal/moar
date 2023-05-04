@@ -2,6 +2,9 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.find_indices!` which raises when a member of the expected elements is not found in
+  the given enumerable.
+
 ## 1.36.0
 
 - Add `Moar.Regex` with `named_capture/3` and `named_captures/3` functions.

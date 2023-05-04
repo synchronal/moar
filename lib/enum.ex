@@ -33,6 +33,27 @@ defmodule Moar.Enum do
   def find_indices(enum, elements, fun \\ &Kernel.==/2),
     do: Enum.map(elements, &Enum.find_index(enum, fn element -> fun.(element, &1) end))
 
+  @doc """
+  Returns the indices of `elements` in `enum`, raising if any member of `elements` is not found.
+
+  ```elixir
+  iex> Moar.Enum.find_indices!(~w[apple banana cherry], ~w[cherry apple])
+  [2, 0]
+
+  iex> Moar.Enum.find_indices!(~w[apple banana], ~w[cherry apple])
+  ** (RuntimeError) Element "cherry" not present in:
+  ["apple", "banana"]
+  ```
+  """
+  @spec find_indices!(Enum.t(), [any()], (any(), any() -> boolean())) :: [integer()]
+  def find_indices!(enum, elements, fun \\ &Kernel.==/2) do
+    Enum.map(elements, fn element ->
+      Enum.find_index(enum, fn member ->
+        fun.(member, element)
+      end) || raise("Element #{inspect(element)} not present in:\n#{inspect(enum)}")
+    end)
+  end
+
   @doc "Returns the first item of `enum`, or raises if it is empty."
   @spec first!(Enum.t()) :: any()
   def first!(enum),
