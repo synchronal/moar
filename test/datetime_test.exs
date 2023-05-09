@@ -53,6 +53,11 @@ defmodule Moar.DateTimeTest do
       refute Moar.DateTime.recent?(sixty_one_seconds_ago)
     end
 
+    test "fails if the DateTime is in the future" do
+      one_second_from_now = Moar.DateTime.utc_now(plus: {1, :second})
+      refute Moar.DateTime.recent?(one_second_from_now)
+    end
+
     test "accepts a duration" do
       sixty_one_seconds_ago = Moar.DateTime.utc_now(minus: {61, :second})
 

@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Fix `Moar.DateTime.recent?` to return false when the given datetime is in the future.
+
 ## 1.37.0
 
 - Add `Moar.Enum.find_indices!` which raises when a member of the expected elements is not found in

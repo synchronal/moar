@@ -76,7 +76,8 @@ defmodule Moar.DateTime do
   end
 
   @doc """
-  Returns true if `date_time` is no older than `duration` ago (which defaults to 1 minute).
+  Returns true if `date_time` is now or in the past and no older than `duration` ago (which defaults to 1 minute).
+  Returns false if `date_time` is in the future.
 
   ```elixir
   iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(minus: {30, :second}))
@@ -87,11 +88,18 @@ defmodule Moar.DateTime do
 
   iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(minus: {5, :minute}), {1, :hour})
   true
+
+  iex> Moar.DateTime.recent?(Moar.DateTime.utc_now(plus: {5, :second}))
+  false
   ```
   """
   @spec recent?(DateTime.t(), Moar.Duration.t() | nil) :: boolean()
-  def recent?(date_time, duration \\ {1, :minute}),
-    do: DateTime.diff(date_time, DateTime.utc_now(), :microsecond) >= -1 * Moar.Duration.convert(duration, :microsecond)
+  def recent?(date_time, duration \\ {1, :minute}) do
+    case DateTime.diff(date_time, DateTime.utc_now(), :microsecond) do
+      diff when diff > 0 -> false
+      diff -> diff >= -1 * Moar.Duration.convert(duration, :microsecond)
+    end
+  end
 
   @doc """
   Subtracts `duration` from `date_time`.
