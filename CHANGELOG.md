@@ -3,6 +3,7 @@
 ## Unreleased changes
 
 - Fix `Moar.DateTime.recent?` to return false when the given datetime is in the future.
+- Add `Moar.DateTime.within?` which returns `true` if the given datetime is within the given duration.
 
 ## 1.37.0
 

@@ -154,4 +154,27 @@ defmodule Moar.DateTime do
   @spec utc_now([plus: Moar.Duration.t()] | [minus: Moar.Duration.t()]) :: DateTime.t()
   def utc_now(plus: duration), do: DateTime.utc_now() |> add(duration)
   def utc_now(minus: duration), do: DateTime.utc_now() |> subtract(duration)
+
+  @doc """
+  Returns true if `date_time` is no older than `duration` ago, and no later than `duration` from now.
+
+  ```elixir
+  iex> Moar.DateTime.within?(Moar.DateTime.utc_now(minus: {30, :second}), {1, :minute})
+  true
+
+  iex> Moar.DateTime.within?(Moar.DateTime.utc_now(plus: {30, :second}), {1, :minute})
+  true
+
+  iex> Moar.DateTime.within?(Moar.DateTime.utc_now(minus: {5, :minute}), {1, :minute})
+  false
+
+  iex> Moar.DateTime.within?(Moar.DateTime.utc_now(plus: {5, :minute}), {1, :minute})
+  false
+  ```
+  """
+  @spec within?(DateTime.t(), Moar.Duration.t() | nil) :: boolean()
+  def within?(date_time, duration) do
+    now = DateTime.utc_now()
+    between?(date_time, {subtract(now, duration), add(now, duration)})
+  end
 end

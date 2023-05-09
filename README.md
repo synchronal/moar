@@ -54,6 +54,7 @@ end
 - `recent?` returns true if the given datetime was at most one minute ago.
 - `to_iso8601_rounded` converts to an ISO 8601 string, truncated to the second.
 - `utc_now` takes `plus` and `minus` options to get the current time plus or minus some duration.
+- `within?` determines whether a given datetime is within the given duration.
 
 `Moar.Difference`
 

@@ -103,4 +103,18 @@ defmodule Moar.DateTimeTest do
       Moar.DateTime.utc_now(minus: {1, :minute}) |> assert_eq(one_minute_ago, within: {1, :second})
     end
   end
+
+  describe "within?" do
+    test "returns true if the DateTime is within the last minute" do
+      fifty_nine_seconds_ago = Moar.DateTime.utc_now(minus: {59, :second})
+      sixty_one_seconds_ago = Moar.DateTime.utc_now(minus: {61, :second})
+      fifty_nine_seconds_from_now = Moar.DateTime.utc_now(plus: {59, :second})
+      sixty_one_seconds_from_now = Moar.DateTime.utc_now(plus: {61, :second})
+
+      assert Moar.DateTime.within?(fifty_nine_seconds_ago, {1, :minute})
+      assert Moar.DateTime.within?(fifty_nine_seconds_from_now, {1, :minute})
+      refute Moar.DateTime.within?(sixty_one_seconds_ago, {1, :minute})
+      refute Moar.DateTime.within?(sixty_one_seconds_from_now, {1, :minute})
+    end
+  end
 end
