@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.39.0
+
 - Add `Moar.String.compare` and `Moar.String.compare?` which can transform strings before comparing.
 
 ## 1.38.0
