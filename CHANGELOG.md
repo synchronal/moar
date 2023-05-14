@@ -11,8 +11,7 @@
 
 ## 1.37.0
 
-- Add `Moar.Enum.find_indices!` which raises when a member of the expected elements is not found in
-  the given enumerable.
+- Add `Moar.Enum.find_indices!` which raises when a member of the expected elements is not found in the given enumerable.
 
 ## 1.36.0
 
@@ -29,15 +28,15 @@
 
 ## 1.33.0
 
-- Add `Moar.Enum.index_by/2` and `Moar.Map.index_by/2` which return a new map indexed by a function or
-  key. Inspired by code in: http://johnelmlabs.com/posts/anti-patterns-in-liveview/
+- Add `Moar.Enum.index_by/2` and `Moar.Map.index_by/2` which return a new map indexed by a function or key. Inspired by
+  code in: http://johnelmlabs.com/posts/anti-patterns-in-liveview/
 - Add `Moar.Map.put_new!/3` which is like `Map.put_new/3` but raises if the key already exists.
 
 ## 1.32.0
 
 - Add `Moar.Assertions.assert_contains/2`
-- Soft-deprecate `Moar.Assertions.assert_eq`'s `ignore_whitespace: :leading_and_trailing` option in
-  favor of `whitespace: :squish` and `whitespace: :trim`
+- Soft-deprecate `Moar.Assertions.assert_eq`'s `ignore_whitespace: :leading_and_trailing` option in favor of `whitespace:
+  :squish` and `whitespace: :trim`
 
 ## 1.31.0
 
@@ -45,10 +44,10 @@
 
 ## 1.30.0
 
-- Fixed a bug in `Moar.Map.deep_merge/3`, which would incorrectly convert empty lists to maps when
-  they were map or keyword list values.
-- Add `Moar.Enum.is_map_or_nonempty_keyword/1` which is like `Moar.Enum.is_map_or_keyword/1` but
-  returns false if given an empty list.
+- Fixed a bug in `Moar.Map.deep_merge/3`, which would incorrectly convert empty lists to maps when they were map or
+  keyword list values.
+- Add `Moar.Enum.is_map_or_nonempty_keyword/1` which is like `Moar.Enum.is_map_or_keyword/1` but returns false if given an
+  empty list.
 
 ## 1.29.0
 
@@ -60,8 +59,7 @@
 - Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
 - Add `Moar.Enum.into!/2` which is like `Enum.into/2` but accepts `nil` as its first argument.
 - `Moar.Map.merge/2` now accepts `nil` values.
-- Add `Moar.Map.validate_keys!/2` which raises if the given map has keys that are not in the given
-  list.
+- Add `Moar.Map.validate_keys!/2` which raises if the given map has keys that are not in the given list.
 
 ## 1.27.0
 
@@ -73,14 +71,14 @@
 
 ## 1.25.0
 
-- Add `Moar.Atom.to_existing_atom/1` which acts like `String.to_existing_atom` but can take an atom
-  (or string) as an argument.
+- Add `Moar.Atom.to_existing_atom/1` which acts like `String.to_existing_atom` but can take an atom (or string) as an
+  argument.
 
 ## 1.24.1
 
-- Bug fix: `Moar.Map.deep_merge/3` used to try to convert any enumerable into a map before merging,
-  but this caused problems when a value was some other kind of enumerable that wasn't meant to be a
-  nested map-like structure. Now, it only automatically converts keyword lists to maps.
+- Bug fix: `Moar.Map.deep_merge/3` used to try to convert any enumerable into a map before merging, but this caused
+  problems when a value was some other kind of enumerable that wasn't meant to be a nested map-like structure. Now, it
+  only automatically converts keyword lists to maps.
 - Add `Moar.Enum.is_map_or_keyword` (which unforuntately cannot be used as a guard).
 
 ## 1.24.0
@@ -140,8 +138,7 @@
 ## 1.15.0
 
 - Add `Moar.DateTime.subtract/2` and `Moar.NaiveDateTime.subtract/2`.
-- Add `Moar.DateTime.utc_now/1` and `Moar.NaiveDateTime.utc_now/1` which allow adding and subtracting
-  from "now".
+- Add `Moar.DateTime.utc_now/1` and `Moar.NaiveDateTime.utc_now/1` which allow adding and subtracting from "now".
 - Add `Moar.Duration.from_now/1` and a `:from_now` transformer to `Moar.Duration.format/4`.
 
 ## 1.14.0
@@ -159,15 +156,14 @@
 
 ## 1.12.0
 
-- Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`, and
-  `Moar.Duration.shift/1` which is like `Moar.Duration.convert/1` but returns a duration tuple.
+- Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`, and `Moar.Duration.shift/1` which is
+  like `Moar.Duration.convert/1` but returns a duration tuple.
 - Add `Moar.Duration.ago/1` which returns the duration between a given datetime and now.
 - Add `Moar.Duration.between/2` which returns the duration between two datetimes.
 - Add `Moar.Duration.approx/1` which shifts a duration to a simpler approximate value.
-- `Moar.Duration` supports more time units: `:approx_month` (30 days), and `approx_year` (12
-  approx_months).
-- Add `Moar.Duration.format/2` which formats a duration in either long (`"3 seconds"`) or short
-  (`"3s"`) format, with optional transformers and suffix.
+- `Moar.Duration` supports more time units: `:approx_month` (30 days), and `approx_year` (12 approx_months).
+- Add `Moar.Duration.format/2` which formats a duration in either long (`"3 seconds"`) or short (`"3s"`) format, with
+  optional transformers and suffix.
 
 ## 1.11.0
 
@@ -176,10 +172,10 @@
 
 ## 1.10.0
 
-- `Moar.Map.atomize_key/3` converts dashes in keys to underscores before atomizing. Because the other
-  "atomize" functions in this module use this function, they have the same behavior.
-- `Moar.String.slug/2` retains any leading or trailing joiners (so `slug("_foo-bar", "_")` now returns
-  `"_foo_bar"` instead of `"foo_bar"`).
+- `Moar.Map.atomize_key/3` converts dashes in keys to underscores before atomizing. Because the other "atomize" functions
+  in this module use this function, they have the same behavior.
+- `Moar.String.slug/2` retains any leading or trailing joiners (so `slug("_foo-bar", "_")` now returns `"_foo_bar"`
+  instead of `"foo_bar"`).
 
 ## 1.9.0
 
@@ -187,9 +183,8 @@
 
 ## 1.8.0
 
-- Add `atomize_key` to `Moar.Map`, which atomizes a map key and raises if atomizing a key would
-  conflict with an exsiting atom key. `atomize_keys` and `deep_atomize_keys` now use this function so
-  they can also raise in the same situation.
+- Add `atomize_key` to `Moar.Map`, which atomizes a map key and raises if atomizing a key would conflict with an exsiting
+  atom key. `atomize_keys` and `deep_atomize_keys` now use this function so they can also raise in the same situation.
 - Add "!" versions of some functions in `Moar.Map` that raise when a key is not found.
 - Add an overview of the library to the readme.
 

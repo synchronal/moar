@@ -16,5 +16,8 @@
     assert_that: :*,
     refute_that: :*
   ],
+  markdown: [
+    line_length: 120
+  ],
   plugins: [MarkdownFormatter]
 ]

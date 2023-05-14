@@ -29,26 +29,24 @@ end
 `Moar.Assertions`
 
 - `assert_contains` asserts that a list or map contains one or more elements.
-- `assert_eq` is a pipeable equality assertion, with options such as the ability to ignore order when
-  comparing lists, ignore space when comparing strings, consider only certain keys of a map, returning
-  a different value than what was passed in, and asserting that a value is within some delta (which
-  can be a number or time duration).
+- `assert_eq` is a pipeable equality assertion, with options such as the ability to ignore order when comparing lists,
+  ignore space when comparing strings, consider only certain keys of a map, returning a different value than what was
+  passed in, and asserting that a value is within some delta (which can be a number or time duration).
 - `assert_recent` asserts that a datetime is pretty close to now.
 - `assert_that` asserts that a pre-condition and post-condition are true after performing an action.
 - `refute_that` asserts that a condition didn't change after performing an action.
 
 `Moar.Atom`
 
-- `atomize` when given an atom, returns it; when given a string, converts it to an atom, replacing
-  non-alphanumeric characters with underscores.
-- `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to
-  convert an atom to an atom or a string to a string.
+- `atomize` when given an atom, returns it; when given a string, converts it to an atom, replacing non-alphanumeric
+  characters with underscores.
+- `from_string` and `to_string` convert between strings and atoms, and don't fail if you try to convert an atom to an atom
+  or a string to a string.
 - `to_existing_atom` is like `String.to_existing_atom/1` but can accept an atom as a param.
 
 `Moar.DateTime` and `Moar.NaiveDateTime`
 
-- `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like
-  `{27, :minute}`.
+- `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
 - `between?` determines whether a datetime is between two other datetimes.
 - `from_iso8601!` raises if the string is not in ISO 8601 format.
 - `recent?` returns true if the given datetime was at most one minute ago.
@@ -62,14 +60,13 @@ end
 
 `Moar.Duration`
 
-- is a `{time, unit}` tuple (like `{27, :minute}`) and supports the regular `t:System.time_unit/0`
-  values and also `:minute`, `:hour`, and `:day`.
+- is a `{time, unit}` tuple (like `{27, :minute}`) and supports the regular `t:System.time_unit/0` values and also
+  `:minute`, `:hour`, and `:day`.
 - `ago` returns the duration between a given datetime and now.
 - `approx` shifts the duration to a simple approximate value.
 - `between` returns the duration between two datetimes.
 - `convert` converts a duration to a new time unit, returning only the value.
-- `format` formats a duration in long (`"3 seconds"`) or short (`"3s"`) format with optional
-  transformers and suffix.
+- `format` formats a duration in long (`"3 seconds"`) or short (`"3s"`) format with optional transformers and suffix.
 - `from_now` returns a duration between now and a given datetime.
 - `humanize` converts the duration to the highest possible time unit.
 - `shift`, `shift_up`, and `shift_down` convert a duration to a new time unit.
@@ -84,12 +81,10 @@ end
 - `first!` returns the first item or raises if there isn't a first item.
 - `index_by` converts an enum into a list of maps indexed by the given function.
 - `into!` is like `Enum.into` but allows `nil` as its first argument.
-- `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be
-  used as a guard).
+- `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be used as a guard).
 - `isort` and `isort_by` sort case-insensitively.
 - `take_at` returns a list of elements at the given indices.
-- `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids
-  extensively for testing.)
+- `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids extensively for testing.)
 
 `Moar.File`
 
@@ -98,28 +93,24 @@ end
 
 `Moar.Map`
 
-- `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms,
-  and `stringify_keys` does the opposite.
+- `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, and `stringify_keys`
+  does the opposite.
 - `deep_take` takes a list of keys and `{key, nested_key}` tuples to take from nested maps.
 - `index_by` converts a list of maps into a map of maps indexed by the values of one of the keys.
-- `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge`
-  also accepts a function to resolve value conflicts.
+- `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge` also accepts a
+  function to resolve value conflicts.
 - `merge_if_blank` merge maps, retaining existing non-blank values.
-- `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via
-  `Moar.Term.blank?/1`)
+- `put_if_blank` puts a key/value pair into a map if the key is missing or its value is blank (via `Moar.Term.blank?/1`)
 - `put_new!` is like `Map.put_new/3` but raises if the key already exists in the map.
 - `rename_key` and `rename_keys` rename keys in a map.
 - `transform` transforms a key or multiple keys with a transformer function.
-- `validate_keys!` validates that the keys in the map are equal to or a subset of a list of valid
-  keys.
+- `validate_keys!` validates that the keys in the map are equal to or a subset of a list of valid keys.
 
 `Moar.Opts`
 
 - is meant to be used with function options.
-- `get` extracts a value from opts, falling back to a default if the value is blank (via
-  `Moar.Term.blank?/1`)
-- `take` extracts multiple values from opts, falling back to defaults if the value is blank (via
-  `Moar.Term.blank?/1`)
+- `get` extracts a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
+- `take` extracts multiple values from opts, falling back to defaults if the value is blank (via `Moar.Term.blank?/1`)
 
 `Moar.Protocol`
 
@@ -147,15 +138,15 @@ end
 - `compare` and `compare?` compare two strings, optionally transforming the strings before comparison.
 - `inner_truncate` removes the middle of a string to make it the desired length.
 - `secure_compare` compares two strings in constant time.
-- `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore`
-  are shortcuts for common slug formats.
+- `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for
+  common slug formats.
 - `squish` collapses consecutive whitespace characters.
 - `surround` wraps a string with the given characters.
 - `to_case` converts text to `:camel_case`, `:lower_camel_case`, or `:snake_case`.
 - `to_integer` converts a string to an integer with a few handy options.
 - `trim` is like `String.trim/1` but handles `nil` values.
-- `truncate_at` truncates a string at the last instance of a substring that results in the truncated
-  string being shorter than a given length.
+- `truncate_at` truncates a string at the last instance of a substring that results in the truncated string being shorter
+  than a given length.
 
 `Moar.Sugar`
 
@@ -165,8 +156,7 @@ end
 
 `Moar.Term`
 
-- `blank?` returns true if a term is `nil`, an empty string, a whitespace-only string, an empty list,
-  or an empty map.
+- `blank?` returns true if a term is `nil`, an empty string, a whitespace-only string, an empty list, or an empty map.
 - `present?` is the opposite of `blank?`.
 - `presence` returns a default if the argument is blank.
 
@@ -178,14 +168,11 @@ end
 `Moar.URI`
 
 - `fix` applies some fixes to a URI string.
-- `to_simple_string` returns a string for display purposes, removing the scheme, port, params, and
-  fragment.
-- `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not
-  contain spaces.
+- `to_simple_string` returns a string for display purposes, removing the scheme, port, params, and fragment.
+- `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
 - `web_url?` returns true if the scheme is `http` or `https`.
 
 `Moar.Version`
 
 - `compare` is like `Version.compare/2` but normalizes the versions first.
-- `normalize` appends as many ".0" strings as necessary to create a string with major, minor, and
-  patch numbers.
+- `normalize` appends as many ".0" strings as necessary to create a string with major, minor, and patch numbers.
