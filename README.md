@@ -144,6 +144,7 @@ end
 `Moar.String`
 
 - `append_unless_blank` appends a suffix to a string, unless the string is blank.
+- `compare` and `compare?` compare two strings, optionally transforming the strings before comparison.
 - `inner_truncate` removes the middle of a string to make it the desired length.
 - `secure_compare` compares two strings in constant time.
 - `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore`

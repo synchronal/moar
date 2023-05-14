@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.String.compare` and `Moar.String.compare?` which can transform strings before comparing.
+
 ## 1.38.0
 
 - Fix `Moar.DateTime.recent?` to return false when the given datetime is in the future.

@@ -22,6 +22,34 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "compare" do
+    test "compares two strings using `==`" do
+      assert Moar.String.compare("bat", "bat") == :eq
+      assert Moar.String.compare("bat", "cat") == :lt
+      assert Moar.String.compare("bat", "ant") == :gt
+
+      assert Moar.String.compare("Bat", "bat") == :lt
+      assert Moar.String.compare("bat", "Bat") == :gt
+    end
+
+    test "can transform the inputs with one or more transformer functions" do
+      assert Moar.String.compare("foo", "FOO", &String.downcase/1) == :eq
+      assert Moar.String.compare("foo bar", " foo   bar ", &Moar.String.squish/1) == :eq
+      assert Moar.String.compare("foo", " foo ", &String.trim/1) == :eq
+      assert Moar.String.compare("foo bar", " FOO   baR ", [&String.downcase/1, &Moar.String.squish/1]) == :eq
+    end
+  end
+
+  describe "compare?" do
+    test "like `compare/2` but returns `true` if the first value is less than or equal to the second value" do
+      assert Moar.String.compare?("bat", "bat") == true
+      assert Moar.String.compare?("bat", "cat") == true
+      assert Moar.String.compare?("bat", "ant") == false
+
+      assert Moar.String.compare?("foo bar", " FOO   baR ", [&String.downcase/1, &Moar.String.squish/1]) == true
+    end
+  end
+
   describe "inner_truncate" do
     test "works with nil" do
       assert Moar.String.inner_truncate(nil, 10) == nil

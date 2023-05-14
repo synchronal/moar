@@ -29,6 +29,58 @@ defmodule Moar.String do
   end
 
   @doc """
+  Compares two strings, returning `:lt`, `:eq`, or `:gt` depending on whether the first arg is less than, equal to, or
+  greater than the second arg. Accepts one or more functions that transform the inputs before comparison.
+
+  See `Moar.String.compare?/2` for a version that returns `true` or `false`.
+
+  ```
+  iex> Moar.String.compare("foo", "FOO")
+  :gt
+
+  iex> Moar.String.compare("foo", "FOO", &String.downcase/1)
+  :eq
+
+  iex> Moar.String.compare("foo bar", " FOO    bar ", [&String.downcase/1, &Moar.String.squish/1])
+  :eq
+  ```
+  """
+  @spec compare(binary(), binary(), (binary() -> binary()) | [(binary() -> binary())]) :: :lt | :eq | :gt
+  def compare(left, right, transformer_fns \\ []) do
+    List.wrap(transformer_fns)
+    |> Enum.reduce({left, right}, fn
+      transformer_fn, {left, right} -> {transformer_fn.(left), transformer_fn.(right)}
+    end)
+    |> case do
+      {left, right} when left < right -> :lt
+      {left, right} when left > right -> :gt
+      _ -> :eq
+    end
+  end
+
+  @doc """
+  Compares two strings, returning `true` if the first arg is less than or equal to the second arg, or `false` if the
+  first arg is greater than the second arg. Accepts one or more functions that transform the inputs before comparison.
+  Useful for sorter functions like what is passed into `Enum.sort/2`.
+
+  See `Moar.String.compare/2` for a version that returns `:lt`, `:eq`, or `:gt`.
+
+  ```
+  iex> Moar.String.compare?("foo", "FOO")
+  false
+
+  iex> Moar.String.compare?("foo", "FOO", &String.downcase/1)
+  true
+
+  iex> Moar.String.compare?("foo bar", " FOO    bar ", [&String.downcase/1, &Moar.String.squish/1])
+  true
+  ```
+  """
+  @spec compare?(binary(), binary(), (binary() -> binary()) | [(binary() -> binary())]) :: boolean()
+  def compare?(left, right, transformer_fns \\ []),
+    do: compare(left, right, transformer_fns) in [:lt, :eq]
+
+  @doc """
   Dasherizes `term`. A shortcut to `slug(term, "-")`.
 
   See docs for `slug/2`.
