@@ -8,8 +8,8 @@ on:
     branches:
       - main
 env:
-  PUBLISH_ELIXIR_VERSION: "1.14.4"
-  PUBLISH_OTP_VERSION: "26.0"
+  PRIMARY_ELIXIR_VERSION: "1.14.4"
+  PRIMARY_OTP_VERSION: "26.0"
 jobs:
   build_test:
     strategy:
@@ -32,6 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.pair.elixir }}
@@ -74,6 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.pair.elixir }}
@@ -117,6 +119,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ matrix.pair.elixir }}
@@ -193,10 +196,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.PUBLISH_ELIXIR_VERSION }}
-          otp-version: ${{ env.PUBLISH_OTP_VERSION }}
+          elixir-version: ${{ env.PRIMARY_ELIXIR_VERSION }}
+          otp-version: ${{ env.PRIMARY_OTP_VERSION }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
@@ -228,10 +232,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.PUBLISH_ELIXIR_VERSION }}
-          otp-version: ${{ env.PUBLISH_OTP_VERSION }}
+          elixir-version: ${{ env.PRIMARY_ELIXIR_VERSION }}
+          otp-version: ${{ env.PRIMARY_OTP_VERSION }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
