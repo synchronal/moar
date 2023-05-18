@@ -8,10 +8,23 @@ on:
     branches:
       - main
 env:
-  ELIXIR_VERSION: "1.14.3"
-  OTP_VERSION: "25.3"
+  PUBLISH_ELIXIR_VERSION: "1.14.4"
+  PUBLISH_OTP_VERSION: "26.0"
 jobs:
   build_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.13.0
+              otp: 23.3
+          - pair:
+              elixir: 1.14.0
+              otp: 25.0
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Build Test
     runs-on: ubuntu-20.04
     env:
@@ -21,19 +34,19 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Install dependencies
         run: mix deps.get
         working-directory: .
@@ -41,6 +54,19 @@ jobs:
         run: mix compile --force --warnings-as-errors
         working-directory: .
   build_dev:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.13.0
+              otp: 23.3
+          - pair:
+              elixir: 1.14.0
+              otp: 25.0
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Build Dev
     runs-on: ubuntu-20.04
     env:
@@ -50,19 +76,19 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Install dependencies
         run: mix deps.get
         working-directory: .
@@ -70,6 +96,19 @@ jobs:
         run: mix compile --force --warnings-as-errors
         working-directory: .
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.13.0
+              otp: 23.3
+          - pair:
+              elixir: 1.14.0
+              otp: 25.0
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Test
     needs: build_test
     runs-on: ubuntu-20.04
@@ -80,23 +119,36 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Run tests
         run: mix test --color --warnings-as-errors
         working-directory: .
   credo_and_dialyxir:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.13.0
+              otp: 23.3
+          - pair:
+              elixir: 1.14.0
+              otp: 25.0
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Credo + Dialyxir
     needs: build_test
     runs-on: ubuntu-20.04
@@ -108,24 +160,24 @@ jobs:
         id: beam
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache PLTs
         uses: actions/cache@v3
         with:
           path: priv/plts
-          key: ${{ runner.os }}-test-dialyxir-v1-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-test-dialyzer-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Credo
         run: mix credo --strict
         working-directory: .
@@ -133,6 +185,19 @@ jobs:
         run: mix dialyzer
         working-directory: .
   audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.13.0
+              otp: 23.3
+          - pair:
+              elixir: 1.14.0
+              otp: 25.0
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Audit
     needs: build_dev
     runs-on: ubuntu-20.04
@@ -143,19 +208,19 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Check Elixir formatting
         run: mix format --check-formatted
         working-directory: .
@@ -178,19 +243,19 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
+          elixir-version: ${{ env.PUBLISH_ELIXIR_VERSION }}
+          otp-version: ${{ env.PUBLISH_OTP_VERSION }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
         with:
           path: deps
-          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-deps-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Cache _build
         uses: actions/cache@v3
         with:
           path: _build
-          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock', '.tool-versions') }}
+          key: ${{ runner.os }}-dev-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Publish to Hex
         uses: synchronal/hex-publish-action@v3
         with:

@@ -10,6 +10,8 @@ defmodule Moar.Assertions do
 
   import ExUnit.Assertions
 
+  @inspect_opts [custom_options: [sort_maps: true]]
+
   @type assert_eq_opts() ::
           {:except, list()}
           | {:ignore_order, boolean()}
@@ -39,14 +41,14 @@ defmodule Moar.Assertions do
   def assert_contains(left, right) when is_map(left) and is_map(right) do
     case Enum.filter(right, &(&1 not in left)) do
       [] -> left
-      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left)} to contain #{inspect(Map.new(missing))}"
+      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(Map.new(missing), @inspect_opts)}"
     end
   end
 
   def assert_contains(left, right) when is_list(left) and is_list(right) do
     case Enum.filter(right, &(&1 not in left)) do
       [] -> left
-      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left)} to contain #{inspect(missing)}"
+      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(missing, @inspect_opts)}"
     end
   end
 
