@@ -40,15 +40,23 @@ defmodule Moar.Assertions do
   @spec assert_contains(list(), list() | any()) :: list()
   def assert_contains(left, right) when is_map(left) and is_map(right) do
     case Enum.filter(right, &(&1 not in left)) do
-      [] -> left
-      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(Map.new(missing), @inspect_opts)}"
+      [] ->
+        left
+
+      missing ->
+        raise ExUnit.AssertionError,
+              "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(Map.new(missing), @inspect_opts)}"
     end
   end
 
   def assert_contains(left, right) when is_list(left) and is_list(right) do
     case Enum.filter(right, &(&1 not in left)) do
-      [] -> left
-      missing -> raise ExUnit.AssertionError, "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(missing, @inspect_opts)}"
+      [] ->
+        left
+
+      missing ->
+        raise ExUnit.AssertionError,
+              "Expected #{inspect(left, @inspect_opts)} to contain #{inspect(missing, @inspect_opts)}"
     end
   end
 

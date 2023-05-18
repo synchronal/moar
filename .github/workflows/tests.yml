@@ -185,19 +185,6 @@ jobs:
         run: mix dialyzer
         working-directory: .
   audit:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - pair:
-              elixir: 1.13.0
-              otp: 23.3
-          - pair:
-              elixir: 1.14.0
-              otp: 25.0
-          - pair:
-              elixir: 1.14.4
-              otp: 26.0
     name: Audit
     needs: build_dev
     runs-on: ubuntu-20.04
@@ -208,8 +195,8 @@ jobs:
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ matrix.pair.elixir }}
-          otp-version: ${{ matrix.pair.otp }}
+          elixir-version: ${{ env.PUBLISH_ELIXIR_VERSION }}
+          otp-version: ${{ env.PUBLISH_OTP_VERSION }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
