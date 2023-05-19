@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Created `Moar.List` and added `to_keyword` which converts a list to a keyword list, allowing a default value.
+
 ## 1.40.0
 
 - `assert_contains` returns consistently-ordered map keys when using OTP 26.0 or greater.

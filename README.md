@@ -91,6 +91,10 @@ end
 - `new_tempfile_path` returns a new path for a tempfile, without creating it.
 - `write_tempfile` writes some data to a new tempfile.
 
+`Moar.List`
+
+- `to_keyword` converts a list into a keyword list, using a default value or function to generate the values
+
 `Moar.Map`
 
 - `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, and `stringify_keys`
