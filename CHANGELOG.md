@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.40.0
+
+- `assert_contains` returns consistently-ordered map keys when using OTP 26.0 or greater.
+
 ## 1.39.0
 
 - Add `Moar.String.compare` and `Moar.String.compare?` which can transform strings before comparing.
