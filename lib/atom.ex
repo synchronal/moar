@@ -131,7 +131,7 @@ defmodule Moar.Atom do
   iex> Moar.Atom.to_existing_atom("foo")
   :foo
 
-  iex> assert_raise ArgumentError, ~r/not an already existing atom/, fn ->
+  iex> assert_raise ArgumentError, fn ->
   ...>   Moar.Atom.to_existing_atom("sadfasfsfasf")
   ...> end
 

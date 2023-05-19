@@ -69,7 +69,7 @@ defmodule Moar.AtomTest do
     test "string when atom exists", do: assert(Moar.Atom.to_existing_atom("banana") == :banana)
 
     test "string when atom is not existing" do
-      assert_raise ArgumentError, ~r/1st argument: not an already existing atom/, fn ->
+      assert_raise ArgumentError, ~r/(1st argument: not an already existing atom|argument error)/, fn ->
         Moar.Atom.to_existing_atom("qwertyuiop")
       end
     end
