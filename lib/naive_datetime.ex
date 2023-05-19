@@ -22,7 +22,7 @@ defmodule Moar.NaiveDateTime do
   > of a function that is far more likely to be correct.
 
   ```elixir
-  iex> start = ~N[2022-01-01T00:00:00]
+  iex> start = ~N[2022-01-01T00:00:00.000]
   iex> Moar.NaiveDateTime.add(start, {3, :minute})
   ~N[2022-01-01T00:03:00.000]
   ```
@@ -73,7 +73,7 @@ defmodule Moar.NaiveDateTime do
   > of a function that is far more likely to be correct.
 
   ```elixir
-  iex> start = ~N[2022-01-01T00:03:00]
+  iex> start = ~N[2022-01-01T00:03:00.000]
   iex> Moar.NaiveDateTime.subtract(start, {3, :minute})
   ~N[2022-01-01T00:00:00.000]
   ```

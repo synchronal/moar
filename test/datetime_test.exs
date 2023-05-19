@@ -7,7 +7,7 @@ defmodule Moar.DateTimeTest do
 
   describe "add" do
     test "adds a duration to a time" do
-      assert Moar.DateTime.add(~U[2022-01-01T00:00:00Z], {55, :second}) == ~U[2022-01-01T00:00:55.000Z]
+      assert Moar.DateTime.add(~U[2022-01-01T00:00:00.000Z], {55, :second}) == ~U[2022-01-01T00:00:55.000Z]
     end
   end
 
@@ -68,7 +68,7 @@ defmodule Moar.DateTimeTest do
 
   describe "subtract" do
     test "subtracts a duration from a datetime" do
-      assert Moar.DateTime.subtract(~U[2022-01-01T00:00:55Z], {55, :second}) == ~U[2022-01-01T00:00:00.000Z]
+      assert Moar.DateTime.subtract(~U[2022-01-01T00:00:55.000Z], {55, :second}) == ~U[2022-01-01T00:00:00.000Z]
     end
   end
 
