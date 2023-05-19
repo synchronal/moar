@@ -7,9 +7,6 @@ on:
   pull_request:
     branches:
       - main
-env:
-  PRIMARY_ELIXIR_VERSION: "1.14.4"
-  PRIMARY_OTP_VERSION: "26.0"
 jobs:
   build_test:
     strategy:
@@ -188,6 +185,13 @@ jobs:
         run: mix dialyzer
         working-directory: .
   audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Audit
     needs: build_dev
     runs-on: ubuntu-20.04
@@ -199,8 +203,8 @@ jobs:
         id: beam
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.PRIMARY_ELIXIR_VERSION }}
-          otp-version: ${{ env.PRIMARY_OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
@@ -222,6 +226,13 @@ jobs:
         run: mix deps.audit
         working-directory: .
   publish:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pair:
+              elixir: 1.14.4
+              otp: 26.0
     name: Publish to Hex
     if: github.ref == 'refs/heads/main'
     needs:
@@ -235,8 +246,8 @@ jobs:
         id: beam
         uses: erlef/setup-beam@v1
         with:
-          elixir-version: ${{ env.PRIMARY_ELIXIR_VERSION }}
-          otp-version: ${{ env.PRIMARY_OTP_VERSION }}
+          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{ matrix.pair.otp }}
           version-type: strict
       - name: Cache deps
         uses: actions/cache@v3
