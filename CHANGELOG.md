@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.42.0
+
 - Add `Moar.Integer.compare/2`.
 
 ## 1.41.0
