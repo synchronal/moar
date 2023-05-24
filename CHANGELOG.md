@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Integer.compare/2`.
+
 ## 1.41.0
 
 - Created `Moar.List` and added `to_keyword` which converts a list to a keyword list, allowing a default value.
