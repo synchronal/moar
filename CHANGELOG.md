@@ -2,6 +2,9 @@
 
 ## Unreleased changes
 
+- Add `Moar.List.to_sentence` converts a list into a string, with items separated by commas, and an "and" before the last
+  item.
+
 ## 1.42.0
 
 - Add `Moar.Integer.compare/2`.

@@ -28,4 +28,22 @@ defmodule Moar.ListTest do
       assert_raise FunctionClauseError, fn -> Moar.List.to_keyword(["foo", "bar"]) end
     end
   end
+
+  describe "to_sentence" do
+    test "returns empty string for blank input" do
+      assert Moar.List.to_sentence(nil) == ""
+      assert Moar.List.to_sentence([]) == ""
+      assert Moar.List.to_sentence([""]) == ""
+    end
+
+    test "joins the list items with commas and 'and'" do
+      assert Moar.List.to_sentence(["ant"]) == "ant"
+      assert Moar.List.to_sentence(["ant", "bat"]) == "ant and bat"
+      assert Moar.List.to_sentence(["ant", "bat", "cat"]) == "ant, bat, and cat"
+    end
+
+    test "skips blank items" do
+      assert Moar.List.to_sentence(["ant", "", "bat", nil, "cat"]) == "ant, bat, and cat"
+    end
+  end
 end
