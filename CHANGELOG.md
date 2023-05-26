@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.44.0
+
 - `Moar.List.to_sentence` takes a mapper function, which defaults to `Kernel.to_string/1`.
 
 ## 1.43.0
