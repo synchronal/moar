@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.List.to_sentence` takes a mapper function, which defaults to `Kernel.to_string/1`.
+
 ## 1.43.0
 
 - Add `Moar.List.to_sentence` converts a list into a string, with items separated by commas, and an "and" before the last

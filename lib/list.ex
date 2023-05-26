@@ -36,7 +36,7 @@ defmodule Moar.List do
 
   @doc """
   Converts a list to a comma-separated list that has "and" before the last item. The items in the list are converted
-  to strings via `Kernel.to_string/1`.
+  to strings via a mapper function, which defaults to `Kernel.to_string/1`.
 
   ```
   iex> Moar.List.to_sentence([])
@@ -45,16 +45,19 @@ defmodule Moar.List do
   iex> Moar.List.to_sentence(["ant"])
   "ant"
 
-  iex> Moar.List.to_sentence(["ant", "bat"])
+  iex> Moar.List.to_sentence(["ant", :bat])
   "ant and bat"
 
-  iex> Moar.List.to_sentence(["ant", "bat", "cat"])
+  iex> Moar.List.to_sentence(["ant", :bat, "cat"])
   "ant, bat, and cat"
+
+  iex> Moar.List.to_sentence(["ant", "bat", "cat"], &String.upcase/1)
+  "ANT, BAT, and CAT"
   ```
   """
-  @spec to_sentence([binary()]) :: binary()
-  def to_sentence(list) do
-    case list |> List.wrap() |> Enum.reject(&Moar.Term.blank?/1) do
+  @spec to_sentence([any()], (any() -> binary())) :: binary()
+  def to_sentence(list, mapper \\ &Kernel.to_string/1) do
+    case list |> List.wrap() |> Enum.reject(&Moar.Term.blank?/1) |> Enum.map(mapper) do
       [] -> ""
       [only] -> only
       [first, second] -> [first, " and ", second]

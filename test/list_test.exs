@@ -45,5 +45,13 @@ defmodule Moar.ListTest do
     test "skips blank items" do
       assert Moar.List.to_sentence(["ant", "", "bat", nil, "cat"]) == "ant, bat, and cat"
     end
+
+    test "by default, list items must implement `String.Chars`" do
+      assert Moar.List.to_sentence([1, 2.0, :three, ["fo", "ur"], "five"]) == "1, 2.0, three, four, and five"
+    end
+
+    test "accepts a mapper function" do
+      assert Moar.List.to_sentence(["ant", "", "bat", nil, "cat"], &String.upcase/1) == "ANT, BAT, and CAT"
+    end
   end
 end
