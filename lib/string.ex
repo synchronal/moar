@@ -81,6 +81,18 @@ defmodule Moar.String do
     do: compare(left, right, transformer_fns) in [:lt, :eq]
 
   @doc """
+  Returns the number of leading spaces. Only considers "plain" spaces, not all unicode whitespace.
+
+  ```elixir
+  iex> Moar.String.count_leading_spaces("  foo")
+  2
+  ```
+  """
+  @spec count_leading_spaces(binary()) :: non_neg_integer()
+  def count_leading_spaces(<<" ", rest::binary>>), do: 1 + count_leading_spaces(rest)
+  def count_leading_spaces(_), do: 0
+
+  @doc """
   Dasherizes `term`. A shortcut to `slug(term, "-")`.
 
   See docs for `slug/2`.
@@ -398,4 +410,44 @@ defmodule Moar.String do
   @spec underscore(String.Chars.t() | [String.Chars.t()]) :: binary()
   def underscore(term),
     do: slug(term, "_")
+
+  @doc """
+  Unindents a string by finding the smallest indentation of the string, and removing that many spaces from each line.
+  Only considers "plain" spaces, not all unicode whitespace.
+
+  ```elixir
+  iex> \"""
+  ...>      ant
+  ...>    bat
+  ...>      cat
+  ...>        dog
+  ...> \""" |> Moar.String.unindent()
+  "  ant\nbat\n  cat\n    dog\n"
+  ```
+  """
+  @spec unindent(binary()) :: binary()
+  def unindent(s) do
+    lines = String.split(s, "\n")
+    min_spaces = lines |> Enum.filter(&Moar.Term.present?/1) |> Enum.map(&count_leading_spaces(&1)) |> Enum.min()
+    unindent(s, min_spaces)
+  end
+
+  @doc """
+  Unindents a string by `count` spaces. Only considers "plain" spaces, not all unicode whitespace.
+
+  ```elixir
+  iex> \"""
+  ...> foo
+  ...>   bar
+  ...>     baz
+  ...> \""" |> Moar.String.unindent(2)
+  "foo\nbar\n  baz\n"
+  ```
+  """
+  @spec unindent(binary(), non_neg_integer()) :: binary()
+  def unindent(s, count) do
+    s
+    |> String.split("\n")
+    |> Enum.map_join("\n", &String.slice(&1, min(count, count_leading_spaces(&1))..-1))
+  end
 end

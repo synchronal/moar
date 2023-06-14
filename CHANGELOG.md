@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+- `Moar.String.count_leading_spaces/1` returns the number of leading spaces in a string.
+- `Moar.String.unindent/1` un-indents a multiline string by the smallest indentation size
+- `Moar.String.unindent/2` un-indents a multiline string by the given amount
+
 ## 1.44.0
 
 - `Moar.List.to_sentence` takes a mapper function, which defaults to `Kernel.to_string/1`.

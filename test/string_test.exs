@@ -50,6 +50,14 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "count_leading_spaces" do
+    test "returns the number of leading spaces" do
+      assert Moar.String.count_leading_spaces("") == 0
+      assert Moar.String.count_leading_spaces("foo") == 0
+      assert Moar.String.count_leading_spaces("  foo") == 2
+    end
+  end
+
   describe "inner_truncate" do
     test "works with nil" do
       assert Moar.String.inner_truncate(nil, 10) == nil
@@ -272,6 +280,68 @@ defmodule Moar.StringTest do
       "aaaaaaaaaaaaa"
       |> Moar.String.truncate_at("a", 3)
       |> assert_eq("aaa")
+    end
+  end
+
+  describe "unindent/1" do
+    test "removes leading spaces" do
+      assert Moar.String.unindent("  foo") == "foo"
+    end
+
+    test "removes leading spaces from each line" do
+      """
+        foo
+        bar
+      """
+      |> Moar.String.unindent()
+      |> assert_eq("""
+      foo
+      bar
+      """)
+    end
+
+    test "uses the smallest space count of non-blank lines to determine how much to unindent" do
+      """
+
+          foo
+        bar
+            baz
+        fez
+          quux
+      """
+      |> Moar.String.unindent()
+      |> assert_eq("""
+
+        foo
+      bar
+          baz
+      fez
+        quux
+      """)
+    end
+  end
+
+  describe "unindent/2" do
+    test "removes at most the given number of spaces" do
+      assert Moar.String.unindent(" foo", 2) == "foo"
+      assert Moar.String.unindent("  foo", 2) == "foo"
+      assert Moar.String.unindent("    foo", 2) == "  foo"
+    end
+
+    test "works on multiline strings" do
+      """
+          foo
+        bar
+            baz
+      fez
+      """
+      |> Moar.String.unindent(2)
+      |> assert_eq("""
+        foo
+      bar
+          baz
+      fez
+      """)
     end
   end
 end
