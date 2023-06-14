@@ -145,6 +145,7 @@ end
 
 - `append_unless_blank` appends a suffix to a string, unless the string is blank.
 - `compare` and `compare?` compare two strings, optionally transforming the strings before comparison.
+- `count_leading_spaces/1` returns the number of leading spaces in a string.
 - `inner_truncate` removes the middle of a string to make it the desired length.
 - `secure_compare` compares two strings in constant time.
 - `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for
@@ -156,6 +157,8 @@ end
 - `trim` is like `String.trim/1` but handles `nil` values.
 - `truncate_at` truncates a string at the last instance of a substring that results in the truncated string being shorter
   than a given length.
+- `unindent/1` un-indents a multiline string by the smallest indentation size.
+- `unindent/2` un-indents a multiline string by the given amount.
 
 `Moar.Sugar`
 
