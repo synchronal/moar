@@ -13,9 +13,19 @@ defmodule Moar.VersionTest do
     test "unlike `Version.compare`, will normalize versions" do
       assert Moar.Version.compare("1.2", "1.2.4") == :lt
     end
+
+    test "matches 4-number versions to 3-number versions" do
+      assert Moar.Version.compare("1.2.3.4", "1.2.3") == :eq
+      assert Moar.Version.compare("1.2.3.4", "1.2.2") == :gt
+      assert Moar.Version.compare("1.2.3.4", "1.2.4") == :lt
+    end
   end
 
   describe "normalize" do
+    test "returns major.minor.patch.bug unchanged" do
+      assert Moar.Version.normalize("1.2.3.4") == "1.2.3"
+    end
+
     test "returns major.minor.patch unchanged" do
       assert Moar.Version.normalize("1.2.3") == "1.2.3"
     end

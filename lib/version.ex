@@ -29,7 +29,7 @@ defmodule Moar.Version do
   """
   @spec normalize(binary()) :: binary()
   def normalize(version) do
-    parts = version |> Moar.Term.presence("0.0.0") |> String.split(".")
+    parts = version |> Moar.Term.presence("0.0.0") |> String.split(".") |> Enum.take(3)
     normalized = parts ++ List.duplicate("0", 3 - length(parts))
     Enum.join(normalized, ".")
   end

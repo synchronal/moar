@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Version.compare/2` truncates `1.2.3.4` to `1.2.3`.
+
 ## 1.45.0
 
 - `Moar.String.count_leading_spaces/1` returns the number of leading spaces in a string.
