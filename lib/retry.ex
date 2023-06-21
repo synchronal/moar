@@ -45,7 +45,7 @@ defmodule Moar.Retry do
   ** (RuntimeError) always fails
   ```
   """
-  @spec rescue_for!(pos_integer() | Moar.Duration.t(), (() -> any()), pos_integer()) :: any() | no_return
+  @spec rescue_for!(pos_integer() | Moar.Duration.t(), (-> any()), pos_integer()) :: any() | no_return
   def rescue_for!(timeout, fun, interval_ms \\ @default_interval) do
     expiry = Moar.DateTime.add(DateTime.utc_now(), duration(timeout))
     rescue_until!(expiry, fun, interval_ms)
@@ -61,7 +61,7 @@ defmodule Moar.Retry do
   ** (RuntimeError) always fails
   ```
   """
-  @spec rescue_until!(DateTime.t(), (() -> any()), pos_integer()) :: any() | no_return
+  @spec rescue_until!(DateTime.t(), (-> any()), pos_integer()) :: any() | no_return
   def rescue_until!(%DateTime{} = expiry, fun, interval_ms \\ @default_interval) do
     fun.()
   rescue

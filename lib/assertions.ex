@@ -203,6 +203,7 @@ defmodule Moar.Assertions do
 
   iex> twenty_seconds_ago = Moar.DateTime.add(DateTime.utc_now(), {-20, :second})
   iex> assert_recent twenty_seconds_ago, {25, :second}
+
   ```
   """
   @spec assert_recent(DateTime.t() | NaiveDateTime.t() | binary(), Moar.Duration.t()) ::

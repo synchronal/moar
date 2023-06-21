@@ -117,7 +117,7 @@ defmodule Moar.StringTest do
       refute Moar.String.secure_compare(nil, nil)
       refute Moar.String.secure_compare(nil, "")
       refute Moar.String.secure_compare("", nil)
-      refute Moar.String.secure_compare('', nil)
+      refute Moar.String.secure_compare(~c"", nil)
     end
   end
 
