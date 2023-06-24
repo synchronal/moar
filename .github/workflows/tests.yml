@@ -189,7 +189,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: priv/plts
-          key: ${{ runner.os }}-test-dialyzer-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
+          key: ${{ runner.os }}-test-dialyzer-v2-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Credo
         run: mix credo --strict
         working-directory: .
