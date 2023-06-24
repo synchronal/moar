@@ -2,6 +2,7 @@
 
 set -exo pipefail
 
+bin/dev/validate-related-annotations --e ex --e exs --d lib --d test
 mix credo --strict
 mix dialyzer
 mix deps.audit

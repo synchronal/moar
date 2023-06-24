@@ -1,0 +1,81 @@
+#!/usr/bin/env elixir
+
+defmodule ValidateRelatedAnnotations do
+  def run(args) do
+    args
+    |> opts()
+    |> banner()
+    |> source_paths()
+    |> related_paths()
+    |> result()
+    |> case do
+      :ok -> exit({:shutdown, 0})
+      :error -> exit({:shutdown, 1})
+    end
+  end
+
+  defp opts(args) do
+    {opts, _rest} = OptionParser.parse!(args, strict: [d: :keep, e: :keep])
+
+    directories = Keyword.get_values(opts, :d)
+    directories = if directories == [], do: ["."], else: directories
+
+    extensions = Keyword.get_values(opts, :e)
+    extensions = if extensions == [], do: ["ex", "exs"], else: extensions
+
+    {directories, extensions}
+  end
+
+  defp banner({directories, extensions} = opts) do
+    info(0, "Validating related file annotations...")
+    info(2, "checking file types:  ", Enum.map_join(extensions, " ", fn e -> "*.#{e}" end))
+    info(2, "checking directories: ", Enum.join(directories, " "))
+    opts
+  end
+
+  defp source_paths({directories, extensions}) do
+    extension_list = Enum.join(extensions, ",")
+
+    Enum.reduce(directories, [], fn dir, acc ->
+      acc ++ Path.wildcard("#{dir}/**/*.{#{extension_list}}")
+    end)
+  end
+
+  defp related_paths(paths) do
+    Enum.reduce(paths, [], fn path, acc ->
+      Regex.scan(~r/@related.*\[(.*?)\]\((.*?)\)/, File.read!(path))
+      |> Enum.reduce(acc, fn
+        [], acc ->
+          acc
+
+        [_match, _name, related_path], acc ->
+          full_related_path = Path.join(File.cwd!(), related_path)
+          if File.exists?(full_related_path),
+            do: acc,
+            else: [{path, related_path} | acc]
+      end)
+    end)
+  end
+
+  defp result([] = _paths),
+    do: :ok
+
+  defp result(paths) do
+    Enum.each(paths, fn {path, related_path} ->
+      IO.puts("")
+      error(2, "Related file cannot be found")
+      info(4, "source:  ", path)
+      info(4, "related: ", related_path)
+    end)
+    :error
+  end
+
+  defp info(indent, s), do: puts_ansi(indent, [:bright, :green, "▸ ", :cyan, s])
+  defp info(indent, s1, s2), do: puts_ansi(indent, [:green, "• ", :cyan, s1, :light_cyan, s2])
+  defp error(indent, s), do: puts_ansi(indent, [:bright, :light_red, "▸ ", :normal, s])
+  defp puts_ansi(indent_amount, iodata), do: IO.ANSI.format([indent(indent_amount) | iodata]) |> IO.puts()
+  defp indent(amount), do: String.duplicate(" ", amount)
+end
+
+ValidateRelatedAnnotations.run(System.argv())
+
