@@ -131,7 +131,13 @@ defmodule Moar.Enum do
 
   This unusual function exists because the authors of Moar use tids (test IDs) extensively in tests.
   """
-  @spec tids(Enum.t()) :: list()
-  def tids(enumerable),
-    do: enumerable |> Enum.map(& &1.tid)
+  @type tids_opts() :: {:sorted, boolean()}
+  @spec tids(Enum.t(), [tids_opts()]) :: list()
+  def tids(enumerable, opts \\ []) do
+    tids = enumerable |> Enum.map(& &1.tid)
+
+    if Keyword.get(opts, :sorted),
+      do: tids |> Enum.sort(),
+      else: tids
+  end
 end

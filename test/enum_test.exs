@@ -164,5 +164,9 @@ defmodule Moar.EnumTest do
     test "returns :tid fields" do
       [%{tid: "a"}, %{tid: nil}, %{tid: "c"}] |> Moar.Enum.tids() |> assert_eq(["a", nil, "c"])
     end
+
+    test "can optionally sort the tids" do
+      [%{tid: "c"}, %{tid: nil}, %{tid: "a"}] |> Moar.Enum.tids(sorted: true) |> assert_eq([nil, "a", "c"])
+    end
   end
 end

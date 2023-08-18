@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Enum.tids` accepts a `:sorted` option
+
 ## 1.45.1
 
 - `Moar.Version.compare/2` truncates `1.2.3.4` to `1.2.3`.
