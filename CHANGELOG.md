@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.46.0
+
 - `Moar.Enum.tids` accepts a `:sorted` option
 
 ## 1.45.1
