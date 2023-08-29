@@ -147,6 +147,17 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "lists_to_maps" do
+    test "converts a list of lists to a list of maps" do
+      assert Moar.Enum.lists_to_maps([[1, 2], [3, 4]], ["a", "b"]) == [%{"a" => 1, "b" => 2}, %{"a" => 3, "b" => 4}]
+    end
+
+    test "can optionally use the first list as the keys" do
+      assert Moar.Enum.lists_to_maps([["a", "b"], [1, 2], [3, 4]], :first_list) ==
+               [%{"a" => 1, "b" => 2}, %{"a" => 3, "b" => 4}]
+    end
+  end
+
   describe "take_at" do
     test "returns a list of elements at the given indices, in the order given" do
       ["A", "B", "C"] |> Moar.Enum.take_at([1]) |> assert_eq(["B"])

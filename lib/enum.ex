@@ -108,6 +108,31 @@ defmodule Moar.Enum do
     do: enum |> Enum.sort_by(&(mapper.(&1) |> String.downcase()))
 
   @doc """
+  Converts a list of lists to a list of maps with the given keys. The keys can be a list, or can be `:first_list`
+  which uses the first list in `list_of_lists` as the keys and the remaining lists in `list_of_lists` as the values.
+
+  ```elixir
+  iex> Moar.Enum.lists_to_maps([[1, 2], [3, 4]], ["a", "b"])
+  [%{"a" => 1, "b" => 2}, %{"a" => 3, "b" => 4}]
+
+  iex> csv = [["a", "b"], [1, 2], [3, 4]]
+  iex> [headers | rows] = csv
+  iex> Moar.Enum.lists_to_maps(rows, headers)
+  [%{"a" => 1, "b" => 2}, %{"a" => 3, "b" => 4}]
+
+  iex> csv = [["a", "b"], [1, 2], [3, 4]]
+  iex> Moar.Enum.lists_to_maps(csv, :first_list)
+  [%{"a" => 1, "b" => 2}, %{"a" => 3, "b" => 4}]
+  ```
+  """
+  @spec lists_to_maps(list(list(any())), list(any()) | :first_list) :: list(map())
+  def lists_to_maps([first_list | remaining_lists], :first_list),
+    do: lists_to_maps(remaining_lists, first_list)
+
+  def lists_to_maps(list_of_lists, keys),
+    do: Enum.map(list_of_lists, &Map.new(Enum.zip([keys, &1])))
+
+  @doc """
   Returns a list of elements at the given indices, in the given order. If `:all` is given instead of a list of indices,
   the entire enum is returned.
 

@@ -83,6 +83,7 @@ end
 - `into!` is like `Enum.into` but allows `nil` as its first argument.
 - `is_map_or_keyword` returns true if the value is a map or a keyword list (unfortunately cannot be used as a guard).
 - `isort` and `isort_by` sort case-insensitively.
+- `lists_to_maps` converts a list of lists to a lists of maps using the provided list of keys.
 - `take_at` returns a list of elements at the given indices.
 - `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids extensively for testing.)
 
