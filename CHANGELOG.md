@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.test_ids` which is just like `Moar.Enum.tids` but with a slightly different name.
+
 ## 1.47.0
 
 - Add `Moar.Enum.lists_to_maps` which converts a list of lists to a list of maps using the provided list of keys.

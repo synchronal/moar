@@ -152,9 +152,26 @@ defmodule Moar.Enum do
   def take_at(enum, list) when is_list(list), do: Enum.map(list, &Enum.at(enum, &1))
 
   @doc """
+  Returns `:test_id` fields from `enumerable`.
+
+  This unusual function exists because the authors of Moar use test_ids extensively in tests.
+  See also `tids/2`.
+  """
+  @type test_ids_opts() :: {:sorted, boolean()}
+  @spec test_ids(Enum.t(), [test_ids_opts()]) :: list()
+  def test_ids(enumerable, opts \\ []) do
+    test_ids = enumerable |> Enum.map(& &1.test_id)
+
+    if Keyword.get(opts, :sorted),
+      do: test_ids |> Enum.sort(),
+      else: test_ids
+  end
+
+  @doc """
   Returns `:tid` fields from `enumerable`.
 
   This unusual function exists because the authors of Moar use tids (test IDs) extensively in tests.
+  See also `test_ids/2`.
   """
   @type tids_opts() :: {:sorted, boolean()}
   @spec tids(Enum.t(), [tids_opts()]) :: list()
