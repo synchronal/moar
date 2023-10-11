@@ -14,7 +14,7 @@ The package can be installed by adding `moar` to your list of dependencies in `m
 ```elixir
 def deps do
   [
-    {:moar, "~> 1.47"}
+    {:moar, "~> 1.48"}
   ]
 end
 ```
@@ -85,6 +85,7 @@ end
 - `isort` and `isort_by` sort case-insensitively.
 - `lists_to_maps` converts a list of lists to a lists of maps using the provided list of keys.
 - `take_at` returns a list of elements at the given indices.
+- `test_ids` is like `tids` (see below) with a slightly different spelling.
 - `tids` extracts `tid` fields. (`tid` is short for "test id" and the authors of Moar use tids extensively for testing.)
 
 `Moar.File`
