@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.49.0
+
 - Add `Moar.List.unwrap!` which returns the argument if it's not a list, or returns the only item in the list, or raises
   if the list has 0 or more than 1 item.
 - Add `Moar.Random.float` which returns a random float.
