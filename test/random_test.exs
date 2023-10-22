@@ -3,6 +3,27 @@ defmodule Moar.RandomTest do
 
   use Moar.SimpleCase, async: true
 
+  describe "float" do
+    test "generates random floats between min and max" do
+      randos = 0..10_000 |> Enum.map(fn _ -> Moar.Random.float(4.2, 8) end)
+      min = Enum.min(randos)
+      max = Enum.max(randos)
+
+      assert min <= max
+      assert min >= 4.2
+      assert max <= 8
+      assert randos |> Enum.uniq() |> length() > 5_000
+    end
+
+    test "blows up if `min` and `max` are equal" do
+      assert_raise FunctionClauseError, fn -> Moar.Random.float(4, 4) end
+    end
+
+    test "blows up if `min` is greater than `max`" do
+      assert_raise FunctionClauseError, fn -> Moar.Random.float(4, 3) end
+    end
+  end
+
   describe "integer" do
     test "generates random integers" do
       0..10_000

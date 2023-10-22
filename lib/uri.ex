@@ -73,22 +73,48 @@ defmodule Moar.URI do
   end
 
   @doc """
-  Returns a simplified string representation of a URI for display purposes. Scheme, port, params, and fragments are
-  removed. `nil` is converted to an empty string.
+  Formats a URI as a string with the given format. Format options:
+
+  `scheme_host_port`: converts to `<scheme>://<host>[:<port>]` format, where the port is only rendered
+  if the original URI includes the port.
+
+  `scheme_host_port_path`: converts to `<scheme>://<host>[:<port>]/<path>` format, where the port is only rendered
+  if the original URI included the port, and the path is rendered as `/` if the original URI does not include a path.
+
+  `simple_string`: converts to a simplified string representation of a URI for display purposes. Scheme, port, params,
+  and fragments are removed. `nil` is converted to an empty string.
 
   ```elixir
-  iex> Moar.URI.to_simple_string("https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something")
+  iex> url = "https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something"
+  iex> Moar.URI.format(url, :scheme_host_port)
+  "https://www.example.com:446"
+
+  iex> url = "https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something"
+  iex> Moar.URI.format(url, :scheme_host_port_path)
+  "https://www.example.com:446/crackers/potato%20chips/fruit"
+
+  iex> url = "https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something"
+  iex> Moar.URI.format(url, :simple_string)
   "www.example.com/crackers/potato chips/fruit"
 
-  iex> Moar.URI.to_simple_string(nil)
+  iex> Moar.URI.format(nil, :simple_string)
   ""
   ```
   """
-  @spec to_simple_string(binary() | URI.t() | nil) :: binary()
-  def to_simple_string(nil), do: ""
-  def to_simple_string(""), do: ""
+  @spec format(URI.t() | binary(), atom()) :: binary()
+  def format(string_or_uri, :scheme_host_port) do
+    %{URI.parse(string_or_uri) | fragment: nil, path: nil, query: nil, userinfo: nil} |> URI.to_string()
+  end
 
-  def to_simple_string(string_or_uri) do
+  def format(string_or_uri, :scheme_host_port_path) do
+    parsed = URI.parse(string_or_uri)
+    %{parsed | fragment: nil, path: parsed.path || "/", query: nil, userinfo: nil} |> URI.to_string()
+  end
+
+  def format(nil, :simple_string), do: ""
+  def format("", :simple_string), do: ""
+
+  def format(string_or_uri, :simple_string) do
     uri = URI.parse(string_or_uri)
 
     cond do
@@ -98,6 +124,14 @@ defmodule Moar.URI do
       true -> (uri.host <> URI.decode_www_form(uri.path)) |> String.trim_trailing("/")
     end
   end
+
+  @deprecated "Use `Moar.URI.format/2` with the `:simple_string` argument."
+  @doc """
+  Returns a simplified string representation of a URI for display purposes. Scheme, port, params, and fragments are
+  removed. `nil` is converted to an empty string.
+  """
+  @spec to_simple_string(binary() | URI.t() | nil) :: binary()
+  def to_simple_string(uri), do: format(uri, :simple_string)
 
   @doc """
   Returns `true` if the URI has a host and scheme, and if it has a path, the path does not contain spaces.

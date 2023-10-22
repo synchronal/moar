@@ -103,6 +103,19 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "remove_marked_whitespace" do
+    test "removes whitespace following backslash-v" do
+      """
+      ant bat\v cat dog\v
+          eel fox\v  \t \r
+
+        gnu
+      """
+      |> Moar.String.remove_marked_whitespace()
+      |> assert_eq("ant batcat dogeel foxgnu\n")
+    end
+  end
+
   describe "secure_compare/2" do
     test "compares binaries securely" do
       assert Moar.String.secure_compare(<<>>, <<>>)

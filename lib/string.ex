@@ -166,6 +166,19 @@ defmodule Moar.String do
   def pluralize(_count, string, pluralizer) when is_function(pluralizer), do: pluralizer.(string)
 
   @doc """
+  Removes all whitespace following a backspace+v escape code.
+
+  Especially useful in test assertions where only some of the whitespace matters.
+  ```
+  iex> Moar.String.remove_marked_whitespace("one two three\v\t   four five")
+  "one two threefour five"
+  ```
+  """
+  @spec remove_marked_whitespace(binary()) :: binary()
+  def remove_marked_whitespace(s),
+    do: s |> String.replace(~r|\v\s*|, "")
+
+  @doc """
   Compares the two binaries in constant-time to avoid timing attacks.
   See: <http://codahale.com/a-lesson-in-timing-attacks/>.
 

@@ -65,4 +65,26 @@ defmodule Moar.List do
     end
     |> to_string()
   end
+
+  @doc """
+  Returns the argument if it is not a list. If it is a list, returns the only item
+  in the list, or raises if the list is empty or has more than one item.
+
+  ```
+  iex> Moar.List.unwrap!([5])
+  5
+
+  iex> Moar.List.unwrap!(5)
+  5
+
+  iex> Moar.List.unwrap!([])
+  ** (FunctionClauseError) no function clause matching in Moar.List.unwrap!/1
+
+  iex> Moar.List.unwrap!([5, 9])
+  ** (FunctionClauseError) no function clause matching in Moar.List.unwrap!/1
+  ```
+  """
+  @spec unwrap!(any() | [any()]) :: any()
+  def unwrap!([term]), do: term
+  def unwrap!(term) when not is_list(term), do: term
 end

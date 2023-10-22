@@ -101,6 +101,7 @@ end
 
 - `to_keyword` converts a list into a keyword list, using a default value or function to generate the values
 - `to_sentence` converts a list into a string, with items separated by commas, and an "and" before the last item
+- `unwrap` returns the argument if it's not a list, or returns the only item in the list, or raises.
 
 `Moar.Map`
 
@@ -130,6 +131,7 @@ end
 
 `Moar.Random`
 
+- `float` returns a random float.
 - `integer` returns a random integer.
 - `string` returns random base64- or base32-encoded string.
 
@@ -149,6 +151,7 @@ end
 - `compare` and `compare?` compare two strings, optionally transforming the strings before comparison.
 - `count_leading_spaces/1` returns the number of leading spaces in a string.
 - `inner_truncate` removes the middle of a string to make it the desired length.
+- `remove_marked_whitespace` removes whitespacing following a special `\v` marker.
 - `secure_compare` compares two strings in constant time.
 - `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for
   common slug formats.
@@ -182,7 +185,7 @@ end
 `Moar.URI`
 
 - `fix` applies some fixes to a URI string.
-- `to_simple_string` returns a string for display purposes, removing the scheme, port, params, and fragment.
+- `format` formats a URI in various ways.
 - `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
 - `web_url?` returns true if the scheme is `http` or `https`.
 

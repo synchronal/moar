@@ -2,6 +2,14 @@
 
 ## Unreleased changes
 
+- Add `Moar.List.unwrap!` which returns the argument if it's not a list, or returns the only item in the list, or raises
+  if the list has 0 or more than 1 item.
+- Add `Moar.Random.float` which returns a random float.
+- Add `Moar.String.remove_marked_whitespace` which - `remove_marked_whitespace` removes whitespacing following a special
+  `\v` marker.
+- Add `Moar.URI.format` with `scheme_host_port`, `scheme_host_port_path`, and `simple_string` formats.
+- Deprecate `Moar.URI.to_simple_string` in favor of `Moar.URI.format(uri, :simple_string)`.
+
 ## 1.48.0
 
 - Add `Moar.Enum.test_ids` which is just like `Moar.Enum.tids` but with a slightly different name.

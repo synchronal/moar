@@ -5,6 +5,11 @@ defmodule Moar.Random do
 
   @type encoding() :: :base32 | :base64
 
+  @doc "Return a random float greater than or equal to `min` and less than `max`"
+  @spec float(number(), number()) :: float()
+  def float(min, max) when max > min,
+    do: min + :rand.uniform() * (max - min)
+
   @doc "Returns a random integer between `0` and `max`."
   @spec integer(max :: pos_integer()) :: pos_integer()
   def integer(max \\ 1_000_000_000),

@@ -39,19 +39,55 @@ defmodule Moar.URITest do
     end
   end
 
-  describe "to_simple_string" do
-    test "returns an empty string when given empty or nil" do
-      assert Moar.URI.to_simple_string(nil) == ""
-      assert Moar.URI.to_simple_string("") == ""
+  describe "format/2" do
+    test "with :scheme_host_port, returns scheme://host:port" do
+      URI.parse("https://example.com:1234/path?query=string#fragment")
+      |> Moar.URI.format(:scheme_host_port)
+      |> assert_eq("https://example.com:1234")
     end
 
-    test "just shows the host and path; no scheme, params, port, or fragment" do
+    test "with :scheme_host_port and no port, returns scheme://host" do
+      URI.parse("https://example.com/path?query=string#fragment")
+      |> Moar.URI.format(:scheme_host_port)
+      |> assert_eq("https://example.com")
+    end
+
+    test "with :scheme_host_port_path, returns scheme://host:port/path" do
+      URI.parse("https://example.com:1234/path?query=string#fragment")
+      |> Moar.URI.format(:scheme_host_port_path)
+      |> assert_eq("https://example.com:1234/path")
+    end
+
+    test "with :scheme_host_port_path and no path, returns scheme://host:port/" do
+      URI.parse("https://example.com:1234")
+      |> Moar.URI.format(:scheme_host_port_path)
+      |> assert_eq("https://example.com:1234/")
+    end
+
+    test "with :scheme_host_port_path and no port, returns scheme://host/path" do
+      URI.parse("https://example.com/path?query=string#fragment")
+      |> Moar.URI.format(:scheme_host_port_path)
+      |> assert_eq("https://example.com/path")
+    end
+
+    test "with :scheme_host_port_path and no port or path, returns scheme://host/" do
+      URI.parse("https://example.com")
+      |> Moar.URI.format(:scheme_host_port_path)
+      |> assert_eq("https://example.com/")
+    end
+
+    test "with :simple_string, returns an empty string when given empty or nil" do
+      assert Moar.URI.format(nil, :simple_string) == ""
+      assert Moar.URI.format("", :simple_string) == ""
+    end
+
+    test "with :simple_string, just shows the host and path; no scheme, params, port, or fragment" do
       "https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something"
-      |> Moar.URI.to_simple_string()
+      |> Moar.URI.format(:simple_string)
       |> assert_eq("www.example.com/crackers/potato chips/fruit")
     end
 
-    test "accepts a URI" do
+    test "with :simple_string, accepts a URI" do
       %URI{
         fragment: "something",
         host: "www.example.com",
@@ -60,30 +96,30 @@ defmodule Moar.URITest do
         query: "a=1&b=2",
         scheme: "https"
       }
-      |> Moar.URI.to_simple_string()
+      |> Moar.URI.format(:simple_string)
       |> assert_eq("www.example.com/crackers/potato chips/fruit")
     end
 
-    test "when there is no path, just shows the host" do
+    test "with :simple_string, when there is no path, just shows the host" do
       "https://www.example.com/"
-      |> Moar.URI.to_simple_string()
+      |> Moar.URI.format(:simple_string)
       |> assert_eq("www.example.com")
     end
 
-    test "when there is no scheme or path, shows the host, as long as it was fixed first" do
+    test "with :simple_string, when there is no scheme or path, shows the host, as long as it was fixed first" do
       "www.example.com"
       |> Moar.URI.fix()
-      |> Moar.URI.to_simple_string()
+      |> Moar.URI.format(:simple_string)
       |> assert_eq("www.example.com")
     end
 
-    test "trims off the trailing slash" do
-      "https://www.example.com/foo/bar/" |> Moar.URI.to_simple_string() |> assert_eq("www.example.com/foo/bar")
+    test "with :simple_string, trims off the trailing slash" do
+      "https://www.example.com/foo/bar/" |> Moar.URI.format(:simple_string) |> assert_eq("www.example.com/foo/bar")
     end
 
-    test "ignores urls without hosts" do
-      "/foo/bar" |> Moar.URI.to_simple_string() |> assert_eq("")
-      "../" |> Moar.URI.to_simple_string() |> assert_eq("")
+    test "with :simple_string, ignores urls without hosts" do
+      "/foo/bar" |> Moar.URI.format(:simple_string) |> assert_eq("")
+      "../" |> Moar.URI.format(:simple_string) |> assert_eq("")
     end
   end
 
