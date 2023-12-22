@@ -126,13 +126,13 @@ defmodule Moar.Map do
   """
   @spec deep_merge(map() | keyword(), map() | keyword(), (any(), any() -> any())) :: map()
   def deep_merge(a, b, conflict_fn \\ fn _val1, val2 -> val2 end) do
-    if Moar.Enum.is_map_or_keyword(a) && Moar.Enum.is_map_or_keyword(b),
+    if Moar.Enum.map_or_keyword?(a) && Moar.Enum.map_or_keyword?(b),
       do: deep_merge(nil, a, b, conflict_fn),
       else: raise("Expected first 2 arguments to be maps or keyword lists, got: #{inspect(a)} and #{inspect(b)}")
   end
 
   defp deep_merge(_key, a, b, conflict_fn) do
-    if Moar.Enum.is_map_or_nonempty_keyword(a) && Moar.Enum.is_map_or_nonempty_keyword(b),
+    if Moar.Enum.map_or_nonempty_keyword?(a) && Moar.Enum.map_or_nonempty_keyword?(b),
       do: Map.merge(Map.new(a), Map.new(b), fn k, v1, v2 -> deep_merge(k, v1, v2, conflict_fn) end),
       else: conflict_fn.(a, b)
   end

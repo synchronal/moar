@@ -100,33 +100,33 @@ defmodule Moar.EnumTest do
     end
   end
 
-  describe "is_map_or_keyword" do
+  describe "map_or_keyword" do
     test "returns true for maps and keyword lists (including empty lists), false for other things" do
-      assert Moar.Enum.is_map_or_keyword(%{a: 1})
-      assert Moar.Enum.is_map_or_keyword(a: 1)
-      assert Moar.Enum.is_map_or_keyword([{:a, 1}])
-      assert Moar.Enum.is_map_or_keyword([])
+      assert Moar.Enum.map_or_keyword?(%{a: 1})
+      assert Moar.Enum.map_or_keyword?(a: 1)
+      assert Moar.Enum.map_or_keyword?([{:a, 1}])
+      assert Moar.Enum.map_or_keyword?([])
 
-      refute Moar.Enum.is_map_or_keyword([:a, 1])
-      refute Moar.Enum.is_map_or_keyword({:a, 1})
-      refute Moar.Enum.is_map_or_keyword(:a)
-      refute Moar.Enum.is_map_or_keyword("")
-      refute Moar.Enum.is_map_or_keyword(nil)
+      refute Moar.Enum.map_or_keyword?([:a, 1])
+      refute Moar.Enum.map_or_keyword?({:a, 1})
+      refute Moar.Enum.map_or_keyword?(:a)
+      refute Moar.Enum.map_or_keyword?("")
+      refute Moar.Enum.map_or_keyword?(nil)
     end
   end
 
-  describe "is_map_or_nonempty_keyword" do
+  describe "map_or_nonempty_keyword" do
     test "returns true for maps and non-empty keyword lists, false for other things" do
-      assert Moar.Enum.is_map_or_nonempty_keyword(%{a: 1})
-      assert Moar.Enum.is_map_or_nonempty_keyword(a: 1)
-      assert Moar.Enum.is_map_or_nonempty_keyword([{:a, 1}])
+      assert Moar.Enum.map_or_nonempty_keyword?(%{a: 1})
+      assert Moar.Enum.map_or_nonempty_keyword?(a: 1)
+      assert Moar.Enum.map_or_nonempty_keyword?([{:a, 1}])
 
-      refute Moar.Enum.is_map_or_nonempty_keyword([])
-      refute Moar.Enum.is_map_or_nonempty_keyword([:a, 1])
-      refute Moar.Enum.is_map_or_nonempty_keyword({:a, 1})
-      refute Moar.Enum.is_map_or_nonempty_keyword(:a)
-      refute Moar.Enum.is_map_or_nonempty_keyword("")
-      refute Moar.Enum.is_map_or_nonempty_keyword(nil)
+      refute Moar.Enum.map_or_nonempty_keyword?([])
+      refute Moar.Enum.map_or_nonempty_keyword?([:a, 1])
+      refute Moar.Enum.map_or_nonempty_keyword?({:a, 1})
+      refute Moar.Enum.map_or_nonempty_keyword?(:a)
+      refute Moar.Enum.map_or_nonempty_keyword?("")
+      refute Moar.Enum.map_or_nonempty_keyword?(nil)
     end
   end
 
