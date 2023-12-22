@@ -112,7 +112,7 @@ defmodule Moar.StringTest do
         gnu
       """
       |> Moar.String.remove_marked_whitespace()
-      |> assert_eq("ant batcat dogeel foxgnu\n")
+      |> assert_eq("ant batcat dogeel foxgnu")
     end
   end
 
