@@ -2,6 +2,11 @@
 
 ## Unreleased changes
 
+## 1.50.0
+
+- Deprecated `is_map_or_keyword` in favor of `map_or_keyword?`.
+- Deprecated `is_map_or_nonempty_keyword` in favor of `map_or_nonempty_keyword?`.
+
 ## 1.49.0
 
 - Add `Moar.List.unwrap!` which returns the argument if it's not a list, or returns the only item in the list, or raises
