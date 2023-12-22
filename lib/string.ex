@@ -461,6 +461,6 @@ defmodule Moar.String do
   def unindent(s, count) do
     s
     |> String.split("\n")
-    |> Enum.map_join("\n", &String.slice(&1, min(count, count_leading_spaces(&1))..-1))
+    |> Enum.map_join("\n", &String.slice(&1, min(count, count_leading_spaces(&1))..-1//1))
   end
 end
