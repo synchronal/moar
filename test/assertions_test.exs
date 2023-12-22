@@ -308,7 +308,7 @@ defmodule Moar.AssertionsTest do
                    Post-condition failed
                         before: 0
                         after: 1
-                        
+
                    """,
                    fn ->
                      refute_that(Agent.update(agent, fn s -> s + 1 end), changes: Agent.get(agent, fn s -> s end))
