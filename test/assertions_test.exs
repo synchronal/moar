@@ -298,6 +298,8 @@ defmodule Moar.AssertionsTest do
       assert return_value == 1
     end
 
+    # ExUnit in Elixir 1.16 changes the whitespace in assert errors.
+    @tag :only_latest
     test "fails when the action changes the test condition" do
       {:ok, agent} = Agent.start(fn -> 0 end)
 

@@ -104,6 +104,9 @@ defmodule Moar.StringTest do
   end
 
   describe "remove_marked_whitespace" do
+    # Elixir 1.16 removes the trailing whitespace from heredocs. Older versions
+    # do not, so we should skip them in CI.
+    @tag :only_latest
     test "removes whitespace following backslash-v" do
       """
       ant bat\v cat dog\v

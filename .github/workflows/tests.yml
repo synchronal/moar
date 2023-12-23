@@ -126,6 +126,7 @@ jobs:
           - pair:
               elixir: 1.16.0
               otp: 26.1.2
+            latest: true
     name: Test
     needs: build_test
     runs-on: ubuntu-20.04
@@ -150,8 +151,13 @@ jobs:
         with:
           path: _build
           key: ${{ runner.os }}-test-build-v1-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
-      - name: Run tests
+      - name: Run tests (with latest)
+        if: ${{ matrix.latest }}
         run: mix test --color --warnings-as-errors
+        working-directory: .
+      - name: Run tests (with latest)
+        if: ${{ !matrix.latest }}
+        run: mix test --color --warnings-as-errors --exclude only_latest
         working-directory: .
   credo_and_dialyxir:
     strategy:
