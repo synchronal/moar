@@ -17,17 +17,23 @@ jobs:
               elixir: 1.13.0
               otp: 23.3
           - pair:
-              elixir: 1.14.0
+              elixir: 1.14.5
               otp: 25.0
           - pair:
               elixir: 1.14.5
               otp: 26.0
           - pair:
               elixir: 1.15.7
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.15.7
+              otp: 26.0
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.16.0
+              otp: 26.2.1
     name: Build Test
     runs-on: ubuntu-20.04
     env:
@@ -66,17 +72,23 @@ jobs:
               elixir: 1.13.0
               otp: 23.3
           - pair:
-              elixir: 1.14.0
+              elixir: 1.14.5
               otp: 25.0
           - pair:
               elixir: 1.14.5
               otp: 26.0
           - pair:
               elixir: 1.15.7
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.15.7
+              otp: 26.0
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.16.0
+              otp: 26.2.1
     name: Build Dev
     runs-on: ubuntu-20.04
     env:
@@ -115,17 +127,23 @@ jobs:
               elixir: 1.13.0
               otp: 23.3
           - pair:
-              elixir: 1.14.0
+              elixir: 1.14.5
               otp: 25.0
           - pair:
               elixir: 1.14.5
               otp: 26.0
           - pair:
               elixir: 1.15.7
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.15.7
+              otp: 26.0
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.16.0
+              otp: 26.2.1
             latest: true
     name: Test
     needs: build_test
@@ -168,17 +186,23 @@ jobs:
               elixir: 1.13.0
               otp: 23.3
           - pair:
-              elixir: 1.14.0
+              elixir: 1.14.5
               otp: 25.0
           - pair:
               elixir: 1.14.5
               otp: 26.0
           - pair:
               elixir: 1.15.7
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.15.7
+              otp: 26.0
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 25.0
+          - pair:
+              elixir: 1.16.0
+              otp: 26.2.1
     name: Credo + Dialyxir
     needs: build_test
     runs-on: ubuntu-20.04
@@ -221,7 +245,7 @@ jobs:
         include:
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 26.2.1
     name: Audit
     needs: build_dev
     runs-on: ubuntu-20.04
@@ -262,7 +286,7 @@ jobs:
         include:
           - pair:
               elixir: 1.16.0
-              otp: 26.1.2
+              otp: 26.2.1
     name: Publish to Hex
     if: github.ref == 'refs/heads/main'
     needs:
