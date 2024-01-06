@@ -1,13 +1,3 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
-
-bin/dev/format --check
-bin/dev/audit
-bin/dev/update
-bin/dev/test
-git push origin HEAD
-
-source "./.medic/_support/cecho.sh"
-
-cecho --bold-bright-green "DONE!" --white "CI is at" --bright-yellow "https://github.com/synchronal/moar/actions"
+medic shipit
