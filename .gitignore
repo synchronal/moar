@@ -1,13 +1,14 @@
 *.ez
+.envrc
 .medic/.doctor.out
 .medic/skipped
 /.fetch
-/_build/
 /cover/
 /deps/
 /doc/
 /priv/plts/
 /tmp/
+/_build/
 Brewfile.lock.json
 erl_crash.dump
 moar-*.tar
