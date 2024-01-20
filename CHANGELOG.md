@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.51.0
+
 - Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing
 
 ## 1.50.0
