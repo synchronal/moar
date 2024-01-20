@@ -60,4 +60,14 @@ defmodule Moar.TermTest do
       assert Moar.Term.presence(" ", "default") == "default"
     end
   end
+
+  describe "when_present" do
+    test "if the value is present (via `present?`), returns the `present` value" do
+      assert Moar.Term.when_present("foo", "it's there", "it's not there") == "it's there"
+    end
+
+    test "if the value is not present (via `present?`), returns the `blank` value" do
+      assert Moar.Term.when_present(" ", "it's there", "it's not there") == "it's not there"
+    end
+  end
 end

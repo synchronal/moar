@@ -74,5 +74,19 @@ defmodule Moar.Term do
   ```
   """
   @spec presence(any(), any()) :: any()
-  def presence(term, default \\ nil), do: if(present?(term), do: term, else: default)
+  def presence(term, default \\ nil), do: when_present(term, term, default)
+
+  @doc """
+  Returns `present_value` when `term` is present (via `present?`), and `blank_value` when `term` is blank.
+
+  ```elixir
+  iex> Moar.Term.when_present(20, "continue", "value missing")
+  "continue"
+
+  iex> Moar.Term.when_present(nil, "continue", "value missing")
+  "value missing"
+  ```
+  """
+  @spec when_present(any(), any(), any()) :: any()
+  def when_present(term, present_value, blank_value), do: if(present?(term), do: present_value, else: blank_value)
 end

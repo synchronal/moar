@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing
+
 ## 1.50.0
 
 - Deprecated `is_map_or_keyword` in favor of `map_or_keyword?`.
