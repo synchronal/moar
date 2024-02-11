@@ -36,7 +36,7 @@ defmodule Moar.MixProject do
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
       {:markdown_formatter, "~> 0.1", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.0", only: :dev, runtime: false},
-      {:mix_test_interactive, "~> 1.2", only: :dev, runtime: false}
+      {:mix_test_interactive, "~> 2.0", only: :dev, runtime: false}
     ]
   end
 
