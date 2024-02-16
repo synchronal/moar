@@ -39,13 +39,49 @@ defmodule Moar.AssertionsTest do
       assert assert_eq("arg", "arg", returning: "something else") == "something else"
     end
 
-    test "when the `within` option is given, equality does not have to be exact" do
-      assert_eq(1.1, 1.08, within: 0.1)
+    # # # assert_eq: datetime
 
-      assert_raise ExUnit.AssertionError,
-                   ~s|\n\nExpected "1.1" to be within 0.01 of "1.08"\n|,
-                   fn -> assert_eq(1.1, 1.08, within: 0.01) end
+    test "when the arguments are DateTimes" do
+      assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-01T00:00:00Z])
+      assert_raise ExUnit.AssertionError, fn -> assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-02T00:00:00Z]) end
     end
+
+    test "when the arguments are DateTimes, and the `within: {delta, unit}` option is given, it succeeds when the datetimes are within the delta" do
+      assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-01T00:01:59Z], within: {2, :minute})
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-02T00:02:01Z], within: {2, :minute})
+      end
+    end
+
+    test "when the arguments are NaiveDateTimes, and the `within: {delta, unit}` option is given, it succeeds when the datetimes are within the delta" do
+      assert_eq(~N[2020-01-01T00:00:00Z], ~N[2020-01-01T00:01:59Z], within: {2, :minute})
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(~N[2020-01-01T00:00:00Z], ~N[2020-01-02T00:02:01Z], within: {2, :minute})
+      end
+    end
+
+    test "when the arguments are strings, and the `within: {delta, unit}` option is given, it converts from ISO8601 and succeeds when the datetimes are within the delta" do
+      assert_eq("2020-01-01T00:00:00Z", "2020-01-01T00:01:59Z", within: {2, :minute})
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq("2020-01-01T00:00:00Z", "2020-01-02T00:02:01Z", within: {2, :minute})
+      end
+    end
+
+    # # # assert_eq: ignoring order
+
+    test "when the arguments are lists, and the `ignore_order: true` option is not given, it fails if the lists are not in the same order" do
+      assert_raise ExUnit.AssertionError, fn -> assert_eq([1, 2, 3], [3, 2, 1]) end
+      assert_raise ExUnit.AssertionError, fn -> assert_eq([1, 2, 3], [3, 2, 1], ignore_order: false) end
+    end
+
+    test "when the arguments are lists, the `ignore_order: true` option compares without respect to order" do
+      assert_eq([1, 2, 3], [3, 2, 1], ignore_order: true)
+    end
+
+    # # # assert_eq: maps
 
     test "when the arguments are maps, and no options are given, performs a regular map equality test" do
       assert_eq(%{a: 1, b: 2}, %{b: 2, a: 1})
@@ -79,19 +115,47 @@ defmodule Moar.AssertionsTest do
       assert assert_eq(left, right, only: [:desired]) == left
     end
 
+    # # # assert_eq: regex
+
     test "when the first argument is a string and the second is a regex, it performs a regex match" do
       assert_eq("foo", ~r/foo/)
       assert_raise ExUnit.AssertionError, fn -> assert_eq("foo", ~r/bar/) end
     end
 
-    test "when the arguments are lists, and the `ignore_order: true` option is not given, it fails if the lists are not in the same order" do
-      assert_raise ExUnit.AssertionError, fn -> assert_eq([1, 2, 3], [3, 2, 1]) end
-      assert_raise ExUnit.AssertionError, fn -> assert_eq([1, 2, 3], [3, 2, 1], ignore_order: false) end
+    # # # assert_eq: within
+
+    test "when the `within` option is given, equality does not have to be exact" do
+      assert_eq(1.1, 1.08, within: 0.1)
+
+      assert_raise ExUnit.AssertionError,
+                   ~s|\n\nExpected "1.1" to be within 0.01 of "1.08"\n|,
+                   fn -> assert_eq(1.1, 1.08, within: 0.01) end
     end
 
-    test "when the arguments are lists, the `ignore_order: true` option compares without respect to order" do
-      assert_eq([1, 2, 3], [3, 2, 1], ignore_order: true)
+    # # # assert_eq: whitespace
+
+    test "when the args are strings, the `whitespace` option accepts `:squish`" do
+      assert_eq(" foo bar", "foo bar    ", whitespace: :squish)
+      assert_eq(" foo bar", "foo     bar    ", whitespace: :squish)
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo zzz    ", whitespace: :squish)
+      end
     end
+
+    test "when the args are strings, the `whitespace` option accepts `:trim`" do
+      assert_eq(" foo bar", "foo bar    ", whitespace: :trim)
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo     bar    ", whitespace: :trim)
+      end
+
+      assert_raise ExUnit.AssertionError, fn ->
+        assert_eq(" foo bar", "foo zzz    ", whitespace: :trim)
+      end
+    end
+
+    # # # assert_eq: deprecated functions
 
     test "(deprecated) when the args are strings, the `ignore_whitespace` option accepts `:leading_and_trailing`" do
       assert_eq(" foo bar", "foo bar    ", ignore_whitespace: :leading_and_trailing)
@@ -115,56 +179,6 @@ defmodule Moar.AssertionsTest do
       assert_raise RuntimeError,
                    "if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`",
                    fn -> assert_eq("a", "a", ignore_whitespace: :pie) end
-    end
-
-    test "when the args are strings, the `whitespace` option accepts `:squish`" do
-      assert_eq(" foo bar", "foo bar    ", whitespace: :squish)
-      assert_eq(" foo bar", "foo     bar    ", whitespace: :squish)
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq(" foo bar", "foo zzz    ", whitespace: :squish)
-      end
-    end
-
-    test "when the args are strings, the `whitespace` option accepts `:trim`" do
-      assert_eq(" foo bar", "foo bar    ", whitespace: :trim)
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq(" foo bar", "foo     bar    ", whitespace: :trim)
-      end
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq(" foo bar", "foo zzz    ", whitespace: :trim)
-      end
-    end
-
-    test "when the arguments are DateTimes" do
-      assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-01T00:00:00Z])
-      assert_raise ExUnit.AssertionError, fn -> assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-02T00:00:00Z]) end
-    end
-
-    test "when the arguments are DateTimes, and the `within: {delta, unit}` option is given, it succeeds when the datetimes are within the delta" do
-      assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-01T00:01:59Z], within: {2, :minute})
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq(~U[2020-01-01T00:00:00Z], ~U[2020-01-02T00:02:01Z], within: {2, :minute})
-      end
-    end
-
-    test "when the arguments are NaiveDateTimes, and the `within: {delta, unit}` option is given, it succeeds when the datetimes are within the delta" do
-      assert_eq(~N[2020-01-01T00:00:00Z], ~N[2020-01-01T00:01:59Z], within: {2, :minute})
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq(~N[2020-01-01T00:00:00Z], ~N[2020-01-02T00:02:01Z], within: {2, :minute})
-      end
-    end
-
-    test "when the arguments are strings, and the `within: {delta, unit}` option is given, it converts from ISO8601 and succeeds when the datetimes are within the delta" do
-      assert_eq("2020-01-01T00:00:00Z", "2020-01-01T00:01:59Z", within: {2, :minute})
-
-      assert_raise ExUnit.AssertionError, fn ->
-        assert_eq("2020-01-01T00:00:00Z", "2020-01-02T00:02:01Z", within: {2, :minute})
-      end
     end
   end
 
