@@ -7,6 +7,8 @@
 ## 1.51.0
 
 - Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing
+- `Moar.Opts.get/3` and `Moar.Opts.take/2` accept keyword lists with a mix of "valueless" keys and regular keys, like
+  `[:a, b: 2]`, where the default value for a "valueless" key is `true`.
 
 ## 1.50.0
 

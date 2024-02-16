@@ -22,6 +22,11 @@ defmodule Moar.OptsTest do
       assert Opts.get(%{a: 1, b: 2}, :c, 3) == 3
       assert Opts.get([a: 1, b: 2], :c, 3) == 3
     end
+
+    test "when given an atom in a list, treats its value as `true` or the default if given" do
+      assert Opts.get([:a, b: 2], :a) == true
+      assert Opts.get([:a, b: 2], :a, 1) == 1
+    end
   end
 
   describe "take" do
@@ -38,6 +43,10 @@ defmodule Moar.OptsTest do
     test "default values can be set for some or all of the keys" do
       assert Opts.take(%{a: 1, b: 2}, [:a, b: 0, c: 4]) == %{a: 1, b: 2, c: 4}
       assert Opts.take([a: 1, b: 2], [:a, b: 0, c: 4]) == %{a: 1, b: 2, c: 4}
+    end
+
+    test "when given an atom in a list, treats its value as `true`" do
+      assert Opts.take([:a, :b, c: 3], [:a, :c, b: 2]) == %{a: true, b: 2, c: 3}
     end
   end
 end
