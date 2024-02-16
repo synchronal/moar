@@ -21,6 +21,8 @@ defmodule Moar.Assertions do
           | {:whitespace, :squish | :trim}
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
+  @assert_eq_opts ~w[except ignore_order ignore_whitespace only returning whitespace within]a
+
   @doc """
   Asserts that the `left` list or map contains all of the items in the `right` list or map,
   or contains the single `right` element if it's not a list or map. Returns `left` or raises `ExUnit.AssertionError`.
@@ -130,6 +132,8 @@ defmodule Moar.Assertions do
   def assert_eq(left, right, opts \\ [])
 
   def assert_eq(left, right, opts) when is_list(left) and is_list(right) do
+    validate_assert_eq_opts(opts)
+
     {left, right} =
       if Keyword.get(opts, :ignore_order, false),
         do: {Enum.sort(left), Enum.sort(right)},
@@ -140,6 +144,8 @@ defmodule Moar.Assertions do
   end
 
   def assert_eq(string, %Regex{} = regex, opts) when is_binary(string) do
+    validate_assert_eq_opts(opts)
+
     unless string =~ regex do
       flunk("""
         Expected string to match regex
@@ -152,6 +158,8 @@ defmodule Moar.Assertions do
   end
 
   def assert_eq(left, right, opts) do
+    validate_assert_eq_opts(opts)
+
     cond do
       Keyword.has_key?(opts, :within) ->
         assert_within(left, right, Keyword.get(opts, :within))
@@ -347,4 +355,16 @@ defmodule Moar.Assertions do
   defp filter_map(left, right, :right_keys, :none), do: filter_map(left, right, Map.keys(right), :none)
   defp filter_map(left, right, keys, :none) when is_list(keys), do: {Map.take(left, keys), Map.take(right, keys)}
   defp filter_map(left, right, :all, keys) when is_list(keys), do: {Map.drop(left, keys), Map.drop(right, keys)}
+
+  defp validate_assert_eq_opts(opts) do
+    invalid_opts =
+      Enum.reject(List.wrap(opts), fn
+        {k, _v} -> k in @assert_eq_opts
+        k -> k in @assert_eq_opts
+      end)
+
+    if Moar.Term.present?(invalid_opts),
+      do: raise("Invalid options given to assert_eq: #{inspect(invalid_opts)}"),
+      else: :ok
+  end
 end

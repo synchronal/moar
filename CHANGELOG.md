@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `assert_eq` now raises when an invalid option is provided.
+
 ## 1.51.0
 
 - Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing

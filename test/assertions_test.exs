@@ -39,6 +39,20 @@ defmodule Moar.AssertionsTest do
       assert assert_eq("arg", "arg", returning: "something else") == "something else"
     end
 
+    test "fails when given an invalid option" do
+      assert_raise RuntimeError, "Invalid options given to assert_eq: [:bad_option]", fn ->
+        assert_eq(1, 1, :bad_option)
+      end
+
+      assert_raise RuntimeError, "Invalid options given to assert_eq: [bad_option: :foo]", fn ->
+        assert_eq(1, 1, bad_option: :foo)
+      end
+
+      assert_raise RuntimeError, "Invalid options given to assert_eq: [bad_option: :foo]", fn ->
+        assert_eq(1, 1, whitespace: :squish, bad_option: :foo)
+      end
+    end
+
     # # # assert_eq: datetime
 
     test "when the arguments are DateTimes" do
