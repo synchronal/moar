@@ -39,20 +39,6 @@ defmodule Moar.AssertionsTest do
       assert assert_eq("arg", "arg", returning: "something else") == "something else"
     end
 
-    test "fails when given an invalid option" do
-      assert_raise RuntimeError, "Invalid options given to assert_eq: [:bad_option]", fn ->
-        assert_eq(1, 1, :bad_option)
-      end
-
-      assert_raise RuntimeError, "Invalid options given to assert_eq: [bad_option: :foo]", fn ->
-        assert_eq(1, 1, bad_option: :foo)
-      end
-
-      assert_raise RuntimeError, "Invalid options given to assert_eq: [bad_option: :foo]", fn ->
-        assert_eq(1, 1, whitespace: :squish, bad_option: :foo)
-      end
-    end
-
     # # # assert_eq: datetime
 
     test "when the arguments are DateTimes" do
@@ -93,6 +79,16 @@ defmodule Moar.AssertionsTest do
 
     test "when the arguments are lists, the `ignore_order: true` option compares without respect to order" do
       assert_eq([1, 2, 3], [3, 2, 1], ignore_order: true)
+    end
+
+    test "when the arguments are not lists, :ignore_order is not allowed" do
+      assert_raise RuntimeError, "`:ignore_order` can only be used on lists", fn ->
+        assert_eq(1, 1, ignore_order: true)
+      end
+    end
+
+    test ":ignore_order by itself is the same as ignore_order: true" do
+      assert_eq([1, 2, 3], [3, 2, 1], :ignore_order)
     end
 
     # # # assert_eq: maps
@@ -185,13 +181,13 @@ defmodule Moar.AssertionsTest do
 
     test "(deprecated) when the arguments are not strings, the `ignore_whitespace` option is not allowed" do
       assert_raise RuntimeError,
-                   "assert_eq can only ignore whitespace when comparing strings",
+                   "`:ignore_whitespace` can only be used on strings",
                    fn -> assert_eq(0, 0, ignore_whitespace: :leading_and_trailing) end
     end
 
     test "(deprecated) no other value is allowed for `ignore_whitespace`" do
       assert_raise RuntimeError,
-                   "if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`",
+                   "`:ignore_whitespace` must be one of: [:leading_and_trailing]",
                    fn -> assert_eq("a", "a", ignore_whitespace: :pie) end
     end
   end

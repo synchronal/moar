@@ -21,8 +21,6 @@ defmodule Moar.Assertions do
           | {:whitespace, :squish | :trim}
           | {:within, number() | {number(), Moar.Duration.time_unit()}}
 
-  @assert_eq_opts ~w[except ignore_order ignore_whitespace only returning whitespace within]a
-
   @doc """
   Asserts that the `left` list or map contains all of the items in the `right` list or map,
   or contains the single `right` element if it's not a list or map. Returns `left` or raises `ExUnit.AssertionError`.
@@ -129,69 +127,30 @@ defmodule Moar.Assertions do
   ```
   """
   @spec assert_eq(left :: any(), right :: any(), opts :: [assert_eq_opts()]) :: any()
-  def assert_eq(left, right, opts \\ [])
+  def assert_eq(left, right, opts \\ []) do
+    opts = List.wrap(opts)
 
-  def assert_eq(left, right, opts) when is_list(left) and is_list(right) do
-    validate_assert_eq_opts(opts)
+    {left, right, opts} =
+      {left, right, opts}
+      |> validate_opts(:ignore_order, [true, false], :list)
+      |> validate_opts(:ignore_whitespace, [:leading_and_trailing], :string)
+      |> validate_opts(:whitespace, [:squish, :trim], :string)
+      |> transform_if(:ignore_whitespace, :leading_and_trailing, &String.trim/1)
+      |> transform_if(:whitespace, :trim, &String.trim/1)
+      |> transform_if(:whitespace, :squish, &Moar.String.squish/1)
 
     {left, right} =
-      if Keyword.get(opts, :ignore_order, false),
+      if Moar.Opts.get(opts, :ignore_order) && is_list(left) && is_list(right),
         do: {Enum.sort(left), Enum.sort(right)},
         else: {left, right}
 
-    assert left == right
-    returning(opts, left)
-  end
-
-  def assert_eq(string, %Regex{} = regex, opts) when is_binary(string) do
-    validate_assert_eq_opts(opts)
-
-    unless string =~ regex do
-      flunk("""
-        Expected string to match regex
-        left (string): #{string}
-        right (regex): #{regex |> inspect}
-      """)
-    end
-
-    returning(opts, string)
-  end
-
-  def assert_eq(left, right, opts) do
-    validate_assert_eq_opts(opts)
+    within = Moar.Opts.get(opts, :within)
 
     cond do
-      Keyword.has_key?(opts, :within) ->
-        assert_within(left, right, Keyword.get(opts, :within))
-
-      is_map(left) and is_map(right) ->
-        {filtered_left, filtered_right} =
-          filter_map(left, right, Keyword.get(opts, :only, :all), Keyword.get(opts, :except, :none))
-
-        assert filtered_left == filtered_right
-
-      # deprecated
-      Keyword.has_key?(opts, :ignore_whitespace) ->
-        if !is_binary(left) || !is_binary(right),
-          do: raise("assert_eq can only ignore whitespace when comparing strings")
-
-        if Keyword.get(opts, :ignore_whitespace) != :leading_and_trailing,
-          do: raise("if `:ignore_whitespace is used`, the value can only be `:leading_and_trailing`")
-
-        assert String.trim(left) == String.trim(right)
-
-      Keyword.has_key?(opts, :whitespace) ->
-        if !is_binary(left) || !is_binary(right),
-          do: raise("assert_eq can only ignore whitespace when comparing strings")
-
-        case Keyword.get(opts, :whitespace) do
-          :trim -> assert String.trim(left) == String.trim(right)
-          :squish -> assert Moar.String.squish(left) == Moar.String.squish(right)
-          _ -> raise "`whitespace` option must be `:squish` or `:trim`"
-        end
-
-      true ->
-        assert left == right
+      within -> assert_within(left, right, within)
+      is_binary(left) && match?(%Regex{}, right) -> assert_regex_match(left, right)
+      Moar.Opts.get(opts, :except) || Moar.Opts.get(opts, :only) -> assert_filtered(left, right, opts)
+      :else -> assert left == right
     end
 
     returning(opts, left)
@@ -338,6 +297,25 @@ defmodule Moar.Assertions do
 
   # # #
 
+  defp assert_filtered(left, right, opts) when is_map(left) and is_map(right) do
+    except = Moar.Opts.get(opts, :except, :none)
+    only = Moar.Opts.get(opts, :only, :all)
+    {filtered_left, filtered_right} = filter_map(left, right, only, except)
+    assert filtered_left == filtered_right
+  end
+
+  defp assert_regex_match(binary, regex) do
+    if binary =~ regex do
+      binary
+    else
+      flunk("""
+        Expected string to match regex
+        left (string): #{binary}
+        right (regex): #{inspect(regex)}
+      """)
+    end
+  end
+
   defp assert_within(left, right, {delta, unit}) do
     assert abs(Moar.Difference.diff(left, right)) <= Moar.Duration.convert({delta, unit}, :microsecond),
            ~s|Expected "#{left}" to be within #{Moar.Duration.to_string({delta, unit})} of "#{right}"|
@@ -356,15 +334,29 @@ defmodule Moar.Assertions do
   defp filter_map(left, right, keys, :none) when is_list(keys), do: {Map.take(left, keys), Map.take(right, keys)}
   defp filter_map(left, right, :all, keys) when is_list(keys), do: {Map.drop(left, keys), Map.drop(right, keys)}
 
-  defp validate_assert_eq_opts(opts) do
-    invalid_opts =
-      Enum.reject(List.wrap(opts), fn
-        {k, _v} -> k in @assert_eq_opts
-        k -> k in @assert_eq_opts
-      end)
+  defp transform_if({left, right, opts}, key, value, transform_fun) do
+    if Moar.Opts.get(opts, key) == value,
+      do: {transform_fun.(left), transform_fun.(right), opts},
+      else: {left, right, opts}
+  end
 
-    if Moar.Term.present?(invalid_opts),
-      do: raise("Invalid options given to assert_eq: #{inspect(invalid_opts)}"),
-      else: :ok
+  defp validate_opts({left, right, opts}, key, valid_values, type) do
+    type_check_fun =
+      case type do
+        :list -> &is_list/1
+        :string -> &is_binary/1
+      end
+
+    if value = Moar.Opts.get(opts, key) do
+      if value in valid_values do
+        if type_check_fun.(left) && type_check_fun.(right),
+          do: {left, right, opts},
+          else: raise("`#{inspect(key)}` can only be used on #{type}s")
+      else
+        raise("`#{inspect(key)}` must be one of: #{inspect(valid_values)}")
+      end
+    else
+      {left, right, opts}
+    end
   end
 end
