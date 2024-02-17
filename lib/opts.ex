@@ -82,6 +82,36 @@ defmodule Moar.Opts do
   end
 
   @doc """
+  Removes an opt from the opts (via `get/3`), returning {opt, remaining_opts}.
+
+  ```elixir
+  iex> [a: 1, b: 2] |> Moar.Opts.pop(:a)
+  {1, [b: 2]}
+
+  iex> [:a, b: 2] |> Moar.Opts.pop(:a)
+  {true, [b: 2]}
+  ```
+  """
+  @spec pop(Enum.t(), binary() | atom(), any()) :: {any(), Enum.t()}
+  def pop(input, key, default \\ nil)
+
+  def pop(input, key, default) when is_list(input) do
+    value = get(input, key, default)
+
+    list =
+      cond do
+        key in input -> List.delete(input, key)
+        Keyword.has_key?(input, key) -> Keyword.delete(input, key)
+        :else -> input
+      end
+
+    {value, list}
+  end
+
+  def pop(input, key, default) when is_map(input),
+    do: {get(input, key, default), Map.delete(input, key)}
+
+  @doc """
   Get the value each key in `keys` from `input`, falling back to optional default values for keys that
   do not exist, or for values that are blank (via `Moar.Term.blank?/1`).
 

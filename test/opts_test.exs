@@ -29,6 +29,28 @@ defmodule Moar.OptsTest do
     end
   end
 
+  describe "pop" do
+    test "pops one item from the input" do
+      assert Opts.pop(%{a: 1, b: 2}, :a) == {1, %{b: 2}}
+      assert Opts.pop([a: 1, b: 2], :a) == {1, [b: 2]}
+    end
+
+    test "returns nil if the item is not in the input" do
+      assert Opts.pop(%{a: 1, b: 2}, :c) == {nil, %{a: 1, b: 2}}
+      assert Opts.pop([a: 1, b: 2], :c) == {nil, [a: 1, b: 2]}
+    end
+
+    test "returns a default value if the item is not in the input" do
+      assert Opts.pop(%{a: 1, b: 2}, :c, 3) == {3, %{a: 1, b: 2}}
+      assert Opts.pop([a: 1, b: 2], :c, 3) == {3, [a: 1, b: 2]}
+    end
+
+    test "when given an atom in a list, treats its value as `true` or the default if given" do
+      assert Opts.pop([:a, b: 2], :a) == {true, [b: 2]}
+      assert Opts.pop([:a, b: 2], :a, 1) == {1, [b: 2]}
+    end
+  end
+
   describe "take" do
     test "takes opts from input and returns a map" do
       assert Opts.take(%{a: 1, b: 2, c: 3}, [:a, :b]) == %{a: 1, b: 2}
