@@ -51,6 +51,74 @@ defmodule Moar.Opts do
   """
 
   @doc """
+  Deletes an opt given a key, a {key, value}, or a function that accepts opts and a map, list, or term.
+
+  ```elixir
+  iex> Moar.Opts.delete(%{a: 1, b: 2}, :a)
+  %{b: 2}
+
+  iex> Moar.Opts.delete([a: 1, b: 2], :a)
+  [b: 2]
+
+  iex> Moar.Opts.delete([:a, b: 2], :a)
+  [b: 2]
+
+  iex> Moar.Opts.delete([a: 1, b: 2], :a, 1)
+  [b: 2]
+
+  iex> Moar.Opts.delete([a: 1, b: 2], :a, 99)
+  [a: 1, b: 2]
+
+  iex> Moar.Opts.delete([:a, b: 2], :a, 1)
+  [:a, b: 2]
+
+  iex> Moar.Opts.delete([:trim, :downcase, :reverse], fn k -> k == :downcase end)
+  [:trim, :reverse]
+
+  iex> Moar.Opts.delete([a: 1, b: 2, c: 3, d: 4], fn {_k, v} -> Integer.mod(v, 2) == 0 end)
+  [a: 1, c: 3]
+  ```
+  """
+  @spec delete(map(), ({any(), any()} -> boolean()) | (any() -> boolean())) :: map()
+  @spec delete(list(), ({any(), any()} -> boolean()) | (any() -> boolean())) :: list()
+  @spec delete(term(), (any() -> boolean())) :: term()
+  @spec delete(any(), any()) :: boolean()
+  @spec delete(any(), any(), any()) :: boolean()
+
+  def delete(input, fun) when is_function(fun) and is_map(input) do
+    Enum.reduce(input, %{}, fn
+      {k, v}, acc -> if fun.({k, v}), do: acc, else: Map.put(acc, k, v)
+    end)
+  end
+
+  def delete(input, fun) when is_function(fun) and is_list(input) do
+    List.foldr(input, [], fn
+      {k, v}, acc -> if fun.({k, v}), do: acc, else: [{k, v} | acc]
+      k, acc -> if fun.(k), do: acc, else: [k | acc]
+    end)
+  end
+
+  def delete(input, fun) when is_function(fun) do
+    if fun.(input),
+      do: input,
+      else: nil
+  end
+
+  def delete(input, key) do
+    delete(input, fn
+      {k, _v} -> k == key
+      k -> k == key
+    end)
+  end
+
+  def delete(input, key, value) do
+    delete(input, fn
+      {k, v} -> k == key && v == value
+      _ -> false
+    end)
+  end
+
+  @doc """
   Get the value of `key` from `input`, falling back to optional `default` if the key does not exist,
   or if its value is blank (via `Moar.Term.blank?/1`).
 

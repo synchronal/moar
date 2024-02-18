@@ -3,7 +3,7 @@
 [![CI](https://github.com/synchronal/moar/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/moar/actions)
 [![Hex pm](http://img.shields.io/hexpm/v/moar.svg?style=flat)](https://hex.pm/packages/moar) [![License](http://img.shields.io/github/license/synchronal/moar.svg?style=flat)](https://github.com/synchronal/moar/blob/main/LICENSE.md)
 
-An assortment of useful functions.
+A dependency-free library containing an assortment of useful functions.
 
 The docs can be found at https://hexdocs.pm/moar
 
@@ -121,6 +121,7 @@ end
 `Moar.Opts`
 
 - is meant to be used with function options.
+- `delete` deletes a value from opts.
 - `get` extracts a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
 - `pop` removes a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
 - `take` extracts multiple values from opts, falling back to defaults if the value is blank (via `Moar.Term.blank?/1`)

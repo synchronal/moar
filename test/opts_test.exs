@@ -7,6 +7,43 @@ defmodule Moar.OptsTest do
 
   doctest Moar.Opts
 
+  describe "delete" do
+    test "deleting by key" do
+      assert Opts.delete(%{a: 1, b: 2}, :a) == %{b: 2}
+      assert Opts.delete([a: 1, b: 2], :a) == [b: 2]
+    end
+
+    test "deleting by key does nothing if the key is not in the opts" do
+      assert Opts.delete(%{a: 1, b: 2}, :c) == %{a: 1, b: 2}
+      assert Opts.delete([a: 1, b: 2], :c) == [a: 1, b: 2]
+    end
+
+    test "deleting by key and value" do
+      assert Opts.delete(%{a: 1, b: 2}, :a, 1) == %{b: 2}
+      assert Opts.delete([a: 1, b: 2], :a, 1) == [b: 2]
+    end
+
+    test "deleting by key and value does nothing if the key is not in the opts" do
+      assert Opts.delete(%{a: 1, b: 2}, :c) == %{a: 1, b: 2}
+      assert Opts.delete([a: 1, b: 2], :c) == [a: 1, b: 2]
+    end
+
+    test "deleting by key and value does nothing if the key's value doesn't match" do
+      assert Opts.delete(%{a: 1, b: 2}, :a, 999) == %{a: 1, b: 2}
+      assert Opts.delete([a: 1, b: 2], :a, 999) == [a: 1, b: 2]
+    end
+
+    test "deleting by function" do
+      assert Opts.delete(%{a: 1, b: 2}, fn {k, _v} -> k == :a end) == %{b: 2}
+      assert Opts.delete([a: 1, b: 2], fn {k, _v} -> k == :a end) == [b: 2]
+    end
+
+    test "deleting by function does nothing if the function returns falsy" do
+      assert Opts.delete(%{a: 1, b: 2}, fn {k, _v} -> k == :z end) == %{a: 1, b: 2}
+      assert Opts.delete([a: 1, b: 2], fn {k, _v} -> k == :z end) == [a: 1, b: 2]
+    end
+  end
+
   describe "get" do
     test "gets one item from the input" do
       assert Opts.get(%{a: 1, b: 2}, :a) == 1

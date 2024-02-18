@@ -3,15 +3,16 @@
 ## Unreleased changes
 
 - `assert_eq` now raises when an invalid option is provided.
-
-## 1.51.0
-
-- Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing
 - `Moar.Opts.get/3` and `Moar.Opts.take/2` accept keyword lists with a mix of "valueless" keys and regular keys, like
   `[:a, b: 2]`, where the default value for a "valueless" key is `true`.
 - Add `Moar.Opts.pop/3` which pops an opt out of an opts enum.
 - Add `:apply` and `:map` options to `assert_eq/3` to run one or more functions on `left` or `right` (`:apply`) or run one
-  or more functions on each element in `left` or `right` (`:map`).
+  or more functions on each value in `left` or `right` (`:map`).
+- Add `Moar.Opts.delete/2` and `Moar.Opts.delete/3` which delete values from opts.
+
+## 1.51.0
+
+- Add `Moar.Term.when_present` which returns one value when the term is present, and another value when missing
 
 ## 1.50.0
 
