@@ -4,19 +4,20 @@ defmodule Moar.Opts do
   @moduledoc """
   Extracts keys and values from enumerables, especially from function options.
 
-  There are two main functions, each of which takes an opts enumerable as input. `get/3` extracts
-  one value from the opts with an optional default value. `take/2` extracts multiple values from the opts
+  There are three main functions, each of which takes an opts enumerable as input. `get/3` extracts
+  one value from the opts with an optional default value. `pop/3` is like `get/3` but removes the opt from opts
+  and returns the opt and the remaining opts as a tuple. `take/2` extracts multiple values from the opts
   with optional default values for some or all keys.
 
-  `get/3` and `take/2` differ from their `Map` and `Keyword` counterparts in the following ways:
-  * `get/3` and `take/2` accept any enumerable, including maps, keyword lists, and mixed lists like
+  `get/3`, `pop/3`, and `take/2` differ from their `Map` and `Keyword` counterparts in the following ways:
+  * `get/3`, `pop/3`, and `take/2` accept any enumerable, including maps, keyword lists, and mixed lists like
     `[:a, :b, c: 3, d: 4]`.
-  * `get/3` and `take/2` will fall back to the default value if the given key's value is blank
+  * `get/3`, `pop/3`, and `take/2` will fall back to the default value if the given key's value is blank
     as defined by `Moar.Term.blank?/1` (`nil`, empty strings, strings made up only of whitespace,
     empty lists, and empty maps), and will default valueless keys (e.g., `:a` in `[:a, b: 2]`) to `true` unless a
     different default is specified. The corresponding `Map` and `Keyword` functions only fall back to
     the default value if the value is exactly `nil`, and `Keyword` functions don't support valueless keys.
-  * `get/3` and take/2` allow default values to be specified.
+  * `get/3`, `pop/3`, and `take/2` allow default values to be specified.
   * `take/2` will return the value for a requested key even if the key is not in the input enumerable.
 
   Example using `get/2` and `get/3`:
@@ -82,7 +83,7 @@ defmodule Moar.Opts do
   end
 
   @doc """
-  Removes an opt from the opts (via `get/3`), returning {opt, remaining_opts}.
+  Removes an opt from the opts (via `get/3`), returning `{opt, remaining_opts}`.
 
   ```elixir
   iex> [a: 1, b: 2] |> Moar.Opts.pop(:a)

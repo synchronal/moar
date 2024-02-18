@@ -122,6 +122,7 @@ end
 
 - is meant to be used with function options.
 - `get` extracts a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
+- `pop` removes a value from opts, falling back to a default if the value is blank (via `Moar.Term.blank?/1`)
 - `take` extracts multiple values from opts, falling back to defaults if the value is blank (via `Moar.Term.blank?/1`)
 
 `Moar.Protocol`
