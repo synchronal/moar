@@ -181,6 +181,47 @@ defmodule Moar.Opts do
     do: {get(input, key, default), Map.delete(input, key)}
 
   @doc """
+  Replace an opt.
+
+  ```elixir
+  iex> Moar.Opts.replace(%{a: 1, b: 2}, {:a, 1}, {:a, 100})
+  %{a: 100, b: 2}
+
+  iex> Moar.Opts.replace([a: 1, b: 2], {:a, 1}, {:a, 100})
+  [a: 100, b: 2]
+
+  iex> Moar.Opts.replace([:a, b: 2], :a, :aa)
+  [:aa, b: 2]
+  ```
+  """
+  @spec replace(map(), {any(), any()}, {any(), any()}) :: map()
+  @spec replace(list(), {any(), any()} | any(), any()) :: list()
+
+  def replace(opts, {key, value}, {replacement_key, replacement_value}) when is_map(opts) do
+    Enum.reduce(opts, %{}, fn {k, v}, acc ->
+      if key == k && value == v,
+        do: Map.put(acc, replacement_key, replacement_value),
+        else: Map.put(acc, k, v)
+    end)
+  end
+
+  def replace(opts, {key, value}, replacement) when is_list(opts) do
+    List.foldr(opts, [], fn {k, v}, acc ->
+      if key == k && value == v,
+        do: [replacement | acc],
+        else: [{k, v} | acc]
+    end)
+  end
+
+  def replace(opts, key, replacement) when is_list(opts) do
+    List.foldr(opts, [], fn k, acc ->
+      if key == k,
+        do: [replacement | acc],
+        else: [k | acc]
+    end)
+  end
+
+  @doc """
   Get the value each key in `keys` from `input`, falling back to optional default values for keys that
   do not exist, or for values that are blank (via `Moar.Term.blank?/1`).
 

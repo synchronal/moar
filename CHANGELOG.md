@@ -8,7 +8,8 @@
 - Add `Moar.Opts.pop/3` which pops an opt out of an opts enum.
 - Add `:apply` and `:map` options to `assert_eq/3` to run one or more functions on `left` or `right` (`:apply`) or run one
   or more functions on each value in `left` or `right` (`:map`).
-- Add `Moar.Opts.delete/2` and `Moar.Opts.delete/3` which delete values from opts.
+- Add `Moar.Opts.delete/2` and `Moar.Opts.delete/3` which deletes values from opts.
+- Add `Moar.Opts.replace/3` which replaces values in opts.
 
 ## 1.51.0
 

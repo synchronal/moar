@@ -88,6 +88,29 @@ defmodule Moar.OptsTest do
     end
   end
 
+  describe "replace" do
+    test "replaces when the opt is a {key, value} tuple" do
+      assert Moar.Opts.replace(%{a: 1, b: 2}, {:a, 1}, {:a, 100}) == %{a: 100, b: 2}
+      assert Moar.Opts.replace([a: 1, b: 2], {:a, 1}, {:a, 100}) == [a: 100, b: 2]
+      assert Moar.Opts.replace([a: 1, b: 2], {:a, 1}, :aa) == [:aa, b: 2]
+    end
+
+    test "does nothing when the opt is a {key, value} tuple but not found" do
+      assert Moar.Opts.replace(%{a: 1, b: 2}, {:a, 50}, {:a, 100}) == %{a: 1, b: 2}
+      assert Moar.Opts.replace([a: 1, b: 2], {:a, 50}, {:a, 100}) == [a: 1, b: 2]
+    end
+
+    test "replaces when the opt is a term" do
+      assert Moar.Opts.replace([:a, :b], :a, :aa) == [:aa, :b]
+      assert Moar.Opts.replace([:a, b: 2], :a, :aa) == [:aa, b: 2]
+    end
+
+    test "does nothing when the opt is a term but not found" do
+      assert Moar.Opts.replace([:a, :b], :z, :zz) == [:a, :b]
+      assert Moar.Opts.replace([:a, b: 2], :z, :zz) == [:a, b: 2]
+    end
+  end
+
   describe "take" do
     test "takes opts from input and returns a map" do
       assert Opts.take(%{a: 1, b: 2, c: 3}, [:a, :b]) == %{a: 1, b: 2}
