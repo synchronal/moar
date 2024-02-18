@@ -76,16 +76,19 @@ defmodule Moar.Assertions do
 
   Options:
 
-  * `except: ~w[a b]a` - ignore the given keys when comparing maps.
-  * `ignore_order: boolean` - if the `left` and `right` values are lists, ignores the order when checking equality.
+  * `apply: <function>` - apply the given function to `left` and `right` (see also `:map`). The `apply:` keyword is
+    optional here; any function that is passed in will be applied.
+  * `except: <list>` - ignore the given keys when comparing maps.
+  * `ignore_order: <boolean>` - if the `left` and `right` values are lists, ignores the order when checking equality.
   * ~~`ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
     trailing space when checking equality.~~ _deprecated: see `:whitespace` option_
-  * `only: ~w[a b]a` - only consider the given keys when comparing maps.
-  * `returning: value` - returns `value` if the assertion passes, rather than returning the `left` value.
+  * `map: <function>` - apply the given function to each item in `left` and `right` (see also `:apply`).
+  * `only: <list>` - only consider the given keys when comparing maps.
+  * `returning: <value>` - returns `value` if the assertion passes, rather than returning the `left` value.
   * `whitespace: :squish` - when `left` and `right` are strings, squishes via `Moar.String.squish/1` before comparing.
   * `whitespace: :trim` - when `left` and `right` are strings, trims via `String.trim/1` before comparing.
-  * `within: delta` - asserts that the `left` and `right` values are within `delta` of each other.
-  * `within: {delta, time_unit}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
+  * `within: <delta>` - asserts that the `left` and `right` values are within `delta` of each other.
+  * `within: {<delta>, <time_unit>}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
     See `Moar.Duration` for more about time units. If `left` and `right` are strings, they are parsed as ISO8601 dates.
 
   ## Examples
@@ -93,33 +96,74 @@ defmodule Moar.Assertions do
   ```elixir
   iex> import Moar.Assertions
 
+  # prefer regular `assert` when `assert_eq` is not necessary
+  iex> assert Map.put(%{a: 1}, :b, 2) == %{a: 1, b: 2}
+  true
+
+  # works nicely with pipes
   iex> %{a: 1} |> Map.put(:b, 2) |> assert_eq(%{a: 1, b: 2})
   %{a: 1, b: 2}
 
+  # ignore one or more keys of a map
   iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, except: [:b])
   %{a: 1, b: 2, c: 3}
 
-  iex> assert_eq([1, 2], [2, 1], ignore_order: true)
-  [1, 2]
-
+  # only assert on one or more keys of a map
   iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, only: [:a, :c])
   %{a: 1, b: 2, c: 3}
 
+  # assert equality of lists while ignoring order
+  iex> assert_eq(["a", "b"], ["b", "a"], ignore_order: true)
+  ["a", "b"]
+
+  # shorthand for asserting equality of lists while ignoring order
+  iex> assert_eq(["a", "b"], ["b", "a"], :ignore_order)
+  ["a", "b"]
+
+  # applying a function (in this case, to ignore the order)
+  iex> assert_eq(["a", "b"], ["b", "a"], apply: &Enum.sort/1)
+  ["a", "b"]
+
+  # shorthand for applying a function
+  iex> assert_eq(["a", "b"], ["b", "a"], &Enum.sort/1)
+  ["a", "b"]
+
+  # apply a mapping function
+  iex> assert_eq(["A", "b"], ["a", "B"], map: &String.downcase/1)
+  ["a", "b"]
+
+  # applying multiple functions
+  iex> assert_eq(["a", "b"], ["B", "a"], map: &String.downcase/1, apply: &Enum.sort/1)
+  ["a", "b"]
+
+  # shorthand for applying multiple functions
+  iex> assert_eq(" a ", "A", [&String.downcase/1, &String.trim/1])
+  "a"
+
+  # return an arbitrary value instead of the left value
   iex> map = %{a: 1, b: 2}
   iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
   %{a: 1, b: 2}
 
+  # trim whitespace
   iex> assert_eq("foo bar", "  foo bar\\n", whitespace: :trim)
   "foo bar"
 
+  # squish whitespace
+  iex> assert_eq("  foo bar", "foo     bar\\n", whitespace: :squish)
+  "foo bar"
+
+  # assert within a delta (this particular case could use ExUnit.Assertions.assert_in_delta/4).
   iex> assert_eq(4/28, 0.14, within: 0.01)
   0.14285714285714285
 
+  # assert within a time delta
   iex> inserted_at = ~U[2022-01-02 03:00:00Z]
   iex> updated_at = ~U[2022-01-02 03:04:00Z]
   iex> assert_eq(inserted_at, updated_at, within: {10, :minute})
   ~U[2022-01-02 03:00:00Z]
 
+  # assert within a time delta when inputs are time strings
   iex> inserted_at = "2022-01-02T03:00:00Z"
   iex> updated_at = "2022-01-02T03:04:00Z"
   iex> assert_eq(inserted_at, updated_at, within: {10, :minute})
@@ -138,11 +182,8 @@ defmodule Moar.Assertions do
       |> transform_if(:ignore_whitespace, :leading_and_trailing, &String.trim/1)
       |> transform_if(:whitespace, :trim, &String.trim/1)
       |> transform_if(:whitespace, :squish, &Moar.String.squish/1)
-
-    {left, right} =
-      if Moar.Opts.get(opts, :ignore_order) && is_list(left) && is_list(right),
-        do: {Enum.sort(left), Enum.sort(right)},
-        else: {left, right}
+      |> transform_if(:ignore_order, true, &Enum.sort/1)
+      |> apply_and_map()
 
     within = Moar.Opts.get(opts, :within)
 
@@ -296,6 +337,28 @@ defmodule Moar.Assertions do
   end
 
   # # #
+
+  defp apply_and_map({left, right, opts}) do
+    {left, right} =
+      Enum.reduce(opts, {left, right}, fn
+        fun, {l, r} when is_function(fun) ->
+          {fun.(l), fun.(r)}
+
+        {:apply, fun}, {l, r} ->
+          {fun.(l), fun.(r)}
+
+        {:map, fun}, {l, r} when is_map(l) and is_map(r) ->
+          {Map.new(l, fn {k, v} -> {k, fun.(v)} end), Map.new(r, fn {k, v} -> {k, fun.(v)} end)}
+
+        {:map, fun}, {l, r} ->
+          {Enum.map(l, fun), Enum.map(r, fun)}
+
+        _, {l, r} ->
+          {l, r}
+      end)
+
+    {left, right, opts}
+  end
 
   defp assert_filtered(left, right, opts) when is_map(left) and is_map(right) do
     except = Moar.Opts.get(opts, :except, :none)

@@ -39,6 +39,34 @@ defmodule Moar.AssertionsTest do
       assert assert_eq("arg", "arg", returning: "something else") == "something else"
     end
 
+    # # # assert_eq: apply & map
+
+    test "accepts one or more `:apply` functions to transform scalars" do
+      assert_eq("foo", "FOO", apply: &String.downcase/1)
+      assert_eq(" foo   ", "    FOO ", apply: &String.downcase/1, apply: &String.trim/1)
+    end
+
+    test "`:apply` keyword can be omitted" do
+      assert_eq("foo", "FOO", &String.downcase/1)
+      assert_eq(" foo   ", "    FOO ", [&String.downcase/1, &String.trim/1])
+    end
+
+    test "accepts one or more `:map` functions to transform enums" do
+      assert_eq(["foo", "bar"], ["FOO", "bAr"], map: &String.downcase/1)
+      assert_eq([" foo   ", " bar   "], ["    FOO ", "BaR   "], map: &String.downcase/1, map: &String.trim/1)
+
+      assert_eq(%{a: " foo   ", b: " bar   "}, %{a: "    FOO ", b: "BaR   "},
+        map: &String.downcase/1,
+        map: &String.trim/1
+      )
+
+      assert_eq([" foo   ", " bar   "], ["BaR   ", "    FOO "],
+        map: &String.downcase/1,
+        map: &String.trim/1,
+        apply: &Enum.sort/1
+      )
+    end
+
     # # # assert_eq: datetime
 
     test "when the arguments are DateTimes" do
@@ -91,7 +119,7 @@ defmodule Moar.AssertionsTest do
       assert_eq([1, 2, 3], [3, 2, 1], :ignore_order)
     end
 
-    # # # assert_eq: maps
+    # # # assert_eq: only and except
 
     test "when the arguments are maps, and no options are given, performs a regular map equality test" do
       assert_eq(%{a: 1, b: 2}, %{b: 2, a: 1})
