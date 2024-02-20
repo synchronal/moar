@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.52.0
+
 - `assert_eq` now raises when an invalid option is provided.
 - Add `:apply` and `:map` options to `assert_eq/3` to run one or more functions on `left` or `right` (`:apply`) or run one
   or more functions on each value in `left` or `right` (`:map`).
