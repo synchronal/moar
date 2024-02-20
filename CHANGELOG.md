@@ -3,11 +3,14 @@
 ## Unreleased changes
 
 - `assert_eq` now raises when an invalid option is provided.
+- Add `:apply` and `:map` options to `assert_eq/3` to run one or more functions on `left` or `right` (`:apply`) or run one
+  or more functions on each value in `left` or `right` (`:map`).
+- The following `assert_eq` transformations are now supported: `:downcase`, `:sort`, `:squish`, `:trim`
+- The following `assert_eq` are soft-deprecated: `ignore_order: <boolean>`, `ignore_whitespace: :leading_and_trailing`,
+  `whitespace: :squish`, `whitespace: :trim`.
 - `Moar.Opts.get/3` and `Moar.Opts.take/2` accept keyword lists with a mix of "valueless" keys and regular keys, like
   `[:a, b: 2]`, where the default value for a "valueless" key is `true`.
 - Add `Moar.Opts.pop/3` which pops an opt out of an opts enum.
-- Add `:apply` and `:map` options to `assert_eq/3` to run one or more functions on `left` or `right` (`:apply`) or run one
-  or more functions on each value in `left` or `right` (`:map`).
 - Add `Moar.Opts.delete/2` and `Moar.Opts.delete/3` which deletes values from opts.
 - Add `Moar.Opts.replace/3` which replaces values in opts.
 

@@ -65,33 +65,12 @@ defmodule Moar.Assertions do
   end
 
   @doc """
-  Asserts that the `left` and `right` values are equal. Returns the `left` value unless the assertion fails,
-  or unless the `:returning` option is used.
-
-  Uses `assert left == right` under the hood, unless `left` is a string and
-  `right` is a Regex, in which case they will be compared using the `=~` operator.
+  Asserts that the `left` and `right` values are equal. It returns the `left` value unless the assertion fails,
+  or unless the `:returning` option is used. As a special case, if the first argument is a string and the second
+  is a Regex, the comparison is done with the `=~` operator instead of the `==` operator.
 
   _Style note: the authors prefer to use `assert` in most cases, using `assert_eq` only when the extra options
   are helpful or when they want to make assertions in a pipeline._
-
-  Options:
-
-  * `apply: <function>` - apply the given function to `left` and `right` (see also `:map`). The `apply:` keyword is
-    optional here; any function that is passed in will be applied.
-  * `except: <list>` - ignore the given keys when comparing maps.
-  * `ignore_order: <boolean>` - if the `left` and `right` values are lists, ignores the order when checking equality.
-  * ~~`ignore_whitespace: :leading_and_trailing` - if the `left` and `right` values are strings, ignores leading and
-    trailing space when checking equality.~~ _deprecated: see `:whitespace` option_
-  * `map: <function>` - apply the given function to each item in `left` and `right` (see also `:apply`).
-  * `only: <list>` - only consider the given keys when comparing maps.
-  * `returning: <value>` - returns `value` if the assertion passes, rather than returning the `left` value.
-  * `whitespace: :squish` - when `left` and `right` are strings, squishes via `Moar.String.squish/1` before comparing.
-  * `whitespace: :trim` - when `left` and `right` are strings, trims via `String.trim/1` before comparing.
-  * `within: <delta>` - asserts that the `left` and `right` values are within `delta` of each other.
-  * `within: {<delta>, <time_unit>}` - like `within: delta` but performs time comparisons in the specified `time_unit`.
-    See `Moar.Duration` for more about time units. If `left` and `right` are strings, they are parsed as ISO8601 dates.
-
-  ## Examples
 
   ```elixir
   iex> import Moar.Assertions
@@ -104,6 +83,48 @@ defmodule Moar.Assertions do
   iex> %{a: 1} |> Map.put(:b, 2) |> assert_eq(%{a: 1, b: 2})
   %{a: 1, b: 2}
 
+  # returns an arbitrary value instead of the left value
+  iex> map = %{a: 1, b: 2}
+  iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
+  %{a: 1, b: 2}
+
+  # compares using a regex if `left` is a string and `right` is a Regex
+  iex> assert_eq "the length is 10cm", ~r/.*length is \\d{2}cm/
+  ```
+
+  `left` and `right` can be transformed by passing in one or more functions (optionally using the `apply:` keyword).
+  If `left` and `right` are lists, all their values can be transformed using the `map:` option.
+
+  ```elixir
+  iex> import Moar.Assertions
+
+  # apply a function
+  iex> assert_eq("hello", "heLLo", &String.downcase/1)
+  "hello"
+
+  # apply multiple functions (left to right)
+  iex> assert_eq("hello", "heLLo", [&String.downcase/1, &String.reverse/1])
+  "olleh"
+
+  # apply a function explicitly
+  iex> assert_eq("hello", "heLLo", apply: &String.downcase/1)
+  "hello"
+
+  # map all elements with a function
+  iex> assert_eq(["a", "B"], ["A", "b"], map: &String.downcase/1)
+  ["a", "b"]
+
+  # combine apply and map (left to right)
+  iex> assert_eq(["a", "B", "C"], ["A", "b", "Z"], apply: &Enum.drop(&1, -1), map: &String.downcase/1)
+  ["a", "b"]
+  ```
+
+  If `left` and `right` are maps, `only: <list>` will only consider the given keys, and `except: <list>` will ignore
+  certain keys.
+
+  ```elixir
+  iex> import Moar.Assertions
+
   # ignore one or more keys of a map
   iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, except: [:b])
   %{a: 1, b: 2, c: 3}
@@ -111,47 +132,25 @@ defmodule Moar.Assertions do
   # only assert on one or more keys of a map
   iex> assert_eq(%{a: 1, b: 2, c: 3}, %{a: 1, b: 100, c: 3}, only: [:a, :c])
   %{a: 1, b: 2, c: 3}
+  ```
 
-  # assert equality of lists while ignoring order
-  iex> assert_eq(["a", "b"], ["b", "a"], ignore_order: true)
-  ["a", "b"]
+  If `left` and `right` are lists, their order can be ignored using `:ignore_order`.
 
-  # shorthand for asserting equality of lists while ignoring order
+  ```elixir
+  iex> import Moar.Assertions
+
+  # ignoring order when comparing lists
   iex> assert_eq(["a", "b"], ["b", "a"], :ignore_order)
   ["a", "b"]
+  ```
 
-  # applying a function (in this case, to ignore the order)
-  iex> assert_eq(["a", "b"], ["b", "a"], apply: &Enum.sort/1)
-  ["a", "b"]
+  For inexact numerical assertions, `within: <delta>` works like `ExUnit.Assertions.assert_in_delta/4`, and
+  for inexact date and datetime assertions, `within: {<delta>, <time-unit>}` asserts that `left` and `right`
+  are within some duration of each other. See `Moar.Duration` for more about time units, and also see
+  `Moar.Assertions.assert_recent/2`. If `left` and `right` are strings, they are parsed as ISO8601 dates.
 
-  # shorthand for applying a function
-  iex> assert_eq(["a", "b"], ["b", "a"], &Enum.sort/1)
-  ["a", "b"]
-
-  # apply a mapping function
-  iex> assert_eq(["A", "b"], ["a", "B"], map: &String.downcase/1)
-  ["a", "b"]
-
-  # applying multiple functions
-  iex> assert_eq(["a", "b"], ["B", "a"], map: &String.downcase/1, apply: &Enum.sort/1)
-  ["a", "b"]
-
-  # shorthand for applying multiple functions
-  iex> assert_eq(" a ", "A", [&String.downcase/1, &String.trim/1])
-  "a"
-
-  # return an arbitrary value instead of the left value
-  iex> map = %{a: 1, b: 2}
-  iex> map |> Map.get(:a) |> assert_eq(1, returning: map)
-  %{a: 1, b: 2}
-
-  # trim whitespace
-  iex> assert_eq("foo bar", "  foo bar\\n", whitespace: :trim)
-  "foo bar"
-
-  # squish whitespace
-  iex> assert_eq("  foo bar", "foo     bar\\n", whitespace: :squish)
-  "foo bar"
+  ```elixir
+  iex> import Moar.Assertions
 
   # assert within a delta (this particular case could use ExUnit.Assertions.assert_in_delta/4).
   iex> assert_eq(4/28, 0.14, within: 0.01)
@@ -169,6 +168,29 @@ defmodule Moar.Assertions do
   iex> assert_eq(inserted_at, updated_at, within: {10, :minute})
   "2022-01-02T03:00:00Z"
   ```
+
+  The following transformation shortcuts are supported:
+  * `:downcase` - if `left` and `right` are strings, converts them to lowercase before comparing
+  * `:sort` - the same as `:ignore_order`
+  * `:squish` - if `left` and `right` are strings, trims the strings and replaces consecutive whitespace characters
+    with a single space using `Moar.String.squish/1` before comparing
+  * `:trim` - if `left` and `right` are strings, trims the strings using `String.trim/1` before comparing
+
+  ```elixir
+  iex> import Moar.Assertions
+
+  iex> assert_eq("FOO bar", "foo bar", :downcase)
+  "foo bar"
+
+  iex> assert_eq(" FOO   bar  ", "foo bar", [:downcase, :squish])
+  "foo bar"
+  ```
+
+  The following options are deprecated:
+  * `ignore_order: <boolean>` - use `:ignore_order` instead of `ignore_order: true`
+  * `ignore_whitespace: :leading_and_trailing` - use `:squish` or `:trim` instead
+  * `whitespace: :squish` - use `:squish` instead
+  * `whitespace: :trim` - use `:trim` instead
   """
   @spec assert_eq(left :: any(), right :: any(), opts :: [assert_eq_opts()]) :: any()
   def assert_eq(left, right, opts \\ []) do
