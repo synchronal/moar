@@ -67,6 +67,20 @@ defmodule Moar.AssertionsTest do
       )
     end
 
+    test "shortcuts can be used for certain functions" do
+      assert_eq("foo", "FOO", apply: :downcase)
+      assert_eq(["foo"], ["FOO"], map: :downcase)
+      assert_eq("foo bar", " foo    bar ", apply: :squish)
+      assert_eq(["foo bar"], [" foo   bar "], map: :squish)
+      assert_eq("foo", " foo ", apply: :trim)
+      assert_eq(["foo"], [" foo "], map: :trim)
+    end
+
+    test "shortcuts can be mixed with longcuts" do
+      assert_eq("foo bar", "  FoO  BAr  ", apply: :downcase, apply: &Moar.String.squish/1)
+      assert_eq("foo bar", "  FoO  BAr  ", [:downcase, apply: &Moar.String.squish/1])
+    end
+
     # # # assert_eq: datetime
 
     test "when the arguments are DateTimes" do

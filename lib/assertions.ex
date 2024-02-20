@@ -338,20 +338,28 @@ defmodule Moar.Assertions do
 
   # # #
 
+  @shortcuts %{
+    downcase: &String.downcase/1,
+    sort: &Enum.sort/1,
+    squish: &Moar.String.squish/1,
+    trim: &String.trim/1
+  }
+  @shortcut_keys Map.keys(@shortcuts)
+
   defp apply_and_map({left, right, opts}) do
     {left, right} =
       Enum.reduce(opts, {left, right}, fn
-        fun, {l, r} when is_function(fun) ->
-          {fun.(l), fun.(r)}
+        fun, {l, r} when is_function(fun) or fun in @shortcut_keys ->
+          {shortcut(fun).(l), shortcut(fun).(r)}
 
-        {:apply, fun}, {l, r} ->
-          {fun.(l), fun.(r)}
+        {:apply, fun}, {l, r} when is_function(fun) or fun in @shortcut_keys ->
+          {shortcut(fun).(l), shortcut(fun).(r)}
 
-        {:map, fun}, {l, r} when is_map(l) and is_map(r) ->
-          {Map.new(l, fn {k, v} -> {k, fun.(v)} end), Map.new(r, fn {k, v} -> {k, fun.(v)} end)}
+        {:map, fun}, {l, r} when is_map(l) and is_map(r) and (is_function(fun) or fun in @shortcut_keys) ->
+          {Map.new(l, fn {k, v} -> {k, shortcut(fun).(v)} end), Map.new(r, fn {k, v} -> {k, shortcut(fun).(v)} end)}
 
-        {:map, fun}, {l, r} ->
-          {Enum.map(l, fun), Enum.map(r, fun)}
+        {:map, fun}, {l, r} when is_function(fun) or fun in @shortcut_keys ->
+          {Enum.map(l, shortcut(fun)), Enum.map(r, shortcut(fun))}
 
         _, {l, r} ->
           {l, r}
@@ -359,6 +367,9 @@ defmodule Moar.Assertions do
 
     {left, right, opts}
   end
+
+  defp shortcut(shortcut) when shortcut in @shortcut_keys, do: @shortcuts[shortcut]
+  defp shortcut(fun) when is_function(fun), do: fun
 
   defp assert_filtered(left, right, opts) when is_map(left) and is_map(right) do
     except = Moar.Opts.get(opts, :except, :none)
