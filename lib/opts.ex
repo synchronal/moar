@@ -79,11 +79,8 @@ defmodule Moar.Opts do
   [a: 1, c: 3]
   ```
   """
-  @spec delete(map(), ({any(), any()} -> boolean()) | (any() -> boolean())) :: map()
-  @spec delete(list(), ({any(), any()} -> boolean()) | (any() -> boolean())) :: list()
-  @spec delete(term(), (any() -> boolean())) :: term()
-  @spec delete(any(), any()) :: boolean()
-  @spec delete(any(), any(), any()) :: boolean()
+  @spec delete(map() | list(), any()) :: map() | list()
+  @spec delete(map() | list(), any(), any()) :: map() | list()
 
   def delete(input, fun) when is_function(fun) and is_map(input) do
     Enum.reduce(input, %{}, fn
