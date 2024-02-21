@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.52.1
+
 - fix typespecs for `Moar.Assertions.assert_eq/3`
 
 ## 1.52.0
