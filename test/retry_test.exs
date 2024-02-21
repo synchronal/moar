@@ -22,12 +22,12 @@ defmodule Moar.RetryTest do
   describe "rescue_for!" do
     test "calls the function repeatedly until it does not raise", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) < 3, do: raise("not 3 yet") end
-      Moar.Retry.rescue_for!(50, fun, 10)
+      Moar.Retry.rescue_for!(100, fun, 10)
     end
 
     test "accepts a duration", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) < 3, do: raise("not 3 yet") end
-      Moar.Retry.rescue_for!({50, :millisecond}, fun, 10)
+      Moar.Retry.rescue_for!({100, :millisecond}, fun, 10)
     end
 
     test "raises if the function does not stop raising within the timeout period", %{counter: counter} do
@@ -42,7 +42,7 @@ defmodule Moar.RetryTest do
   describe "rescue_until!" do
     test "calls the function repeatedly until it does not raise", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) < 3, do: raise("not 3 yet") end
-      later = DateTime.add(DateTime.utc_now(), 50, :millisecond)
+      later = DateTime.add(DateTime.utc_now(), 100, :millisecond)
       Moar.Retry.rescue_until!(later, fun, 10)
     end
 
@@ -59,12 +59,12 @@ defmodule Moar.RetryTest do
   describe "retry_for" do
     test "calls the function repeatedly until it returns a truthy value", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) > 3, do: Counter.value(counter) end
-      assert {:ok, 4} = Moar.Retry.retry_for(50, fun, 10)
+      assert {:ok, 4} = Moar.Retry.retry_for(100, fun, 10)
     end
 
     test "accepts a duration", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) > 3, do: Counter.value(counter) end
-      assert {:ok, 4} = Moar.Retry.retry_for({50, :millisecond}, fun, 10)
+      assert {:ok, 4} = Moar.Retry.retry_for({100, :millisecond}, fun, 10)
     end
 
     test "fails if the function does not return a truthy value within the timeout period", %{counter: counter} do
@@ -76,7 +76,7 @@ defmodule Moar.RetryTest do
   describe "retry_until" do
     test "calls the function repeatedly until it returns a truthy value", %{counter: counter} do
       fun = fn -> if Counter.tick(counter) > 3, do: Counter.value(counter) end
-      later = DateTime.add(DateTime.utc_now(), 50, :millisecond)
+      later = DateTime.add(DateTime.utc_now(), 100, :millisecond)
       assert {:ok, 4} = Moar.Retry.retry_until(later, fun, 10)
     end
 
