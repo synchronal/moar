@@ -12,10 +12,16 @@ defmodule Moar.Assertions do
 
   @inspect_opts [custom_options: [sort_maps: true]]
 
+  @type assert_eq_opt_shortcut() :: :downcase | :sort | :squish | :trim
   @type assert_eq_opts() ::
-          {:except, list()}
+          (any() -> any())
+          | {:apply, (any() -> any()) | assert_eq_opt_shortcut()}
+          | assert_eq_opt_shortcut()
+          | {:except, list()}
+          | :ignore_order
           | {:ignore_order, boolean()}
           | {:ignore_whitespace, :leading_and_trailing}
+          | {:map, (any() -> any()) | assert_eq_opt_shortcut()}
           | {:only, list()}
           | {:returning, any()}
           | {:whitespace, :squish | :trim}
@@ -192,7 +198,7 @@ defmodule Moar.Assertions do
   * `whitespace: :squish` - use `:squish` instead
   * `whitespace: :trim` - use `:trim` instead
   """
-  @spec assert_eq(left :: any(), right :: any(), opts :: [assert_eq_opts()]) :: any()
+  @spec assert_eq(left :: any(), right :: any(), opts :: assert_eq_opts() | [assert_eq_opts()]) :: any()
   def assert_eq(left, right, opts \\ []) do
     opts = List.wrap(opts)
 

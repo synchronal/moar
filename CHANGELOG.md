@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- fix typespecs for `Moar.Assertions.assert_eq/3`
+
 ## 1.52.0
 
 - `assert_eq` now raises when an invalid option is provided.
