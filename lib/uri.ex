@@ -16,6 +16,9 @@ defmodule Moar.URI do
 
   iex> Moar.URI.fix("https://www.example.com/")
   "https://www.example.com/"
+
+  iex> Moar.URI.fix("https://www.example.com/index.html")
+  "https://www.example.com/index.html"
   ```
 
   Adds an `https` scheme if no scheme is given:

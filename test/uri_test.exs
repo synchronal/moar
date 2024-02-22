@@ -26,6 +26,16 @@ defmodule Moar.URITest do
       "HtTpS://www.example.com/foo" |> Moar.URI.fix() |> assert_eq("https://www.example.com/foo")
     end
 
+    test "removes port 80 if the scheme is http" do
+      "hTtP://www.example.com:80/foo" |> Moar.URI.fix() |> assert_eq("http://www.example.com/foo")
+      "hTtPs://www.example.com:80/foo" |> Moar.URI.fix() |> assert_eq("https://www.example.com:80/foo")
+    end
+
+    test "removes port 443 if the scheme is https" do
+      "hTtPs://www.example.com:443/foo" |> Moar.URI.fix() |> assert_eq("https://www.example.com/foo")
+      "hTtP://www.example.com:443/foo" |> Moar.URI.fix() |> assert_eq("http://www.example.com:443/foo")
+    end
+
     test "unwraps cdata" do
       "<![CDATA[http://example.com/foo/bar-1.mp4]]>" |> Moar.URI.fix() |> assert_eq("http://example.com/foo/bar-1.mp4")
     end
