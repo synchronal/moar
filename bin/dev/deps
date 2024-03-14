@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-source ".medic/_support/cecho.sh"
-source ".medic/_support/check.sh"
-source ".medic/_support/step.sh"
+source "bin/_support/cecho.sh"
+source "bin/_support/check.sh"
+source "bin/_support/step.sh"
 
 set -e
 
@@ -14,15 +14,15 @@ check_hex() {
   mix hex.outdated
 }
 
-check_asdf() {
+check_mise() {
   echo ""
-  step_header "ASDF" "checking .tool-versions"
+  step_header "mise" "checking .tool-versions"
   echo ""
-  
+
   while read line; do
     set $line
-    latest="$(asdf list-all ${1} | grep -e '^\d.*' | grep -v '\-rc' | tail -1)"
-    
+    latest="$(mise list-all ${1} | grep -e '^\d.*' | grep -v '\-rc' | tail -1)"
+
     if [[ $2 == $latest ]]; then
       cecho --bright-bold-white "${1}" --white "${2}" --green "${latest} (Up-to-date)"
     else
@@ -33,14 +33,14 @@ check_asdf() {
 
 if [ -z "${deps}" ] ; then
   check_hex && true
-  check_asdf
-  
+  check_mise
+
   echo ""
   cecho --bright-bold-red "USAGE:"
   cecho --white "  list outdated deps:             run" --yellow "${0}"
   cecho --white "  update one or more Elixir deps: run" --yellow "${0} <package-name> ..."
-  cecho --white "  update an ASDF tool:            edit" --yellow ".tool-versions" --white "and run" --yellow "asdf install"
-  
+  cecho --white "  update a mise tool:             edit" --yellow ".tool-versions" --white "and run" --yellow "mise install"
+
   exit 0
 fi
 
