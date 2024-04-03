@@ -6,7 +6,7 @@ defmodule Moar.File do
   @doc "Generate a sha256 checksum of a file's contents"
   @spec checksum(Path.t()) :: binary()
   def checksum(path) do
-    File.stream!(path, 2048, [])
+    stream!(path, 2048)
     |> Enum.reduce(:crypto.hash_init(:sha256), fn line, acc -> :crypto.hash_update(acc, line) end)
     |> :crypto.hash_final()
     |> Base.encode16()
@@ -27,6 +27,16 @@ defmodule Moar.File do
   @spec new_tempfile_path(file_extension :: binary()) :: binary()
   def new_tempfile_path(file_extension),
     do: System.tmp_dir!() |> Path.join(Moar.Random.string(10, :base32) <> file_extension)
+
+  if Version.compare(System.version(), "1.16.0") in [:gt, :eq] do
+    @doc "Delegates to `File.stream!/2` in a way that's compatible with older Elixir versions."
+    @spec stream!(Path.t(), pos_integer()) :: File.Stream.t()
+    def stream!(path, bytes), do: File.stream!(path, bytes)
+  else
+    @doc "Delegates to `File.stream!/2` in a way that's compatible with older Elixir versions."
+    @spec stream!(Path.t(), pos_integer()) :: File.Stream.t()
+    def stream!(path, bytes), do: File.stream!(path, [], bytes)
+  end
 
   @doc """
   Writes `contents` to a new temp file with extension `file_extension`, and returns the path to the file.

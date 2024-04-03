@@ -90,7 +90,9 @@ end
 
 `Moar.File`
 
+- `checksum` returns a sha256 checksum of a file.
 - `new_tempfile_path` returns a new path for a tempfile, without creating it.
+- `stream!` delegates to `File.stream!` in a way that's compatible with older Elixir versions.
 - `write_tempfile` writes some data to a new tempfile.
 
 `Moar.Integer`
