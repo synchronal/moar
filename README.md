@@ -14,7 +14,7 @@ The package can be installed by adding `moar` to your list of dependencies in `m
 ```elixir
 def deps do
   [
-    {:moar, "~> 1.53"}
+    {:moar, "~> 1.52.1"}
   ]
 end
 ```
@@ -90,7 +90,6 @@ end
 
 `Moar.File`
 
-- `checksum` returns a sha256 checksum of a file.
 - `new_tempfile_path` returns a new path for a tempfile, without creating it.
 - `write_tempfile` writes some data to a new tempfile.
 
