@@ -3,6 +3,16 @@ defmodule Moar.File do
 
   @moduledoc "File-related functions."
 
+  @doc "Generate a sha256 checksum of a file's contents"
+  @spec checksum(Path.t()) :: binary()
+  def checksum(path) do
+    File.stream!(path, 2048)
+    |> Enum.reduce(:crypto.hash_init(:sha256), fn line, acc -> :crypto.hash_update(acc, line) end)
+    |> :crypto.hash_final()
+    |> Base.encode16()
+    |> String.downcase()
+  end
+
   @doc """
   Returns a randomly-named path in the system temp directory. Does not actually create the file at the path.
 

@@ -5,6 +5,14 @@ defmodule Moar.FileTest do
 
   doctest Moar.File
 
+  describe "checksum" do
+    test "generates a sha256 checksum of a file" do
+      {shasum, 0} = System.cmd("sha256sum", ["test/support/fixtures/test.jpg"])
+      [sha256, _path, _] = String.split(shasum, ~r[\s+])
+      assert Moar.File.checksum("test/support/fixtures/test.jpg") == sha256
+    end
+  end
+
   describe "new_tempfile_path" do
     test "generates a tempfile path" do
       ".txt"
