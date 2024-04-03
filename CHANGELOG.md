@@ -5,6 +5,7 @@
 ## 1.53.0
 
 - add `Moar.File.checksum/1` which returns a sha256 checksum of a file.
+- add `Moar.File.stream!` which delegates to `File.stream!` in a way that's compatible with older Elixir versions.
 
 ## 1.52.1
 
