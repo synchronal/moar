@@ -19,6 +19,8 @@ def deps do
 end
 ```
 
+Moar's test suite runs successfully against Elixir versions 1.13 and newer.
+
 ## Similar libraries
 
 - [Bunch](https://hexdocs.pm/bunch/readme.html)
