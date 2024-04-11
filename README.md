@@ -193,6 +193,11 @@ end
 - `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
 - `web_url?` returns true if the scheme is `http` or `https`.
 
+`Moar.UUID`
+
+- `regex` returns a Regex that matches valid UUIDs.
+- `valid?` returns true if the given string is a valid UUID.
+
 `Moar.Version`
 
 - `compare` is like `Version.compare/2` but normalizes the versions first.

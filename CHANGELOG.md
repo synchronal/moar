@@ -2,6 +2,9 @@
 
 ## Unreleased changes
 
+- add `Moar.UUID.regex/0` which returns a regex that matches valid UUIDs
+- add `Moar.UUID.valid?/1` which returns true if the given string is a valid UUID
+
 ## 1.53.0
 
 - add `Moar.File.checksum/1` which returns a sha256 checksum of a file.
