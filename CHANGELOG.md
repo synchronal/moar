@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.54.0
+
 - add `Moar.UUID.regex/0` which returns a regex that matches valid UUIDs
 - add `Moar.UUID.valid?/1` which returns true if the given string is a valid UUID
 
