@@ -10,6 +10,22 @@ defmodule Moar.Random do
   def float(min, max) when max > min,
     do: min + :rand.uniform() * (max - min)
 
+  @doc """
+  Randomly increases or decreases `number` by a random amount up to `percent` of `number`.
+  For example, `Etc.Random.fuzz(100, 0.2)` could return a number as low as 80.0 or as high as 120.0.
+
+  ```elixir
+  iex> n = Etc.Random.fuzz(100, 0.2)
+  iex> n <= 120 && n >= 80
+  true
+  iex> n > 120 || n <= 80
+  false
+  ```
+  """
+  @spec fuzz(number(), number()) :: number()
+  def fuzz(number, percent) when is_number(number) and is_number(percent) and percent >= 0 and percent <= 1,
+    do: number * (1.0 - Moar.Random.float(-percent, percent))
+
   @doc "Returns a random integer between `0` and `max`."
   @spec integer(max :: pos_integer()) :: pos_integer()
   def integer(max \\ 1_000_000_000),

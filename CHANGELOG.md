@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- add `Moar.Random.fuzz/2` which increases or decreases a number by a random percent.
+
 ## 1.54.0
 
 - add `Moar.UUID.regex/0` which returns a regex that matches valid UUIDs

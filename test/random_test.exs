@@ -24,6 +24,15 @@ defmodule Moar.RandomTest do
     end
   end
 
+  describe "fuzz" do
+    test "adds or removes some random percent from the given number" do
+      randos = 0..999 |> Enum.map(fn _ -> Moar.Random.fuzz(100, 0.2) end)
+      assert Enum.min(randos) |> abs() >= 80
+      assert Enum.max(randos) |> abs() <= 120
+      assert Enum.frequencies(randos) |> Map.values() |> Enum.max() < 10
+    end
+  end
+
   describe "integer" do
     test "generates random integers" do
       0..10_000

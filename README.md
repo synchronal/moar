@@ -138,6 +138,7 @@ Moar's test suite runs successfully against Elixir versions 1.13 and newer.
 `Moar.Random`
 
 - `float` returns a random float.
+- `fuzz` increases or decreases a number by a random percent.
 - `integer` returns a random integer.
 - `string` returns random base64- or base32-encoded string.
 
