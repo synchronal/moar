@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.55.0
+
 - add `Moar.Random.fuzz/2` which increases or decreases a number by a random percent.
 
 ## 1.54.0
