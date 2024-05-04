@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- add `Moar.Code.fetch_docs_as_markdown` to fetch a module's or function's docs as markdown.
+
 ## 1.55.0
 
 - add `Moar.Random.fuzz/2` which increases or decreases a number by a random percent.

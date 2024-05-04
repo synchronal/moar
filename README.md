@@ -46,6 +46,10 @@ Moar's test suite runs successfully against Elixir versions 1.13 and newer.
   or a string to a string.
 - `to_existing_atom` is like `String.to_existing_atom/1` but can accept an atom as a param.
 
+`Moar.Code`
+
+- `fetch_docs_as_markdown` returns a module's or function's docs as a markdown string
+
 `Moar.DateTime` and `Moar.NaiveDateTime`
 
 - `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
