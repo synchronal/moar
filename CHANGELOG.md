@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.56.0
+
 - add `Moar.Code.fetch_docs_as_markdown` to fetch a module's or function's docs as markdown.
 
 ## 1.55.0
