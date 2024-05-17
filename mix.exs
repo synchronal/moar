@@ -2,7 +2,7 @@ defmodule Moar.MixProject do
   use Mix.Project
 
   @scm_url "https://github.com/synchronal/moar"
-  @version "1.56.0"
+  @version "1.56.1"
 
   def project do
     [
