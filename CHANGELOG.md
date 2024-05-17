@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.56.2
+
+- more doc fixes
+
 ## 1.56.1
 
 - doc updates
