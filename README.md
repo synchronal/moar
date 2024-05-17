@@ -4,7 +4,7 @@
 [![Hex pm](http://img.shields.io/hexpm/v/moar.svg?style=flat)](https://hex.pm/packages/moar) [![License](http://img.shields.io/github/license/synchronal/moar.svg?style=flat)](https://github.com/synchronal/moar/blob/main/LICENSE.md)
 
 A dependency-free utility library containing 100+ useful functions. Part of the [Synchronal suite of
-libraries](https://github.com/synchronal).
+libraries](https://github.com/synchronal) and sponsored by [Reflective Software](https://reflective.dev).
 
 The docs can be found at https://hexdocs.pm/moar.
 
