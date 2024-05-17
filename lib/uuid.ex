@@ -10,7 +10,7 @@ defmodule Moar.UUID do
   def regex, do: @uuid_regex
 
   @doc """
-  Returns `true` if the given UUID is a valid regex, or `false` if it is nil or an invalid regex.
+  Returns `true` if the argument is a valid UUID, or `false` if it is nil or an invalid UUID.
 
   ```elixir
   iex> Moar.UUID.valid?(nil)

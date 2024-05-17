@@ -85,7 +85,7 @@ defmodule Moar.URI do
   if the original URI included the port, and the path is rendered as `/` if the original URI does not include a path.
 
   `simple_string`: converts to a simplified string representation of a URI for display purposes. Scheme, port, params,
-  and fragments are removed. `nil` is converted to an empty string.
+  and fragments are removed. `nil` is converted to an empty string. The return value is not a valid URI.
 
   ```elixir
   iex> url = "https://www.example.com:446/crackers/potato%20chips/fruit?a=1&b=2#something"
