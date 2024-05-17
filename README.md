@@ -3,9 +3,10 @@
 [![CI](https://github.com/synchronal/moar/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/moar/actions)
 [![Hex pm](http://img.shields.io/hexpm/v/moar.svg?style=flat)](https://hex.pm/packages/moar) [![License](http://img.shields.io/github/license/synchronal/moar.svg?style=flat)](https://github.com/synchronal/moar/blob/main/LICENSE.md)
 
-A dependency-free library containing an assortment of useful functions.
+A dependency-free utility library containing 100+ useful functions. Part of the [Synchronal suite of
+libraries](https://github.com/synchronal).
 
-The docs can be found at https://hexdocs.pm/moar
+The docs can be found at https://hexdocs.pm/moar.
 
 ## Installation
 
@@ -21,10 +22,13 @@ end
 
 Moar's test suite runs successfully against Elixir versions 1.13 and newer.
 
+If you'd rather not install the whole library, you can just copy some of its functions to your project.
+
 ## Similar libraries
 
 - [Bunch](https://hexdocs.pm/bunch/readme.html)
 - [Swiss](https://hexdocs.pm/swiss/readme.html)
+- [WuunderUtils](https://hexdocs.pm/wuunder_utils/api-reference.html)
 
 ## A quick tour
 
