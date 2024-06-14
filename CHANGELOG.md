@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- test against the latest version of Erlang and Elixir
+
 ## 1.56.2
 
 - more doc fixes

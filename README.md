@@ -8,7 +8,7 @@ libraries](https://github.com/synchronal) and sponsored by [Reflective Software]
 
 The docs can be found at https://hexdocs.pm/moar.
 
-Moar is tested against the most recent 3 versions of Elixir and Erlang.
+This library is tested against the most recent 3 versions of Elixir and Erlang.
 
 ## Installation
 
@@ -17,7 +17,6 @@ The package can be installed by adding `moar` to your list of dependencies in `m
 ```elixir
 def deps do
   [
-    {:moar, "~> 1.56"}
   ]
 end
 ```
