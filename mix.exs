@@ -11,7 +11,7 @@ defmodule Moar.MixProject do
       description: "A dependency-free utility library containing 100+ useful functions.",
       dialyzer: dialyzer(),
       docs: docs(),
-      elixir: "~> 1.13",
+      elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @scm_url,
       name: "Moar",
