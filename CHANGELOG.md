@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.59.0
+
 - add `Moar.Random.dom_id/1`
 
 ## 1.58.0
