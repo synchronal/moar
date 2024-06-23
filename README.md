@@ -147,6 +147,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 `Moar.Random`
 
+- `dom_id` returns a random string that is a valid DOM ID, with an optional prefix.
 - `float` returns a random float.
 - `fuzz` increases or decreases a number by a random percent.
 - `integer` returns a random integer.

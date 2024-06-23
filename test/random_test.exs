@@ -3,6 +3,16 @@ defmodule Moar.RandomTest do
 
   use Moar.SimpleCase, async: true
 
+  describe "dom_id" do
+    test "generates a random 10 character string which is appended to the prefix" do
+      assert Moar.Random.dom_id("thing") =~ ~r"thing-[a-z2-7]{10}"
+    end
+
+    test "defaults the prefix to `id`" do
+      assert Moar.Random.dom_id() =~ ~r"id-[a-z2-7]{10}"
+    end
+  end
+
   describe "float" do
     test "generates random floats between min and max" do
       randos = 0..10_000 |> Enum.map(fn _ -> Moar.Random.float(4.2, 8) end)

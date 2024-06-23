@@ -5,6 +5,14 @@ defmodule Moar.Random do
 
   @type encoding() :: :base32 | :base64
 
+  @doc """
+  Returns a string that starts with `prefix` (defaults to "id") followed by a dash, followed by 10 random lowercase
+  letters and numbers, like `foo-ag49cl29zd` or `id-ag49cl29zd`.
+  """
+  @spec dom_id(String.t()) :: String.t()
+  def dom_id(prefix \\ "id"),
+    do: "#{prefix}-#{string(10, :base32)}" |> String.downcase()
+
   @doc "Return a random float greater than or equal to `min` and less than `max`"
   @spec float(number(), number()) :: float()
   def float(min, max) when max > min,

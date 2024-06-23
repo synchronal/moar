@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- add `Moar.Random.dom_id/1`
+
 ## 1.58.0
 
 - require Elixir 1.15 or greater
