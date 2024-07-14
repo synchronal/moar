@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.59.1
+
 - `Moar.UUID.valid?/1` now fails if the input is too long
 
 ## 1.59.0
