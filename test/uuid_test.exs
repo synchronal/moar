@@ -24,6 +24,16 @@ defmodule Moar.UUIDTest do
       refute Moar.UUID.valid?(@invalid_regex)
     end
 
+    test "returns false if the uuid is too short" do
+      assert Moar.UUID.valid?("a3357225-ed23-48b6-9ce5-10a580489b3f")
+      refute Moar.UUID.valid?("a3357225-ed23-48b6-9ce5-10a580489b3")
+    end
+
+    test "returns false if the uuid is too long" do
+      assert Moar.UUID.valid?("a3357225-ed23-48b6-9ce5-10a580489b3f")
+      refute Moar.UUID.valid?("a3357225-ed23-48b6-9ce5-10a580489b3fa")
+    end
+
     test "raises if the UUID is not a string or `nil`" do
       assert_raise FunctionClauseError, fn -> Moar.UUID.valid?(42) end
     end

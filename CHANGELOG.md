@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.UUID.valid?/1` now fails if the input is too long
+
 ## 1.59.0
 
 - add `Moar.Random.dom_id/1`

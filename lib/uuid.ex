@@ -3,7 +3,7 @@ defmodule Moar.UUID do
 
   @moduledoc "UUID-related functions"
 
-  @uuid_regex ~r/[0-9a-f]{2}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
+  @uuid_regex ~r/[0-9a-f]{2}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
   @doc "Returns a regex that will match a UUID"
   @spec regex() :: Regex.t()
