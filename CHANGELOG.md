@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.UUID.valid?/1` now fails if the input starts with non-hexadecimal characters.
+
 ## 1.59.1
 
 - `Moar.UUID.valid?/1` now fails if the input is too long
