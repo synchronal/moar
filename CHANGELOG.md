@@ -2,7 +2,9 @@
 
 ## Unreleased changes
 
-- `Moar.UUID.valid?/1` now fails if the input starts with non-hexadecimal characters.
+## 1.59.2
+
+- `Moar.UUID.valid?/1` requires the first segment to be 8 hexadecimal characters.
 
 ## 1.59.1
 
