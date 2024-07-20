@@ -138,6 +138,24 @@ defmodule Moar.String do
     end
   end
 
+  @doc "Creates a lorem ipsum string of length `character_count`."
+  @spec lorem(non_neg_integer()) :: String.t()
+  def lorem(character_count) do
+    ipsum = ~w[
+      laborum est id anim mollit deserunt officia qui culpa in sunt proident non cupidatat occaecat sint
+      excepteur pariatur nulla fugiat eu dolore cillum esse velit voluptate in reprehenderit in dolor irure
+      aute duis consequat commodo ea ex aliquip ut nisi laboris ullamco exercitation nostrud quis veniam
+      minim ad enim ut aliqua magna dolore et labore ut incididunt tempor eiusmod do sed elit adipiscing
+      consectetur amet sit dolor ipsum lorem
+      ]
+
+    Enum.reduce_while(Stream.cycle(ipsum), [], fn word, acc ->
+      if IO.iodata_length(acc) > character_count,
+        do: {:halt, acc |> Enum.join(" ") |> String.slice(0..(character_count - 1))},
+        else: {:cont, [word | acc]}
+    end)
+  end
+
   @doc """
   Pluralizes a string.
 

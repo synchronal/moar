@@ -169,6 +169,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 - `compare` and `compare?` compare two strings, optionally transforming the strings before comparison.
 - `count_leading_spaces/1` returns the number of leading spaces in a string.
 - `inner_truncate` removes the middle of a string to make it the desired length.
+- `lorem` generates a "lorem ipsum" string of the given length.
 - `remove_marked_whitespace` removes whitespacing following a special `\v` marker.
 - `secure_compare` compares two strings in constant time.
 - `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for

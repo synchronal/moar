@@ -80,6 +80,13 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "lorem" do
+    test "creates a string of the given length" do
+      assert Moar.String.lorem(25) |> String.length() == 25
+      assert Moar.String.lorem(1000) |> String.length() == 1000
+    end
+  end
+
   describe "pluralize" do
     test "returns the string when the count is 1 or -1" do
       assert Moar.String.pluralize(1, "fish", "fishies") == "fish"
