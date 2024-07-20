@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.60.0
+
 - Add `Moar.String.lorem/1` which generates a "lorem ipsum" string of the given length.
 
 ## 1.59.2
