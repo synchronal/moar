@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.61.0
+
 - Add `Moar.Map.deep_stringify_keys/1`.
 
 ## 1.60.0
