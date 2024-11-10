@@ -224,6 +224,12 @@ defmodule Moar.MapTest do
       end
     end
 
+    test "handles values that are structs" do
+      %{item: ~D[2024-12-30]}
+      |> Moar.Map.deep_stringify_keys()
+      |> assert_eq(%{"item" => ~D[2024-12-30]})
+    end
+
     test "handles values that are lists" do
       %{
         :item1 => "chapstick",

@@ -156,6 +156,7 @@ defmodule Moar.Map do
 
   def deep_stringify_keys(map) when is_map(map) do
     Map.new(map, fn
+      {k, v} when is_struct(v) -> {key_to_string(k, map), v}
       {k, v} when is_map(v) -> {key_to_string(k, map), deep_stringify_keys(v)}
       {k, v} when is_list(v) -> {key_to_string(k, map), Enum.map(v, &deep_stringify_keys/1)}
       {k, v} -> {key_to_string(k, map), v}
