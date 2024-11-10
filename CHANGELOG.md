@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.61.1
+
+- `Moar.Map.deep_stringify_keys/1` skips stringifying structs.
+
 ## 1.61.0
 
 - Add `Moar.Map.deep_stringify_keys/1`.
