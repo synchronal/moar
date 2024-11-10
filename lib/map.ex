@@ -28,9 +28,12 @@ defmodule Moar.Map do
     key
     |> Moar.String.underscore()
     |> Moar.Atom.from_string()
-    |> tap(fn new_key ->
-      if Map.has_key?(map, new_key),
-        do: raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
+    |> tap(fn
+      new_key when is_map_key(map, new_key) ->
+        raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
+
+      _new_key ->
+        :ok
     end)
   end
 
@@ -135,6 +138,45 @@ defmodule Moar.Map do
     if Moar.Enum.map_or_nonempty_keyword?(a) && Moar.Enum.map_or_nonempty_keyword?(b),
       do: Map.merge(Map.new(a), Map.new(b), fn k, v1, v2 -> deep_merge(k, v1, v2, conflict_fn) end),
       else: conflict_fn.(a, b)
+  end
+
+  @doc """
+  Converts keys to strings, traversing through descendant lists and maps.
+
+  Raises if converting a key would result in a key conflict.
+
+  ```elixir
+  iex> Moar.Map.deep_stringify_keys(%{a: %{aa: 1}, b: [%{bb: 2}, %{bbb: 3}]})
+  %{"a" => %{"aa" => 1}, "b" => [%{"bb" => 2}, %{"bbb" => 3}]}
+  ```
+  """
+  @spec deep_stringify_keys(list() | map()) :: map()
+  def deep_stringify_keys(list) when is_list(list),
+    do: list |> Enum.map(&deep_stringify_keys(&1))
+
+  def deep_stringify_keys(map) when is_map(map) do
+    Map.new(map, fn
+      {k, v} when is_map(v) -> {key_to_string(k, map), deep_stringify_keys(v)}
+      {k, v} when is_list(v) -> {key_to_string(k, map), Enum.map(v, &deep_stringify_keys/1)}
+      {k, v} -> {key_to_string(k, map), v}
+    end)
+  end
+
+  def deep_stringify_keys(not_a_map),
+    do: not_a_map
+
+  defp key_to_string(key, _map) when is_binary(key), do: key
+
+  defp key_to_string(key, map) do
+    key
+    |> to_string()
+    |> tap(fn
+      new_key when is_map_key(map, new_key) ->
+        raise(KeyError, ["key ", inspect(new_key), " already exists in ", inspect(map)] |> to_string())
+
+      _new_key ->
+        :ok
+    end)
   end
 
   @doc """

@@ -199,6 +199,50 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "deep_stringify_keys" do
+    test "deeply converts keys from atoms to strings" do
+      %{item1: "chapstick", item2: %{"item3" => "mask"}}
+      |> Moar.Map.deep_stringify_keys()
+      |> assert_eq(%{"item1" => "chapstick", "item2" => %{"item3" => "mask"}})
+    end
+
+    test "handles keys that are already strings" do
+      %{"item1" => %{:item3 => "mask"}, :item2 => 2}
+      |> Moar.Map.deep_stringify_keys()
+      |> assert_eq(%{"item1" => %{"item3" => "mask"}, "item2" => 2})
+    end
+
+    test "raises if there are duplicate keys where one is a string and one is an atom" do
+      assert_raise KeyError, ~s|key "item1" already exists in %{:item1 => 1, "item1" => 2, "item2" => 3}|, fn ->
+        %{:item1 => 1, "item1" => 2, "item2" => 3}
+        |> Moar.Map.deep_stringify_keys()
+      end
+
+      assert_raise KeyError, ~s|key "item2" already exists in %{:item2 => 1, "item2" => 2}|, fn ->
+        %{:item1 => %{:item2 => 1, "item2" => 2}}
+        |> Moar.Map.deep_stringify_keys()
+      end
+    end
+
+    test "handles values that are lists" do
+      %{
+        :item1 => "chapstick",
+        :item2 => %{
+          :item3 => ["mask", "altoids"],
+          :item4 => [%{:size => "s", :color => "blue"}, %{:size => "m", :color => "red"}]
+        }
+      }
+      |> Moar.Map.deep_stringify_keys()
+      |> assert_eq(%{
+        "item1" => "chapstick",
+        "item2" => %{
+          "item3" => ["mask", "altoids"],
+          "item4" => [%{"size" => "s", "color" => "blue"}, %{"size" => "m", "color" => "red"}]
+        }
+      })
+    end
+  end
+
   describe "deep_take" do
     test "takes specific keys from a map" do
       %{a: 1, b: 2, c: 3, d: 4}

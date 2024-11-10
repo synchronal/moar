@@ -119,8 +119,8 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 `Moar.Map`
 
-- `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, and `stringify_keys`
-  does the opposite.
+- `atomize_key`, `atomize_keys`, and `deep_atomize_keys` convert keys in a map from strings to atoms, hile
+  `stringify_keys` and `deep_stringify_keys` do the opposite.
 - `deep_take` takes a list of keys and `{key, nested_key}` tuples to take from nested maps.
 - `index_by` converts a list of maps into a map of maps indexed by the values of one of the keys.
 - `merge` and `deep_merge` merge maps, converting enumerables into maps before merging. `deep_merge` also accepts a

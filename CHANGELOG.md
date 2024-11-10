@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.deep_stringify_keys/1`.
+
 ## 1.60.0
 
 - Add `Moar.String.lorem/1` which generates a "lorem ipsum" string of the given length.
