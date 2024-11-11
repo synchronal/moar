@@ -98,6 +98,12 @@ defmodule Moar.MapTest do
       |> assert_eq(%{item1: %{item3: "mask"}, item2: 2})
     end
 
+    test "handles values that are structs" do
+      %{:item1 => %{"item3" => ~D[2020-01-01]}, "item2" => ~D[2021-01-01]}
+      |> Moar.Map.deep_atomize_keys()
+      |> assert_eq(%{item1: %{item3: ~D[2020-01-01]}, item2: ~D[2021-01-01]})
+    end
+
     test "raises if there are duplicate keys where one is a string and one is an atom" do
       assert_raise KeyError, ~s|key :item1 already exists in %{:item1 => 1, "item1" => 2, "item2" => 3}|, fn ->
         %{:item1 => 1, "item1" => 2, "item2" => 3}
@@ -152,6 +158,15 @@ defmodule Moar.MapTest do
       [a: [aa: [aaa: 1]], b: 2]
       |> Moar.Map.deep_merge(%{c: 1, a: %{aa: %{ab: 3}}})
       |> assert_eq(%{a: %{aa: %{aaa: 1, ab: 3}}, b: 2, c: 1})
+    end
+
+    test "does not try to merge structs" do
+      date1 = ~D[2020-01-01]
+      date2 = ~D[2021-01-01]
+
+      [a: [aa: [aaa: 1]], b: 2, d: date1]
+      |> Moar.Map.deep_merge(%{c: date2, d: nil, a: %{aa: %{ab: date2}}})
+      |> assert_eq(%{a: %{aa: %{aaa: 1, ab: date2}}, b: 2, c: date2, d: nil})
     end
 
     test "non-map/keyword values from the second arg replace values from the first arg when keys match" do

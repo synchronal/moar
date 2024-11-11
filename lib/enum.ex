@@ -96,7 +96,7 @@ defmodule Moar.Enum do
   """
   @spec map_or_keyword?(any()) :: boolean()
   def map_or_keyword?(value),
-    do: is_map(value) || (is_list(value) && Keyword.keyword?(value))
+    do: (is_map(value) && !is_struct(value)) || (is_list(value) && Keyword.keyword?(value))
 
   @doc """
   Deprecated in favor of `map_or_nonempty_keyword?/1`.
@@ -111,7 +111,7 @@ defmodule Moar.Enum do
   """
   @spec map_or_nonempty_keyword?(any()) :: boolean()
   def map_or_nonempty_keyword?(value),
-    do: is_map(value) || (is_list(value) && !Enum.empty?(value) && Keyword.keyword?(value))
+    do: (is_map(value) && !is_struct(value)) || (is_list(value) && !Enum.empty?(value) && Keyword.keyword?(value))
 
   @doc "Sorts `enum` case-insensitively. Uses `Enum.sort_by/3` under the hood."
   @spec isort(Enum.t()) :: Enum.t()

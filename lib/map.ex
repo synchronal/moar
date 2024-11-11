@@ -97,6 +97,7 @@ defmodule Moar.Map do
 
   def deep_atomize_keys(map) when is_map(map) do
     Enum.reduce(map, map, fn
+      {k, v}, acc when is_struct(v) -> atomize_key(acc, k)
       {k, v}, acc when is_map(v) -> atomize_key(acc, k, &deep_atomize_keys/1)
       {k, list}, acc when is_list(list) -> atomize_key(acc, k, &Enum.map(&1, fn v -> deep_atomize_keys(v) end))
       {k, _v}, acc -> atomize_key(acc, k)

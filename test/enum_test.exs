@@ -113,6 +113,10 @@ defmodule Moar.EnumTest do
       refute Moar.Enum.map_or_keyword?("")
       refute Moar.Enum.map_or_keyword?(nil)
     end
+
+    test "returns false for structs" do
+      refute Moar.Enum.map_or_keyword?(~D[2020-01-01])
+    end
   end
 
   describe "map_or_nonempty_keyword" do
@@ -127,6 +131,10 @@ defmodule Moar.EnumTest do
       refute Moar.Enum.map_or_nonempty_keyword?(:a)
       refute Moar.Enum.map_or_nonempty_keyword?("")
       refute Moar.Enum.map_or_nonempty_keyword?(nil)
+    end
+
+    test "returns false for structs" do
+      refute Moar.Enum.map_or_nonempty_keyword?(~D[2020-01-01])
     end
   end
 
