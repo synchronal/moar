@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 1.61.2
+
+- `Moar.Map.deep_atomize_keys/1` handles struct values without raising.
+
 ## 1.61.1
 
 - `Moar.Map.deep_stringify_keys/1` skips stringifying structs.
