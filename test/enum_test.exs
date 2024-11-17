@@ -15,6 +15,18 @@ defmodule Moar.EnumTest do
     end
   end
 
+  describe "compact" do
+    test "removes nil values" do
+      assert Moar.Enum.compact(["a", nil, " ", "   ", "b"]) == ["a", " ", "   ", "b"]
+    end
+  end
+
+  describe "compact_blank" do
+    test "removes blank values" do
+      assert Moar.Enum.compact_blank(["a", nil, " ", "   ", "b"]) == ["a", "b"]
+    end
+  end
+
   describe "find_indices" do
     test "Returns the indices of the given enum elements" do
       ~w[apple banana cherry donut]

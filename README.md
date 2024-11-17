@@ -88,6 +88,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 - `at!` is like `Enum.at` but raises if the index is out of bounds.
 - `compact` rejects nil values.
+- `compact_blank` rejects blank values as determined by `Moar.Term.blank?/1`.
 - `find_indices` returns the indices of matching elements
 - `find_indices!` returns the indices of matching elements and raises if any element is not found.
 - `first!` returns the first item or raises if there isn't a first item.

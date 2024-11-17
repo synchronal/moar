@@ -14,7 +14,12 @@ defmodule Moar.Enum do
   @doc "Removes nil elements from `enum`."
   @spec compact(Enum.t()) :: Enum.t()
   def compact(enum),
-    do: enum |> Enum.reject(&is_nil(&1))
+    do: enum |> Enum.reject(&is_nil/1)
+
+  @doc "Removes blank elements (as determined by `Moar.Term.blank?1`) from `enum`."
+  @spec compact_blank(Enum.t()) :: Enum.t()
+  def compact_blank(enum),
+    do: enum |> Enum.reject(&Moar.Term.blank?/1)
 
   @doc """
   Returns the indices of `elements` in `enum`, using `fun` for comparisons (defaulting to `Kernel.==/2`)

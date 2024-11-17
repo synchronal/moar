@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Enum.compact_blank/1` which removes values considered blank by `Moar.Term.blank?/1`.
+
 ## 1.61.2
 
 - `Moar.Map.deep_atomize_keys/1` handles struct values without raising.
