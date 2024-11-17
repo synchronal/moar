@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.62.0
+
 - Add `Moar.Enum.compact_blank/1` which removes values considered blank by `Moar.Term.blank?/1`.
 
 ## 1.61.2
