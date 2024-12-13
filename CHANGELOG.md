@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.63.0
+
 - Add `Moar.Sugar.cont`, `Moar.Sugar.cont!`, `Moar.Sugar.halt`, `Moar.Sugar.halt!`, and `Moar.Sugar.noreply!`
 
 ## 1.62.0
