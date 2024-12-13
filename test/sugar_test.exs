@@ -5,6 +5,28 @@ defmodule Moar.SugarTest do
 
   doctest Moar.Sugar
 
+  describe "cont" do
+    test "wraps the given term in a :cont tuple" do
+      assert Moar.Sugar.cont(1) == {:cont, 1}
+    end
+  end
+
+  describe "cont!" do
+    test "unwraps a :cont tuple" do
+      assert Moar.Sugar.cont!({:cont, 1}) == 1
+    end
+
+    test "fails when it's not a :cont tuple" do
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.cont!/1", fn ->
+        Moar.Sugar.cont!({:ok, :good})
+      end
+
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.cont!/1", fn ->
+        Moar.Sugar.cont!(:good)
+      end
+    end
+  end
+
   describe "error" do
     test "wraps the given term in an :error tuple" do
       assert Moar.Sugar.error(1) == {:error, 1}
@@ -27,9 +49,47 @@ defmodule Moar.SugarTest do
     end
   end
 
+  describe "halt" do
+    test "wraps the given term in a :halt tuple" do
+      assert Moar.Sugar.halt(1) == {:halt, 1}
+    end
+  end
+
+  describe "halt!" do
+    test "unwraps a :halt tuple" do
+      assert Moar.Sugar.halt!({:halt, 1}) == 1
+    end
+
+    test "fails when it's not a :halt tuple" do
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.halt!/1", fn ->
+        Moar.Sugar.halt!({:ok, :good})
+      end
+
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.halt!/1", fn ->
+        Moar.Sugar.halt!(:good)
+      end
+    end
+  end
+
   describe "noreply" do
     test "wraps the given term in a :noreply tuple" do
       assert Moar.Sugar.noreply(1) == {:noreply, 1}
+    end
+  end
+
+  describe "noreply!" do
+    test "unwraps a :noreply tuple" do
+      assert Moar.Sugar.noreply!({:noreply, 1}) == 1
+    end
+
+    test "fails when it's not a :noreply tuple" do
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.noreply!/1", fn ->
+        Moar.Sugar.noreply!({:ok, :good})
+      end
+
+      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.noreply!/1", fn ->
+        Moar.Sugar.noreply!(:good)
+      end
     end
   end
 

@@ -14,6 +14,27 @@ defmodule Moar.Sugar do
   end
   ```
   """
+  @doc """
+  Wraps a term in a :cont tuple. Useful in pipelines.
+
+  ```elixir
+  iex> %{} |> Map.put(:count, "unknown") |> Moar.Sugar.cont()
+  {:cont, %{count: "unknown"}}
+  ```
+  """
+  @spec cont(term()) :: {:cont, term()}
+  def cont(term), do: {:cont, term}
+
+  @doc """
+  Unwraps a :cont tuple, raising if the term is not an :cont tuple.
+
+  ```elixir
+  iex> {:cont, 1} |> Moar.Sugar.cont!()
+  1
+  ```
+  """
+  @spec cont!({:cont, term()}) :: term()
+  def cont!({:cont, term}), do: term
 
   @doc """
   Wraps a term in an :error tuple. Useful in pipelines.
@@ -38,6 +59,28 @@ defmodule Moar.Sugar do
   def error!({:error, term}), do: term
 
   @doc """
+  Wraps a term in a :halt tuple. Useful in pipelines.
+
+  ```elixir
+  iex> %{} |> Map.put(:count, "unknown") |> Moar.Sugar.halt()
+  {:halt, %{count: "unknown"}}
+  ```
+  """
+  @spec halt(term()) :: {:halt, term()}
+  def halt(term), do: {:halt, term}
+
+  @doc """
+  Unwraps a :halt tuple, raising if the term is not an :halt tuple.
+
+  ```elixir
+  iex> {:halt, 1} |> Moar.Sugar.halt!()
+  1
+  ```
+  """
+  @spec halt!({:halt, term()}) :: term()
+  def halt!({:halt, term}), do: term
+
+  @doc """
   Wraps a term in a :noreply tuple. Useful in pipelines.
 
   ```elixir
@@ -47,6 +90,17 @@ defmodule Moar.Sugar do
   """
   @spec noreply(term()) :: {:noreply, term()}
   def noreply(term), do: {:noreply, term}
+
+  @doc """
+  Unwraps a :noreply tuple, raising if the term is not an :noreply tuple.
+
+  ```elixir
+  iex> {:noreply, 1} |> Moar.Sugar.noreply!()
+  1
+  ```
+  """
+  @spec noreply!({:noreply, term()}) :: term()
+  def noreply!({:noreply, term}), do: term
 
   @doc """
   Wraps a term in an :ok tuple. Useful in pipelines.

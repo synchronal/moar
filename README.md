@@ -187,8 +187,8 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 `Moar.Sugar`
 
-- `error`, `noreply`, and `ok` create tuples (`"foo" |> error()` -> `{:error, "foo"}`).
-- `error!` and `ok!` unwrap tuples (`{:error, "foo"} |> error!()` -> `"foo"`).
+- `cont`, `error`, `halt`, `ok`, and `noreply` create tuples (`"foo" |> error()` -> `{:error, "foo"}`).
+- `cont!`, `error!`, `halt!`, `ok!` , and `noreply!` unwrap tuples (`{:error, "foo"} |> error!()` -> `"foo"`).
 - `returning` takes two arguments and returns the second one.
 
 `Moar.Term`

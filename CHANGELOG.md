@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Sugar.cont`, `Moar.Sugar.cont!`, `Moar.Sugar.halt`, `Moar.Sugar.halt!`, and `Moar.Sugar.noreply!`
+
 ## 1.62.0
 
 - Add `Moar.Enum.compact_blank/1` which removes values considered blank by `Moar.Term.blank?/1`.
