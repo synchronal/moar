@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.63.1
+
 - `Moar.Term.blank?/1` handles non-UTF binaries.
 
 ## 1.63.0
