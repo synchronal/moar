@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.String.underscore/1` is soft-deprecated in favor of `to_case(s, :snake_case)`.
+
 ## 1.63.1
 
 - `Moar.Term.blank?/1` handles non-UTF binaries.

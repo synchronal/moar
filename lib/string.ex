@@ -429,9 +429,7 @@ defmodule Moar.String do
   end
 
   @doc """
-  Underscores `term`. A shortcut to `slug(term, "_")`.
-
-  See docs for `slug/2`.
+  Underscores `term`. Will be deprecated soon; use `to_case(:snake_case)` instead..
 
   ```elixir
   iex> Moar.String.underscore("foo bar")

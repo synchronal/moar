@@ -306,6 +306,13 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "underscore" do
+    test "underscores text; will be deprecated" do
+      assert Moar.String.underscore("foo bar") == "foo_bar"
+      assert Moar.String.underscore("foo Bar") == "foo_bar"
+    end
+  end
+
   describe "unindent/1" do
     test "removes leading spaces" do
       assert Moar.String.unindent("  foo") == "foo"
