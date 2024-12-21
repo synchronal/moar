@@ -5,7 +5,7 @@ defmodule Moar.String do
 
   import Bitwise
 
-  @type string_case() :: :camel_case | :lower_camel_case | :snake_case
+  @type string_case() :: :camel_case | :kebab_case | :lower_camel_case | :snake_case
 
   @doc """
   Appends `suffix` to `string` unless `string` is blank according to `Moar.Term.blank?/1`.
@@ -324,6 +324,13 @@ defmodule Moar.String do
   iex> Moar.String.to_case("some random text", :lower_camel_case)
   "someRandomText"
 
+  iex> Moar.String.to_case("text_with_case", :kebab_case)
+  "text-with-case"
+  iex> Moar.String.to_case("textWithCase", :kebab_case)
+  "text-with-case"
+  iex> Moar.String.to_case("some random text", :kebab_case)
+  "some-random-text"
+
   iex> Moar.String.to_case("text_with_case", :snake_case)
   "text_with_case"
   iex> Moar.String.to_case("textWithCase", :snake_case)
@@ -334,23 +341,16 @@ defmodule Moar.String do
   """
   @spec to_case(binary(), string_case()) :: binary()
   def to_case(s, :camel_case),
-    do:
-      s
-      |> to_case(:lower_camel_case)
-      |> String.replace(~r[^(\w)], fn char -> String.upcase(char) end)
+    do: s |> to_case(:lower_camel_case) |> String.replace(~r[^(\w)], fn char -> String.upcase(char) end)
+
+  def to_case(s, :kebab_case),
+    do: s |> slug("-")
 
   def to_case(s, :lower_camel_case),
-    do:
-      s
-      |> to_case(:snake_case)
-      |> String.replace(~r[_(\w)], fn "_" <> char -> String.upcase(char) end)
+    do: s |> to_case(:snake_case) |> String.replace(~r[_(\w)], fn "_" <> char -> String.upcase(char) end)
 
   def to_case(s, :snake_case),
-    do:
-      s
-      |> underscore()
-      |> String.trim()
-      |> String.replace_leading("_", "")
+    do: s |> slug("_")
 
   @doc """
   Converts a string to an integer. Returns `nil` if the argument is `nil` or empty string.

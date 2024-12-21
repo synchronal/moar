@@ -211,6 +211,18 @@ defmodule Moar.StringTest do
       assert "  text with SomeThings  " |> Moar.String.to_case(:snake_case) == "text_with_some_things"
     end
 
+    test "changes lowerCamelCase to kebab_case" do
+      assert "textWithSomeThings" |> Moar.String.to_case(:kebab_case) == "text-with-some-things"
+    end
+
+    test "changes CamelCase to kebab_case" do
+      assert "TextWithSomeThings" |> Moar.String.to_case(:kebab_case) == "text-with-some-things"
+    end
+
+    test "changes multi-cased to kebab_case" do
+      assert "  text with SomeThings  " |> Moar.String.to_case(:kebab_case) == "text-with-some-things"
+    end
+
     test "changes lowerCamelCase to CamelCase" do
       assert "textWithSomeThings" |> Moar.String.to_case(:camel_case) == "TextWithSomeThings"
     end
