@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Term.blank?/1` handles non-UTF binaries.
+
 ## 1.63.0
 
 - Add `Moar.Sugar.cont`, `Moar.Sugar.cont!`, `Moar.Sugar.halt`, `Moar.Sugar.halt!`, and `Moar.Sugar.noreply!`

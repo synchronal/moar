@@ -34,7 +34,7 @@ defmodule Moar.Term do
   """
   @spec blank?(any()) :: boolean()
   def blank?(nil), do: true
-  def blank?(s) when is_binary(s), do: s |> String.trim() |> String.length() == 0
+  def blank?(s) when is_binary(s), do: s |> String.trim() == ""
   def blank?([]), do: true
   def blank?(list) when is_list(list), do: false
   def blank?(m) when is_map(m), do: map_size(m) == 0

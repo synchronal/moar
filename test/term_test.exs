@@ -37,6 +37,15 @@ defmodule Moar.TermTest do
       assert Moar.Term.blank?("    ")
       refute Moar.Term.blank?("hi")
     end
+
+    test "bitstrings: blank only empty" do
+      assert Moar.Term.blank?(<<>>)
+
+      refute Moar.Term.blank?(
+               <<224, 35, 248, 72, 154, 36, 174, 49, 191, 174, 37, 241, 82, 164, 214, 228, 31, 35, 81, 32, 53, 195, 39,
+                 204, 16, 128, 150, 109, 242, 251, 91, 144, 33>>
+             )
+    end
   end
 
   describe "present?" do
