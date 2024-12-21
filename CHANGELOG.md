@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.64.0
+
 - `Moar.String.underscore/1` is soft-deprecated in favor of `to_case(s, :snake_case)`.
 - Add `Moar.String.to_case(s, :kebab_case)`
 
