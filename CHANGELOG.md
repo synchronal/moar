@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 1.65.0
+
 - `Moar.String.join` joins multiple items, as a shortcut to `Enum.map_join([item1, item2, ...], "-", &to_string/1)`
 
 ## 1.64.0
