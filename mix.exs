@@ -2,7 +2,7 @@ defmodule Moar.MixProject do
   use Mix.Project
 
   @scm_url "https://github.com/synchronal/moar"
-  @version "2.0.0"
+  @version "2.0.1"
 
   def project do
     [
@@ -11,7 +11,7 @@ defmodule Moar.MixProject do
       description: "A dependency-free utility library containing 100+ useful functions.",
       dialyzer: dialyzer(),
       docs: docs(),
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @scm_url,
       name: "Moar",

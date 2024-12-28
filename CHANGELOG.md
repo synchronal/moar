@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 2.0.1
+
+- Require at least Elixir 1.16.
+
 ## 2.0.0
 
 - Test with Elixir 1.18; drop support for Elixir 1.15.
