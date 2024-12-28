@@ -152,16 +152,21 @@ defmodule Moar.String do
   ```
   """
   @spec join(String.t(), list()) :: String.t()
-  @spec join(String.t(), String.Chars.t()) :: String.t()
-  @spec join(String.t(), String.Chars.t(), String.Chars.t()) :: String.t()
-  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
-  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
-  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
   def join(joiner, list) when is_list(list), do: Enum.map_join(list, joiner, &to_string/1)
+
+  @spec join(String.t(), String.Chars.t()) :: String.t()
   def join(_joiner, a), do: a
+
+  @spec join(String.t(), String.Chars.t(), String.Chars.t()) :: String.t()
   def join(joiner, a, b), do: join(joiner, [a, b])
+
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
   def join(joiner, a, b, c), do: join(joiner, [a, b, c])
+
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
   def join(joiner, a, b, c, d), do: join(joiner, [a, b, c, d])
+
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
   def join(joiner, a, b, c, d, e), do: join(joiner, [a, b, c, d, e])
 
   @doc "Creates a lorem ipsum string of length `character_count`."
