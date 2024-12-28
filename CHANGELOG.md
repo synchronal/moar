@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.String.join` joins multiple items, as a shortcut to `Enum.map_join([item1, item2, ...], "-", &to_string/1)`
+
 ## 1.64.0
 
 - `Moar.String.underscore/1` is soft-deprecated in favor of `to_case(s, :snake_case)`.

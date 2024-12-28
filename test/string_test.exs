@@ -80,6 +80,19 @@ defmodule Moar.StringTest do
     end
   end
 
+  describe "join" do
+    test "joins multiple strings together with dashes" do
+      assert Moar.String.join("-", "a") == "a"
+      assert Moar.String.join("?", "a", "b") == "a?b"
+      assert Moar.String.join("-", "a", "b", "c", "d", "e") == "a-b-c-d-e"
+      assert Moar.String.join("-", ["a", "b", "c", "d", "e"]) == "a-b-c-d-e"
+    end
+
+    test "stringifies items" do
+      assert Moar.String.join("-", 999, ~D[2024-01-01]) == "999-2024-01-01"
+    end
+  end
+
   describe "lorem" do
     test "creates a string of the given length" do
       assert Moar.String.lorem(25) |> String.length() == 25

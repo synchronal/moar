@@ -138,6 +138,32 @@ defmodule Moar.String do
     end
   end
 
+  @doc """
+  Join multiple items with `joiner`. `join/2` accepts a list of items; `join/3` through `join/6` accept
+  individual items for convenience. All items must implement `String.Chars` protocol (they must be
+  `to_string`-able).
+
+  ```elixir
+  iex> Moar.String.join("-", ["a", "b", "c"])
+  "a-b-c"
+
+  iex> Moar.String.join("-", "a", "b", "c")
+  "a-b-c"
+  ```
+  """
+  @spec join(String.t(), list()) :: String.t()
+  @spec join(String.t(), String.Chars.t()) :: String.t()
+  @spec join(String.t(), String.Chars.t(), String.Chars.t()) :: String.t()
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
+  @spec join(String.t(), String.Chars.t(), String.Chars.t(), String.Chars.t(), String.Chars.t()) :: String.t()
+  def join(joiner, list) when is_list(list), do: Enum.map_join(list, joiner, &to_string/1)
+  def join(_joiner, a), do: a
+  def join(joiner, a, b), do: join(joiner, [a, b])
+  def join(joiner, a, b, c), do: join(joiner, [a, b, c])
+  def join(joiner, a, b, c, d), do: join(joiner, [a, b, c, d])
+  def join(joiner, a, b, c, d, e), do: join(joiner, [a, b, c, d, e])
+
   @doc "Creates a lorem ipsum string of length `character_count`."
   @spec lorem(non_neg_integer()) :: String.t()
   def lorem(character_count) do
