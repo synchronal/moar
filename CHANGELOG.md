@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Test with Elixir 1.18; drop support for Elixir 1.15.
+
 ## 1.65.0
 
 - `Moar.String.join` joins multiple items, as a shortcut to `Enum.map_join([item1, item2, ...], "-", &to_string/1)`

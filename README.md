@@ -22,8 +22,6 @@ def deps do
 end
 ```
 
-Moar's test suite runs successfully against Elixir versions 1.13 and newer.
-
 If you'd rather not install the whole library, you can just copy some of its functions to your project.
 
 ## Similar libraries

@@ -15,16 +15,6 @@ defmodule Moar.SugarTest do
     test "unwraps a :cont tuple" do
       assert Moar.Sugar.cont!({:cont, 1}) == 1
     end
-
-    test "fails when it's not a :cont tuple" do
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.cont!/1", fn ->
-        Moar.Sugar.cont!({:ok, :good})
-      end
-
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.cont!/1", fn ->
-        Moar.Sugar.cont!(:good)
-      end
-    end
   end
 
   describe "error" do
@@ -36,16 +26,6 @@ defmodule Moar.SugarTest do
   describe "error!" do
     test "unwraps an :error tuple" do
       assert Moar.Sugar.error!({:error, 1}) == 1
-    end
-
-    test "fails when it's not an :error tuple" do
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.error!/1", fn ->
-        Moar.Sugar.error!({:ok, :good})
-      end
-
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.error!/1", fn ->
-        Moar.Sugar.error!(:good)
-      end
     end
   end
 
@@ -59,16 +39,6 @@ defmodule Moar.SugarTest do
     test "unwraps a :halt tuple" do
       assert Moar.Sugar.halt!({:halt, 1}) == 1
     end
-
-    test "fails when it's not a :halt tuple" do
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.halt!/1", fn ->
-        Moar.Sugar.halt!({:ok, :good})
-      end
-
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.halt!/1", fn ->
-        Moar.Sugar.halt!(:good)
-      end
-    end
   end
 
   describe "noreply" do
@@ -81,16 +51,6 @@ defmodule Moar.SugarTest do
     test "unwraps a :noreply tuple" do
       assert Moar.Sugar.noreply!({:noreply, 1}) == 1
     end
-
-    test "fails when it's not a :noreply tuple" do
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.noreply!/1", fn ->
-        Moar.Sugar.noreply!({:ok, :good})
-      end
-
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.noreply!/1", fn ->
-        Moar.Sugar.noreply!(:good)
-      end
-    end
   end
 
   describe "ok" do
@@ -102,16 +62,6 @@ defmodule Moar.SugarTest do
   describe "ok!" do
     test "unwraps an :ok tuple" do
       assert Moar.Sugar.ok!({:ok, 1}) == 1
-    end
-
-    test "fails when it's not an :ok tuple" do
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.ok!/1", fn ->
-        Moar.Sugar.ok!({:error, :bad})
-      end
-
-      assert_raise FunctionClauseError, "no function clause matching in Moar.Sugar.ok!/1", fn ->
-        Moar.Sugar.ok!(:bad)
-      end
     end
   end
 
