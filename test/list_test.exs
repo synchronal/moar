@@ -5,6 +5,16 @@ defmodule Moar.ListTest do
 
   doctest Moar.List
 
+  describe "fill" do
+    test "creates a list of the correct length when the initial list is smaller than the desired length" do
+      assert Moar.List.fill([1, 2, 3], 8) == [1, 2, 3, 1, 2, 3, 1, 2]
+    end
+
+    test "creates a list of the correct length when the initial list is larger than the desired length" do
+      assert Moar.List.fill([1, 2, 3], 2) == [1, 2]
+    end
+  end
+
   describe "to_keyword" do
     test "when given a keyword list, returns it" do
       assert Moar.List.to_keyword(a: 1, b: 2) == [a: 1, b: 2]

@@ -2,6 +2,22 @@ defmodule Moar.List do
   # @related [test](test/list_test.exs)
 
   @doc """
+  Returns a list containing the first `count` items of `list`. If `list` is too small, it is repeated
+  until the requested size is acheived.
+
+  ```elixir
+  iex> Moar.List.fill([1, 2, 3], 2)
+  [1, 2]
+
+  iex> Moar.List.fill([1, 2, 3], 7)
+  [1, 2, 3, 1, 2, 3, 1]
+  ```
+  """
+  @spec fill(list(), non_neg_integer()) :: list()
+  def fill(list, count),
+    do: list |> Stream.cycle() |> Enum.take(count)
+
+  @doc """
   Converts a list to a keyword list, setting the value to `default_value`. The list can be a regular list, a keyword
   list (which is a no-op), or a list that's a mix of terms and keywords (e.g., `[:a, :b, c: 3, d: 4]`). The default
   value can be a term or a function that accepts a key and is expected to return a value.

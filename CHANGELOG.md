@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.List.fill` expands (or shrinks) a list to a given size by repeating its elements.
+
 ## 2.0.1
 
 - Require at least Elixir 1.16.

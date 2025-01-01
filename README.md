@@ -112,6 +112,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 `Moar.List`
 
+- `fill` expands (or shrinks) a list to a given size by repeating its elements
 - `to_keyword` converts a list into a keyword list, using a default value or function to generate the values
 - `to_sentence` converts a list into a string, with items separated by commas, and an "and" before the last item
 - `unwrap` returns the argument if it's not a list, or returns the only item in the list, or raises.
