@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.2.0
+
 - Add `Moar.Map.compact_blank/1`.
 
 ## 2.1.0
