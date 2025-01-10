@@ -85,6 +85,12 @@ defmodule Moar.MapTest do
     end
   end
 
+  describe "compact_blank" do
+    test "removes keys where the value is blank" do
+      assert Moar.Map.compact_blank(%{a: 1, b: nil, c: ""}) == %{a: 1}
+    end
+  end
+
   describe "deep_atomize_keys" do
     test "deeply converts keys from strings to atoms" do
       %{"item1" => "chapstick", "item2" => %{"item3" => "mask"}}

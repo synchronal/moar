@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Map.compact_blank/1`.
+
 ## 2.1.0
 
 - `Moar.List.fill` expands (or shrinks) a list to a given size by repeating its elements.

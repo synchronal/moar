@@ -82,6 +82,23 @@ defmodule Moar.Map do
       )
 
   @doc """
+  Removes keys from a map where the value is blank.
+
+  ```elixir
+  iex> Moar.Map.compact_blank(%{a: 1, b: nil, c: "", d: []})
+  %{a: 1}
+  ```
+  """
+  @spec compact_blank(map()) :: map()
+  def compact_blank(map) when is_map(map),
+    do:
+      Map.new(
+        Enum.reject(map, fn
+          {_k, v} -> Moar.Term.blank?(v)
+        end)
+      )
+
+  @doc """
   Converts keys to atoms, traversing through descendant lists and maps.
 
   Raises if converting a key from a string to an atom would result in a key conflict.
