@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16.3
-              otp: 25.3.2.16
+              elixir: 1.16
+              otp: 25
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
     name: Build Test
     runs-on: ubuntu-24.04
     env:
@@ -31,7 +31,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
@@ -54,11 +53,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16.3
-              otp: 25.3.2.16
+              elixir: 1.16
+              otp: 25
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
     name: Build Dev
     runs-on: ubuntu-24.04
     env:
@@ -71,7 +70,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
@@ -94,11 +92,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16.3
-              otp: 25.3.2.16
+              elixir: 1.16
+              otp: 25
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
             latest: true
     name: Test
     needs: build_test
@@ -113,7 +111,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
@@ -138,11 +135,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16.3
-              otp: 25.3.2.16
+              elixir: 1.16
+              otp: 25
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
     name: Credo + Dialyxir
     needs: build_test
     runs-on: ubuntu-24.04
@@ -156,7 +153,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
@@ -184,8 +180,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
     name: Audit
     needs: build_dev
     runs-on: ubuntu-24.04
@@ -199,7 +195,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
@@ -225,8 +220,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.18.1
-              otp: 27.2
+              elixir: 1.18
+              otp: 27
     name: Publish to Hex
     if: github.ref == 'refs/heads/main'
     needs:
@@ -242,7 +237,6 @@ jobs:
         with:
           elixir-version: ${{ matrix.pair.elixir }}
           otp-version: ${{ matrix.pair.otp }}
-          version-type: strict
       - name: Cache deps
         uses: actions/cache@v4
         with:
