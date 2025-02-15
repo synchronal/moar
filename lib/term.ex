@@ -78,6 +78,7 @@ defmodule Moar.Term do
 
   @doc """
   Returns `present_value` when `term` is present (via `present?`), and `blank_value` when `term` is blank.
+  If `present_value` and/or `blank_value` are functions, they are called with `term` as their argument.
 
   ```elixir
   iex> Moar.Term.when_present(20, "continue", "value missing")
@@ -85,8 +86,23 @@ defmodule Moar.Term do
 
   iex> Moar.Term.when_present(nil, "continue", "value missing")
   "value missing"
+
+  iex> Moar.Term.when_present(20, fn value -> value * 2 end, "value missing")
+  40
+
+  iex> Moar.Term.when_present(nil, "continue", fn value -> "expected a number, got: \#{inspect(value)}" end)
+  "expected a number, got: nil"
   ```
   """
   @spec when_present(any(), any(), any()) :: any()
-  def when_present(term, present_value, blank_value), do: if(present?(term), do: present_value, else: blank_value)
+  def when_present(term, present_value, blank_value) do
+    value_fn = fn
+      term, fun when is_function(fun) -> fun.(term)
+      _term, value -> value
+    end
+
+    if present?(term),
+      do: value_fn.(term, present_value),
+      else: value_fn.(term, blank_value)
+  end
 end

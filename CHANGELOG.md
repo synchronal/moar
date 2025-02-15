@@ -2,6 +2,9 @@
 
 ## Unreleased changes
 
+- When either or both of the last two arguments to `Moar.Term.when_present/3` are functions, they are called with the
+  given term as an argument.
+
 ## 2.2.0
 
 - Add `Moar.Map.compact_blank/1`.

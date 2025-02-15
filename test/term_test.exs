@@ -78,5 +78,10 @@ defmodule Moar.TermTest do
     test "if the value is not present (via `present?`), returns the `blank` value" do
       assert Moar.Term.when_present(" ", "it's there", "it's not there") == "it's not there"
     end
+
+    test "if the value is a function, it is applied" do
+      assert Moar.Term.when_present(5, &(&1 * 2), 0) == 10
+      assert Moar.Term.when_present(nil, &(&1 * 2), 0) == 0
+    end
   end
 end
