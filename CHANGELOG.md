@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.3.0
+
 - When either or both of the last two arguments to `Moar.Term.when_present/3` are functions, they are called with the
   given term as an argument.
 
