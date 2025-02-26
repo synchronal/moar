@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.4.1
+
 - Fix spec of `Moar.String.pluralize`.
 
 ## 2.4.0
