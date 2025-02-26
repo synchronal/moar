@@ -103,13 +103,16 @@ defmodule Moar.StringTest do
   describe "pluralize" do
     test "returns the string when the count is 1 or -1" do
       assert Moar.String.pluralize(1, "fish", "fishies") == "fish"
+      assert Moar.String.pluralize(1, "fish", "fishies", :include_number) == "1 fish"
       assert Moar.String.pluralize(-1, "fish", "fishies") == "fish"
+      assert Moar.String.pluralize(-1, "fish", "fishies", :include_number) == "-1 fish"
     end
 
     test "returns the pluralized string when the count is not 1 or -1" do
       assert Moar.String.pluralize(2, "fish", "fishies") == "fishies"
       assert Moar.String.pluralize(0, "fish", "fishies") == "fishies"
       assert Moar.String.pluralize(-2, "fish", "fishies") == "fishies"
+      assert Moar.String.pluralize(-2, "fish", "fishies", :include_number) == "-2 fishies"
     end
 
     test "accepts a pluralizer function" do
@@ -120,6 +123,7 @@ defmodule Moar.StringTest do
       assert Moar.String.pluralize(0, "fish", pluralizer) == "fishies"
       assert Moar.String.pluralize(-1, "fish", pluralizer) == "fish"
       assert Moar.String.pluralize(-2, "fish", pluralizer) == "fishies"
+      assert Moar.String.pluralize(-2, "fish", pluralizer, :include_number) == "-2 fishies"
     end
   end
 

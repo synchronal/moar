@@ -194,9 +194,15 @@ defmodule Moar.String do
   Otherwise, returns the third argument (the pluralized string), or if the third argument is a function,
   calls the function with the singular string as an argument.
 
+  Options:
+  * `:include_number` will include the number in the result (e.g., "4 fishies")
+
   ```elixir
   iex> Moar.String.pluralize(1, "fish", "fishies")
   "fish"
+
+  iex> Moar.String.pluralize(1, "fish", "fishies", :include_number)
+  "1 fish"
 
   iex> Moar.String.pluralize(2, "fish", "fishies")
   "fishies"
@@ -204,14 +210,23 @@ defmodule Moar.String do
   iex> Moar.String.pluralize(2, "fish", fn singular -> singular <> "ies" end)
   "fishies"
 
-  iex> Moar.String.pluralize(2, "fish", &(&1 <> "ies"))
-  "fishies"
+  iex> Moar.String.pluralize(2, "fish", &(&1 <> "ies"), :include_number)
+  "2 fishies"
   ```
   """
-  @spec pluralize(number(), binary(), binary() | function()) :: binary()
-  def pluralize(count, singular, _plural) when count in [-1, 1], do: singular
-  def pluralize(_count, _singular, plural) when is_binary(plural), do: plural
-  def pluralize(_count, string, pluralizer) when is_function(pluralizer), do: pluralizer.(string)
+  @spec pluralize(number(), binary(), binary() | function(), []) :: binary()
+  def pluralize(count, singular, plural_or_pluralizer, opts \\ []) do
+    pluralized =
+      cond do
+        count in [-1, 1] -> singular
+        is_binary(plural_or_pluralizer) -> plural_or_pluralizer
+        is_function(plural_or_pluralizer) -> plural_or_pluralizer.(singular)
+      end
+
+    if :include_number in List.wrap(opts),
+      do: "#{count} #{pluralized}",
+      else: pluralized
+  end
 
   @doc """
   Removes all whitespace following a backspace+v escape code.
