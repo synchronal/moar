@@ -214,7 +214,7 @@ defmodule Moar.String do
   "2 fishies"
   ```
   """
-  @spec pluralize(number(), binary(), binary() | function(), []) :: binary()
+  @spec pluralize(number(), binary(), binary() | function(), atom() | [atom()]) :: binary()
   def pluralize(count, singular, plural_or_pluralizer, opts \\ []) do
     pluralized =
       cond do
