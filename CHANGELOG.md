@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.4.0
+
 - `Moar.String.pluralize` can now optionally include the number along with the pluaralized text.
 
 ## 2.3.0
