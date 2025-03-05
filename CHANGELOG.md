@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## 2.4.2
+
+- Updated sponsorship info.
+
 ## 2.4.1
 
 - Fix spec of `Moar.String.pluralize`.
