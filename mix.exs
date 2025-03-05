@@ -65,7 +65,10 @@ defmodule Moar.MixProject do
     [
       licenses: ["MIT"],
       maintainers: ["synchronal.dev", "Erik Hanson", "Eric Saxby"],
-      links: %{"GitHub" => @scm_url}
+      links: %{
+        "GitHub" => @scm_url,
+        "Sponsor" => "https://github.com/sponsors/reflective-dev"
+      }
     ]
   end
 end

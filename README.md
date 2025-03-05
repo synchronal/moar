@@ -3,12 +3,22 @@
 [![CI](https://github.com/synchronal/moar/actions/workflows/tests.yml/badge.svg)](https://github.com/synchronal/moar/actions)
 [![Hex pm](http://img.shields.io/hexpm/v/moar.svg?style=flat)](https://hex.pm/packages/moar) [![License](http://img.shields.io/github/license/synchronal/moar.svg?style=flat)](https://github.com/synchronal/moar/blob/main/LICENSE.md)
 
-A dependency-free utility library containing 100+ useful functions. Part of the [Synchronal suite of
-libraries](https://github.com/synchronal) and sponsored by [Reflective Software](https://reflective.dev).
+A dependency-free utility library containing 100+ useful functions. Add the library to your project, or just copy and
+paste the bits that you want.
 
-The docs can be found at https://hexdocs.pm/moar.
+- Repo: https://github.com/synchronal/moar
+- Hex docs: https://hexdocs.pm/moar
 
 This library is tested against the most recent 3 versions of Elixir and Erlang.
+
+## Sponsorship 💕
+
+This library is part of the [Synchronal suite of libraries](https://github.com/synchronal) which includes more than 15
+Elixir libraries as well as a few Rust libraries.
+
+You can support our open source work by [sponsoring us](https://github.com/sponsors/reflective-dev). If you have
+specific features in mind, bugs you'd like fixed, or new libraries you'd like to see, file an issue or contact us at
+[contact@reflective.dev](mailto:contact@reflective.dev).
 
 ## Installation
 
