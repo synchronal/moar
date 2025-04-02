@@ -16,7 +16,6 @@ defmodule Moar.MixProject do
       homepage_url: @scm_url,
       name: "Moar",
       package: package(),
-      preferred_cli_env: [credo: :test, dialyzer: :test],
       source_url: @scm_url,
       start_permanent: Mix.env() == :prod,
       version: @version
@@ -26,6 +25,14 @@ defmodule Moar.MixProject do
   def application do
     [extra_applications: extra_applications(Mix.env())]
   end
+
+  def cli,
+    do: [
+      preferred_envs: [
+        credo: :test,
+        dialyzer: :test
+      ]
+    ]
 
   # # #
 
