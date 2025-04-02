@@ -166,7 +166,7 @@ jobs:
       - name: Cache PLTs
         uses: actions/cache@v4
         with:
-          path: priv/plts
+          path: _build/plts
           key: ${{ runner.os }}-test-dialyzer-v2-${{ hashFiles('**/mix.lock') }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}
       - name: Credo
         run: mix credo --strict
