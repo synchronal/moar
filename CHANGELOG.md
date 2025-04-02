@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `Moar.Sugar.reply/2` to pipe a socket or genserver state into a reply message.
+
 ## 2.4.2
 
 - Updated sponsorship info.

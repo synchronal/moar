@@ -200,6 +200,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 `Moar.Sugar`
 
 - `cont`, `error`, `halt`, `ok`, and `noreply` create tuples (`"foo" |> error()` -> `{:error, "foo"}`).
+- `reply` creates a tuple (`{:reply, message, state}`).
 - `cont!`, `error!`, `halt!`, `ok!` , and `noreply!` unwrap tuples (`{:error, "foo"} |> error!()` -> `"foo"`).
 - `returning` takes two arguments and returns the second one.
 

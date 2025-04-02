@@ -125,6 +125,17 @@ defmodule Moar.Sugar do
   def ok!({:ok, term}), do: term
 
   @doc """
+  Wraps two terms in a :reply tuple, reversing the terms. Useful in pipelines.
+
+  ```elixir
+  iex> %{} |> Map.put(:count, 0) |> Moar.Sugar.reply(:ok)
+  {:reply, :ok, %{count: 0}}
+  ```
+  """
+  @spec reply(term(), term()) :: {:reply, term(), term()}
+  def reply(term, message), do: {:reply, message, term}
+
+  @doc """
   Accepts two arguments and returns the second.
 
   Useful at the end of the pipeline when you want to return a different value than the last result of the pipeline,

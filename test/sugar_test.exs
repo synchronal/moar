@@ -65,6 +65,12 @@ defmodule Moar.SugarTest do
     end
   end
 
+  describe "reply" do
+    test "wraps the reversed terms in a :reply tuple" do
+      assert Moar.Sugar.reply(:socket, :message) == {:reply, :message, :socket}
+    end
+  end
+
   describe "returning" do
     test "accepts two values and returns the second" do
       assert Moar.Sugar.returning(1, 2) == 2
