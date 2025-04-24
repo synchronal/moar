@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.6.0
+
 - Add `Moar.DateTime.at/2` for creating a `DateTime` that is today, at a certain time, optionally shifted by a duration.
 - Add `Moar.Sugar.then_if/3` for piping into a function only if a condition is truthy.
 
