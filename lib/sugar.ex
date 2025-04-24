@@ -148,4 +148,21 @@ defmodule Moar.Sugar do
   """
   @spec returning(any(), any()) :: any()
   def returning(_first, second), do: second
+
+  @doc """
+  Accepts an argument and passes it into the given function if the condition is truthy.
+
+  ``` elixir
+  iex> 1 |> Moar.Sugar.then_if(nil, &(&1 + 1))
+  1
+  iex> 1 |> Moar.Sugar.then_if(false, &(&1 + 1))
+  1
+
+  iex> 1 |> Moar.Sugar.then_if("exists", &(&1 + 1))
+  2
+  ```
+  """
+  @spec then_if(term(), term(), (term() -> term())) :: term()
+  def then_if(a, truthy, _fun) when truthy in [false, nil], do: a
+  def then_if(a, _truthy, fun), do: fun.(a)
 end

@@ -32,6 +32,25 @@ defmodule Moar.DateTime do
     do: DateTime.add(date_time, Moar.Duration.convert(duration, :millisecond), :millisecond)
 
   @doc """
+  Makes a `DateTime` at a particular `Time` today, optionally shifting by a `Duration`.
+
+  ``` elixir
+  iex> Moar.DateTime.at(~T[13:00:00])
+  DateTime.new!(Date.utc_today(), ~T[13:00:00])
+
+  iex> Moar.DateTime.at(~T[13:00:00], shift: [day: 2, hour: -3])
+  DateTime.new!(Date.utc_today(), ~T[10:00:00]) |> DateTime.shift(day: 2)
+  ```
+  """
+  @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
+  def at(time, opts \\ []) do
+    [shift: duration] = Keyword.validate!(opts, shift: nil)
+
+    DateTime.new!(Date.utc_today(), time)
+    |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
+  end
+
+  @doc """
   Returns true if `date_time` is inclusively inside `range` which is a tuple containing a start datetime and an end
   datetime.
 

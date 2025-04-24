@@ -67,6 +67,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 `Moar.DateTime` and `Moar.NaiveDateTime`
 
 - `add` and `subtract` can add and subtract a `Moar.Duration`, which is a tuple with a time unit, like `{27, :minute}`.
+- `at` for a duration on the current UTC day at the given time, optionally shifted by duration.
 - `between?` determines whether a datetime is between two other datetimes.
 - `from_iso8601!` raises if the string is not in ISO 8601 format.
 - `recent?` returns true if the given datetime was at most one minute ago.
@@ -203,6 +204,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 - `reply` creates a tuple (`{:reply, message, state}`).
 - `cont!`, `error!`, `halt!`, `ok!` , and `noreply!` unwrap tuples (`{:error, "foo"} |> error!()` -> `"foo"`).
 - `returning` takes two arguments and returns the second one.
+- `then_if` for piping a term into a function only if a condition is truthy.
 
 `Moar.Term`
 

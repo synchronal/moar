@@ -2,6 +2,11 @@
 
 ## Unreleased changes
 
+- Add `Moar.DateTime.at/2` for creating a `DateTime` that is today, at a certain time, optionally shifted by a duration.
+- Add `Moar.Sugar.then_if/3` for piping into a function only if a condition is truthy.
+
+## 2.5.0
+
 - Add `Moar.Sugar.reply/2` to pipe a socket or genserver state into a reply message.
 
 ## 2.4.2

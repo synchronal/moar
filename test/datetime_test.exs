@@ -11,6 +11,19 @@ defmodule Moar.DateTimeTest do
     end
   end
 
+  describe "at" do
+    test "makes a datetime at a specific time" do
+      assert Moar.DateTime.at(~T{13:00:00}) == DateTime.new!(Date.utc_today(), ~T[13:00:00])
+    end
+
+    test "can add a duration" do
+      assert Moar.DateTime.at(~T{13:00:00}, shift: [hour: 1]) == DateTime.new!(Date.utc_today(), ~T[14:00:00])
+
+      assert Moar.DateTime.at(~T{12:00:00}, shift: [day: 1]) ==
+               DateTime.new!(Date.utc_today(), ~T[12:00:00]) |> DateTime.shift(day: 1)
+    end
+  end
+
   describe "from_iso8601!" do
     test "parses a valid ISO8601 string" do
       assert Moar.DateTime.from_iso8601!("2020-01-01T00:00:00.000Z") == ~U[2020-01-01T00:00:00.000Z]
