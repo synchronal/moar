@@ -20,7 +20,7 @@ defmodule Moar.DateTimeTest do
       assert Moar.DateTime.at(~T{13:00:00}, shift: [hour: 1]) == DateTime.new!(Date.utc_today(), ~T[14:00:00])
 
       assert Moar.DateTime.at(~T{12:00:00}, shift: [day: 1]) ==
-               DateTime.new!(Date.utc_today(), ~T[12:00:00]) |> DateTime.shift(day: 1)
+               DateTime.new!(Date.utc_today(), ~T[12:00:00]) |> DateTime.add(1, :day)
     end
   end
 

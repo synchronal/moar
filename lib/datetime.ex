@@ -32,14 +32,7 @@ defmodule Moar.DateTime do
     do: DateTime.add(date_time, Moar.Duration.convert(duration, :millisecond), :millisecond)
 
   defmacrop at_time(time, opts) do
-    if System.version() |> Version.parse!() |> Version.compare(Version.parse!("1.17.0")) == :gt do
-      quote do
-        [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
-
-        DateTime.new!(Date.utc_today(), unquote(time))
-        |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
-      end
-    else
+    if System.version() |> Version.parse!() |> Version.compare(Version.parse!("1.17.0")) == :lt do
       quote do
         [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
 
@@ -50,6 +43,13 @@ defmodule Moar.DateTime do
             DateTime.add(datetime, amount, unit)
           end)
         end)
+      end
+    else
+      quote do
+        [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
+
+        DateTime.new!(Date.utc_today(), unquote(time))
+        |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
       end
     end
   end
@@ -62,7 +62,7 @@ defmodule Moar.DateTime do
   DateTime.new!(Date.utc_today(), ~T[13:00:00])
 
   iex> Moar.DateTime.at(~T[13:00:00], shift: [day: 2, hour: -3])
-  DateTime.new!(Date.utc_today(), ~T[10:00:00]) |> DateTime.shift(day: 2)
+  DateTime.new!(Date.utc_today(), ~T[10:00:00]) |> DateTime.add(2, :day)
   ```
   """
   @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
