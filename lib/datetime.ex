@@ -41,17 +41,15 @@ defmodule Moar.DateTime do
       end
     else
       quote do
-        def at(time, opts \\ []) do
-          [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
+        [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
 
-          DateTime.new!(Date.utc_today(), unquote(time))
-          |> Moar.Sugar.then_if(duration, fn datetime ->
-            duration
-            |> Enum.reduce(datetime, fn {unit, amount}, datetime ->
-              DateTime.add(datetime, amount, unit)
-            end)
+        DateTime.new!(Date.utc_today(), unquote(time))
+        |> Moar.Sugar.then_if(duration, fn datetime ->
+          duration
+          |> Enum.reduce(datetime, fn {unit, amount}, datetime ->
+            DateTime.add(datetime, amount, unit)
           end)
-        end
+        end)
       end
     end
   end
