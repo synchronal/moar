@@ -43,11 +43,25 @@ defmodule Moar.DateTime do
   ```
   """
   @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
-  def at(time, opts \\ []) do
-    [shift: duration] = Keyword.validate!(opts, shift: nil)
+  if System.version() |> Version.parse!() |> Version.compare(Version.parse!("1.17.0")) != :lt do
+    def at(time, opts \\ []) do
+      [shift: duration] = Keyword.validate!(opts, shift: nil)
 
-    DateTime.new!(Date.utc_today(), time)
-    |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
+      DateTime.new!(Date.utc_today(), time)
+      |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
+    end
+  else
+    def at(time, opts \\ []) do
+      [shift: duration] = Keyword.validate!(opts, shift: nil)
+
+      DateTime.new!(Date.utc_today(), time)
+      |> Moar.Sugar.then_if(duration, fn datetime ->
+        duration
+        |> Enum.reduce(datetime, fn {unit, amount}, datetime ->
+          DateTime.add(datetime, amount, unit)
+        end)
+      end)
+    end
   end
 
   @doc """
