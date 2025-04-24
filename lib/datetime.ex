@@ -65,7 +65,8 @@ defmodule Moar.DateTime do
   DateTime.new!(Date.utc_today(), ~T[10:00:00]) |> DateTime.add(2, :day)
   ```
   """
-  @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
+  # Spec cannot be defined with Duration until support for Elixir 1.16 is dropped.
+  # @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
   def at(time, opts \\ []),
     do: at_time(time, opts)
 
