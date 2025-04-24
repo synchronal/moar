@@ -31,6 +31,31 @@ defmodule Moar.DateTime do
   def add(date_time, duration),
     do: DateTime.add(date_time, Moar.Duration.convert(duration, :millisecond), :millisecond)
 
+  defmacrop at_time(time, opts) do
+    if System.version() |> Version.parse!() |> Version.compare(Version.parse!("1.17.0")) == :gt do
+      quote do
+        [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
+
+        DateTime.new!(Date.utc_today(), unquote(time))
+        |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
+      end
+    else
+      quote do
+        def at(time, opts \\ []) do
+          [shift: duration] = Keyword.validate!(unquote(opts), shift: nil)
+
+          DateTime.new!(Date.utc_today(), unquote(time))
+          |> Moar.Sugar.then_if(duration, fn datetime ->
+            duration
+            |> Enum.reduce(datetime, fn {unit, amount}, datetime ->
+              DateTime.add(datetime, amount, unit)
+            end)
+          end)
+        end
+      end
+    end
+  end
+
   @doc """
   Makes a `DateTime` at a particular `Time` today, optionally shifting by a `Duration`.
 
@@ -43,26 +68,8 @@ defmodule Moar.DateTime do
   ```
   """
   @spec at(Time.t(), shift: Duration.t()) :: DateTime.t()
-  if System.version() |> Version.parse!() |> Version.compare(Version.parse!("1.17.0")) != :lt do
-    def at(time, opts \\ []) do
-      [shift: duration] = Keyword.validate!(opts, shift: nil)
-
-      DateTime.new!(Date.utc_today(), time)
-      |> Moar.Sugar.then_if(duration, &DateTime.shift(&1, duration))
-    end
-  else
-    def at(time, opts \\ []) do
-      [shift: duration] = Keyword.validate!(opts, shift: nil)
-
-      DateTime.new!(Date.utc_today(), time)
-      |> Moar.Sugar.then_if(duration, fn datetime ->
-        duration
-        |> Enum.reduce(datetime, fn {unit, amount}, datetime ->
-          DateTime.add(datetime, amount, unit)
-        end)
-      end)
-    end
-  end
+  def at(time, opts \\ []),
+    do: at_time(time, opts)
 
   @doc """
   Returns true if `date_time` is inclusively inside `range` which is a tuple containing a start datetime and an end
