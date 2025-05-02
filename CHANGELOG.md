@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 2.7.0
+
 - Add `:to_string` shortcut for `assert_eq` which converts both terms to strings before comparing.
 
 ## 2.6.0
