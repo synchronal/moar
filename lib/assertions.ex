@@ -12,7 +12,7 @@ defmodule Moar.Assertions do
 
   @inspect_opts [custom_options: [sort_maps: true]]
 
-  @type assert_eq_opt_shortcut() :: :downcase | :sort | :squish | :trim
+  @type assert_eq_opt_shortcut() :: :downcase | :sort | :squish | :to_string | :trim
   @type assert_eq_opts() ::
           (any() -> any())
           | {:apply, (any() -> any()) | assert_eq_opt_shortcut()}
@@ -180,6 +180,7 @@ defmodule Moar.Assertions do
   * `:sort` - the same as `:ignore_order`
   * `:squish` - if `left` and `right` are strings, trims the strings and replaces consecutive whitespace characters
     with a single space using `Moar.String.squish/1` before comparing
+  * `:to_string` - calls `String.Chars.to_string` on `left` and `right` before comparing
   * `:trim` - if `left` and `right` are strings, trims the strings using `String.trim/1` before comparing
 
   ```elixir
@@ -370,6 +371,7 @@ defmodule Moar.Assertions do
     downcase: &String.downcase/1,
     sort: &Enum.sort/1,
     squish: &Moar.String.squish/1,
+    to_string: &String.Chars.to_string/1,
     trim: &String.trim/1
   }
   @shortcut_keys Map.keys(@shortcuts)

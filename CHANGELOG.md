@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add `:to_string` shortcut for `assert_eq` which converts both terms to strings before comparing.
+
 ## 2.6.0
 
 - Add `Moar.DateTime.at/2` for creating a `DateTime` that is today, at a certain time, optionally shifted by a duration.

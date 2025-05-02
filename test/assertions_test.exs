@@ -51,6 +51,11 @@ defmodule Moar.AssertionsTest do
       assert_eq(" foo   ", "    FOO ", [&String.downcase/1, &String.trim/1])
     end
 
+    test "`:apply` keyword can be omitted when shortcuts are used" do
+      assert_eq("foo", "FOO", :downcase)
+      assert_eq(" foo   ", "    FOO ", [:downcase, :trim])
+    end
+
     test "accepts one or more `:map` functions to transform enums" do
       assert_eq(["foo", "bar"], ["FOO", "bAr"], map: &String.downcase/1)
       assert_eq([" foo   ", " bar   "], ["    FOO ", "BaR   "], map: &String.downcase/1, map: &String.trim/1)
@@ -72,6 +77,8 @@ defmodule Moar.AssertionsTest do
       assert_eq(["foo"], ["FOO"], map: :downcase)
       assert_eq("foo bar", " foo    bar ", apply: :squish)
       assert_eq(["foo bar"], [" foo   bar "], map: :squish)
+      assert_eq(:foo_bar, "foo_bar", apply: :to_string)
+      assert_eq([:foo_bar], ["foo_bar"], map: :to_string)
       assert_eq("foo", " foo ", apply: :trim)
       assert_eq(["foo"], [" foo "], map: :trim)
     end
