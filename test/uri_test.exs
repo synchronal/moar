@@ -143,12 +143,14 @@ defmodule Moar.URITest do
       assert Moar.URI.valid?(%{uri | path: nil})
       assert Moar.URI.valid?(%{uri | scheme: "http"})
       assert Moar.URI.valid?(%{uri | scheme: "ftp"})
+      assert Moar.URI.valid?(%{uri | host: nil, path: "alice@example.com", scheme: "mailto"})
     end
 
     test "invalid", %{uri: uri} do
       refute Moar.URI.valid?(%{uri | host: nil})
       refute Moar.URI.valid?(%{uri | path: "spaces in path are invalid"})
       refute Moar.URI.valid?(%{uri | scheme: nil})
+      refute Moar.URI.valid?(%{uri | host: nil, path: "  ", scheme: "mailto"})
     end
   end
 

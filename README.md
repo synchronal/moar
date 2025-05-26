@@ -221,7 +221,8 @@ If you'd rather not install the whole library, you can just copy some of its fun
 
 - `fix` applies some fixes to a URI string.
 - `format` formats a URI in various ways.
-- `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
+- `valid?` returns true if the URI has a host and scheme, and if it has a path, the path does not contain spaces; it also
+  supports `mailto` URIs.
 - `web_url?` returns true if the scheme is `http` or `https`.
 
 `Moar.UUID`

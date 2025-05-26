@@ -137,11 +137,19 @@ defmodule Moar.URI do
   def to_simple_string(uri), do: format(uri, :simple_string)
 
   @doc """
-  Returns `true` if the URI has a host and scheme, and if it has a path, the path does not contain spaces.
+  Returns `false` if the given URI does not have a scheme. For URIs whose scheme is `mailto`, returns `true` if
+  the path is not blank (you can use https://hex.pm/packages/ex_email to validate the email address).
+  For other schemes, returns `true` if the URI has a host, and if it has a path, the path does not contain spaces.
 
   ```elixir
+  iex> Moar.URI.valid?(%URI{path: "alice@example.com", scheme: "mailto"})
+  true
+
   iex> Moar.URI.valid?(%URI{host: "example.com", path: "users/1", scheme: "https"})
   true
+
+  iex> Moar.URI.valid?(%URI{path: " ", scheme: "mailto"})
+  false
 
   iex> Moar.URI.valid?(%URI{host: "example.com", path: "users/1", scheme: nil})
   false
@@ -151,6 +159,9 @@ defmodule Moar.URI do
   ```
   """
   @spec valid?(URI.t()) :: boolean()
+  def valid?(%URI{path: path, scheme: "mailto"} = _uri),
+    do: Moar.Term.present?(path)
+
   def valid?(%URI{host: host, path: path, scheme: scheme} = _uri),
     do: host != nil && scheme != nil && (path == nil || !String.contains?(path, " "))
 
