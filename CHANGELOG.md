@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 3.0.0
+
 - `Moar.URI.valid?` will now return `true` when given a `mailto:` URI, as long as its path is not blank.
 - **Breaking changes:** in previous versions, `Moar.URI.valid?` would return `false` when given a `mailto:` URI. To ensure
   that a URI is a valid *web* URI, use `Moar.URI.web_url?`
