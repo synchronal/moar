@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 3.1.0
+
 - Added `Moar.IO` which contains functions to more easily format strings with colors and other ANSI codes.
 
 ## 3.0.0
