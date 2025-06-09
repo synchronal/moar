@@ -117,6 +117,10 @@ If you'd rather not install the whole library, you can just copy some of its fun
 - `stream!` delegates to `File.stream!` in a way that's compatible with older Elixir versions.
 - `write_tempfile` writes some data to a new tempfile.
 
+`Moar.IO`
+
+- `cformat` formats a string with ANSI codes; `cstring` and `cputs` create and output those strings.
+
 `Moar.Integer`
 
 - `compare` returning `:eq`, `:lt`, `:gt`.

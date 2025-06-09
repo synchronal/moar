@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Added `Moar.IO` which contains functions to more easily format strings with colors and other ANSI codes.
+
 ## 3.0.0
 
 - `Moar.URI.valid?` will now return `true` when given a `mailto:` URI, as long as its path is not blank.
