@@ -1,5 +1,5 @@
 defmodule Moar.Map do
-  # @related [test](/test/map_test.exs)
+  # @related [test](test/map_test.exs)
 
   @moduledoc "Map-related functions."
 
@@ -123,6 +123,26 @@ defmodule Moar.Map do
 
   def deep_atomize_keys(not_a_map),
     do: not_a_map
+
+  @doc """
+  Recursively converts structs to maps, including nested structs and lists of structs.
+  This is particularly useful for converting structs to plain maps for JSON serialization.
+  """
+  @spec deep_from_struct(struct() | map() | list(struct() | map())) :: map() | list(map())
+  def deep_from_struct(%{__struct__: _struct_name} = struct),
+    do:
+      struct
+      |> Map.from_struct()
+      |> deep_from_struct()
+
+  def deep_from_struct(%{} = map),
+    do: Map.new(map, fn {key, value} -> {key, deep_from_struct(value)} end)
+
+  def deep_from_struct(list) when is_list(list),
+    do: Enum.map(list, &deep_from_struct/1)
+
+  def deep_from_struct(value),
+    do: value
 
   @doc """
   Deeply merges two maps into a single map. (It will also accept keyword lists and convert them to maps, as long

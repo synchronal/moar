@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Added `Moar.Map.deep_from_struct/1` which is like `Map.from_struct` but goes deep. Thanks HT!
+
 ## 3.1.0
 
 - Added `Moar.IO` which contains functions to more easily format strings with colors and other ANSI codes.

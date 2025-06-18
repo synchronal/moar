@@ -1,7 +1,9 @@
 defmodule Moar.MapTest do
-  # @related [subject](/lib/map.ex)
+  # @related [subject](lib/map.ex)
 
   use Moar.SimpleCase, async: true
+
+  defmodule TestStruct, do: defstruct([:a, :b, :c])
 
   doctest Moar.Map
 
@@ -138,7 +140,31 @@ defmodule Moar.MapTest do
     end
   end
 
-  describe "deep merge" do
+  describe "deep_from_struct" do
+    test "can convert a shallow struct to a map" do
+      assert Moar.Map.deep_from_struct(%TestStruct{a: 1, b: 2}) == %{a: 1, b: 2, c: nil}
+    end
+
+    test "can convert a deep struct to a deep map" do
+      %TestStruct{a: 1, b: %TestStruct{a: 3, c: %TestStruct{b: 4}}}
+      |> Moar.Map.deep_from_struct()
+      |> assert_eq(%{a: 1, b: %{a: 3, b: nil, c: %{a: nil, b: 4, c: nil}}, c: nil})
+    end
+
+    test "accepts maps" do
+      %{a: 1, b: %{a: 3, c: %{b: 4}}}
+      |> Moar.Map.deep_from_struct()
+      |> assert_eq(%{a: 1, b: %{a: 3, c: %{b: 4}}})
+    end
+
+    test "accepts lists of structs and maps" do
+      [%{a: 1, b: 2}, %{c: %TestStruct{a: 1}}]
+      |> Moar.Map.deep_from_struct()
+      |> assert_eq([%{a: 1, b: 2}, %{c: %{a: 1, b: nil, c: nil}}])
+    end
+  end
+
+  describe "deep_merge" do
     test "can do a shallow merge of maps" do
       %{a: 1, b: 2} |> Moar.Map.deep_merge(%{b: 3, c: 4}) |> assert_eq(%{a: 1, b: 3, c: 4})
     end
@@ -536,8 +562,6 @@ defmodule Moar.MapTest do
         Moar.Map.validate_keys!(map, a: nil, c: :bar)
       end
     end
-
-    defmodule TestStruct, do: defstruct([:a, :b, :c])
 
     test "verifies that the map's keys equal or are a subset of the keys in the given struct" do
       assert Moar.Map.validate_keys!(%{a: 1, b: 2}, %TestStruct{}) == %{a: 1, b: 2}
