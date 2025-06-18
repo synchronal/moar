@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 3.2.0
+
 - Added `Moar.Map.deep_from_struct/1` which is like `Map.from_struct` but goes deep. Thanks HT!
 
 ## 3.1.0
