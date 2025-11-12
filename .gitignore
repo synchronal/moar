@@ -1,4 +1,5 @@
 *.ez
+.elixir_ls/
 .envrc
 .medic/.doctor.out
 .medic/skipped

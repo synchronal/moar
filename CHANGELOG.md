@@ -3,6 +3,7 @@
 ## Unreleased changes
 
 - Test with Elixir 1.19 and Erlang 28.1; drop support for Elixir 1.16 and Erlang 25.
+- Update deps.
 
 ## 3.2.0
 
