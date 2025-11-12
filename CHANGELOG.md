@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Test with Elixir 1.19 and Erlang 28.1; drop support for Elixir 1.16 and Erlang 25.
+
 ## 3.2.0
 
 - Added `Moar.Map.deep_from_struct/1` which is like `Map.from_struct` but goes deep. Thanks HT!
