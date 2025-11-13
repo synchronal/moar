@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 4.1.0
+
 - `String.quote/2` surrounds the given string with quotation marks.
 
 ## 4.0.0
