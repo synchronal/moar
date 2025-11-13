@@ -1,5 +1,5 @@
 defmodule Moar.String do
-  # @related [test](/test/string_test.exs)
+  # @related [test](test/string_test.exs)
 
   @moduledoc "String-related functions."
 
@@ -227,6 +227,20 @@ defmodule Moar.String do
       do: "#{count} #{pluralized}",
       else: pluralized
   end
+
+  @doc """
+  Surrounds the given string (or anything that conforms to the `String.Chars` protocol) with quotes.
+  The default is double-curly quotes (“foo”) but can be set to double straight ("foo"), single curly (‘foo’),
+  or single straight ('foo'). Passing `nil` as an argument returns an (un-quoted) empty string.
+  """
+  @type quote_type() :: :double_curly | :double_straight | :single_curly | :single_straight
+  @spec quote(String.Chars.t(), quote_type()) :: String.t()
+  def quote(s, type \\ :double_curly)
+  def quote(nil, _type), do: ""
+  def quote(s, :double_curly), do: s |> to_string() |> surround(~s|“|, ~s|”|)
+  def quote(s, :double_straight), do: s |> to_string() |> surround(~s|"|)
+  def quote(s, :single_curly), do: s |> to_string() |> surround(~s|‘|, ~s|’|)
+  def quote(s, :single_straight), do: s |> to_string() |> surround(~s|'|)
 
   @doc """
   Removes all whitespace following a backspace+v escape code.

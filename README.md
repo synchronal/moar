@@ -188,6 +188,7 @@ If you'd rather not install the whole library, you can just copy some of its fun
 - `inner_truncate` removes the middle of a string to make it the desired length.
 - `join` joins multiple items, as a shortcut to `Enum.map_join([item1, item2, ...], "-", &to_string/1)`
 - `lorem` generates a "lorem ipsum" string of the given length.
+- `quote` surrounds the given string with quotation marks (with various quote styles supported).
 - `remove_marked_whitespace` removes whitespacing following a special `\v` marker.
 - `secure_compare` compares two strings in constant time.
 - `slug` converts a string into a slug with a custom joiner character; `dasherize` and `underscore` are shortcuts for

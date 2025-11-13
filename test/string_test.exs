@@ -1,5 +1,5 @@
 defmodule Moar.StringTest do
-  # @related [subject](/lib/string.ex)
+  # @related [subject](lib/string.ex)
 
   use Moar.SimpleCase, async: true
 
@@ -124,6 +124,27 @@ defmodule Moar.StringTest do
       assert Moar.String.pluralize(-1, "fish", pluralizer) == "fish"
       assert Moar.String.pluralize(-2, "fish", pluralizer) == "fishies"
       assert Moar.String.pluralize(-2, "fish", pluralizer, :include_number) == "-2 fishies"
+    end
+  end
+
+  describe "quote" do
+    test "surrounds a string with quotes" do
+      assert Moar.String.quote("hello") == ~s|“hello”|
+    end
+
+    test "quote type can be specified" do
+      assert Moar.String.quote("hello", :double_curly) == ~s|“hello”|
+      assert Moar.String.quote("hello", :double_straight) == ~s|"hello"|
+      assert Moar.String.quote("hello", :single_curly) == ~s|‘hello’|
+      assert Moar.String.quote("hello", :single_straight) == ~s|'hello'|
+    end
+
+    test "returns empty string when given `nil`" do
+      assert Moar.String.quote(nil) == ~s||
+    end
+
+    test "accepts anything that implements the String.Chars protocol" do
+      assert Moar.String.quote(123) == ~s|“123”|
     end
   end
 
