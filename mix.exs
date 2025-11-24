@@ -58,7 +58,7 @@ defmodule Moar.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md", "LICENSE.md"]
+      extras: ["README.md", "LICENSE.md", "CHANGELOG.md"]
     ]
   end
 
@@ -74,6 +74,7 @@ defmodule Moar.MixProject do
       maintainers: ["synchronal.dev", "Erik Hanson", "Eric Saxby"],
       links: %{
         "GitHub" => @scm_url,
+        "Changelog" => "https://hexdocs.pm/moar/CHANGELOG.html"
         "Sponsor" => "https://github.com/sponsors/reflective-dev"
       }
     ]
