@@ -74,7 +74,7 @@ defmodule Moar.MixProject do
       maintainers: ["synchronal.dev", "Erik Hanson", "Eric Saxby"],
       links: %{
         "GitHub" => @scm_url,
-        "Changelog" => "https://hexdocs.pm/moar/CHANGELOG.html"
+        "Changelog" => "https://hexdocs.pm/moar/CHANGELOG.html",
         "Sponsor" => "https://github.com/sponsors/reflective-dev"
       }
     ]

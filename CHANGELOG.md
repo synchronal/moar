@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Add changelog to docs and hex info. Thanks @epinault!
+
 ## 4.1.0
 
 - `String.quote/2` surrounds the given string with quotation marks.
