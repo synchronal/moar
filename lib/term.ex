@@ -16,7 +16,7 @@ defmodule Moar.Term do
   """
 
   @doc """
-  Returns true if the term is blank, nil, or empty.
+  Returns true if the term is blank, nil, false, or empty.
 
   ```elixir
   iex> Moar.Term.blank?(nil)
@@ -43,7 +43,27 @@ defmodule Moar.Term do
   def blank?(_), do: false
 
   @doc """
-  Returns true if the term is not blank, nil, or empty.
+  Like `blank?/1` but takes a keyword list containing `blank` and/or `present` keys that override the default behavior.
+
+  ```elixir
+  iex> Moar.Term.blank?("--")
+  false
+
+  iex> Moar.Term.blank?("--", blank: ["--"], present: [0, false])
+  true
+  ```
+  """
+  @spec blank?(any(), blank: [any()], present: [any()]) :: boolean()
+  def blank?(value, config) do
+    cond do
+      value in Keyword.get(config, :blank, []) -> true
+      value in Keyword.get(config, :present, []) -> false
+      :else -> blank?(value)
+    end
+  end
+
+  @doc """
+  Returns true if the term is not blank, nil, false, or empty.
 
   ```elixir
   iex> Moar.Term.present?(1)
@@ -61,6 +81,26 @@ defmodule Moar.Term do
   """
   @spec present?(any()) :: boolean()
   def present?(term), do: !blank?(term)
+
+  @doc """
+  Like `present?/1` but takes a keyword list containing `blank` and/or `present` keys that override the default behavior.
+
+  ```elixir
+  iex> Moar.Term.present?(false)
+  false
+
+  iex> Moar.Term.present?(false, blank: ["--"], present: [0, false])
+  true
+  ```
+  """
+  @spec present?(any(), keyword()) :: boolean()
+  def present?(value, config) do
+    cond do
+      value in Keyword.get(config, :present, []) -> true
+      value in Keyword.get(config, :blank, []) -> false
+      :else -> present?(value)
+    end
+  end
 
   @doc """
   Returns the value if it is present (via `present?`), or else returns the default value.

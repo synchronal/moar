@@ -46,6 +46,20 @@ defmodule Moar.TermTest do
                  204, 16, 128, 150, 109, 242, 251, 91, 144, 33>>
              )
     end
+
+    test "can configure blank and present values" do
+      config = [blank: ["--", "<missing>"], present: [false, %{}]]
+
+      assert Moar.Term.blank?("--", config)
+      assert Moar.Term.blank?("<missing>", config)
+      refute Moar.Term.blank?(false, config)
+      refute Moar.Term.blank?(%{}, config)
+
+      refute Moar.Term.present?("--", config)
+      refute Moar.Term.present?("<missing>", config)
+      assert Moar.Term.present?(false, config)
+      assert Moar.Term.present?(%{}, config)
+    end
   end
 
   describe "present?" do
