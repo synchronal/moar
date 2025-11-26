@@ -6,7 +6,7 @@
 
 ## 4.1.0
 
-- `String.quote/2` surrounds the given string with quotation marks.
+- `Moar.String.quote/2` surrounds the given string with quotation marks.
 
 ## 4.0.0
 
@@ -291,7 +291,7 @@
 
 ## 1.28.0
 
-- Add `Moar.Atom.ensure_existing_atoms/2` to check for a list of previously defined atoms.
+- Add `Moar.Atom.ensure_existing_atoms/1` to check for a list of previously defined atoms.
 - Add `Moar.Atom.existing_atom?/1` to check if a string has previously been defined as an atom.
 - Add `Moar.Enum.into!/2` which is like `Enum.into/2` but accepts `nil` as its first argument.
 - `Moar.Map.merge/2` now accepts `nil` values.
@@ -392,8 +392,8 @@
 
 ## 1.12.0
 
-- Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`, and `Moar.Duration.shift/1` which is
-  like `Moar.Duration.convert/1` but returns a duration tuple.
+- Add `Moar.Duration.humanize/1` which can turn `{120, :second}` into `{2, :minute}`, and `Moar.Duration.shift/2` which is
+  like `Moar.Duration.convert/2` but returns a duration tuple.
 - Add `Moar.Duration.ago/1` which returns the duration between a given datetime and now.
 - Add `Moar.Duration.between/2` which returns the duration between two datetimes.
 - Add `Moar.Duration.approx/1` which shifts a duration to a simpler approximate value.
@@ -459,7 +459,7 @@
 
 - Update documentation
 - Minor formatting fixes
-- Remove `Moar.Term.or_default/2` since it is the same as `Moar.Term.presence/2`.
+- Remove "Moar.Term.or_default/2" since it is the same as `Moar.Term.presence/2`.
 
 ## 0.1.0
 
