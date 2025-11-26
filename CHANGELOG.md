@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+## 4.2.0
+
 - Add changelog to docs and hex info. Thanks @epinault!
 - Add `Moar.Term.blank?/2` and `Moar.Term.present?/2` which can override what values are considered blank & present.
 
