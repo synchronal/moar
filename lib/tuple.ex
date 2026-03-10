@@ -33,6 +33,7 @@ defmodule Moar.Tuple do
 
   @doc """
   Reduces a list of tuples to map where values are consolidated by the first element of each input tuple.
+  Optionally accepts a list of default keys, whose values will be `[]` if not found in the input.
 
   ```elixir
   iex> Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}])
@@ -40,13 +41,18 @@ defmodule Moar.Tuple do
 
   iex> Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}, {:error, 3}, {:ok, 4}])
   %{ok: [1, 2, 4], error: [3]}
+
+  iex> Moar.Tuple.reduce([{:ok, 1}, {:ok, 2}], [:ok, :warning, :error])
+  %{ok: [1, 2], warning: [], error: []}
   ```
   """
-  @spec reduce([any()]) :: map()
-  def reduce(list) do
-    Enum.reduce(list, %{}, fn {k, v}, acc ->
-      Map.update(acc, k, [v], fn list -> [v | list] end)
-    end)
-    |> Map.new(fn {k, v} -> {k, Enum.reverse(v)} end)
+  @spec reduce([any()], [any()]) :: map()
+  def reduce(list, defaults \\ []) do
+    reduced =
+      list
+      |> Enum.reduce(%{}, fn {k, v}, acc -> Map.update(acc, k, [v], fn list -> [v | list] end) end)
+      |> Map.new(fn {k, v} -> {k, Enum.reverse(v)} end)
+
+    Enum.reduce(defaults, reduced, fn default, acc -> Map.put_new(acc, default, []) end)
   end
 end

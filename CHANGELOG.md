@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- `Moar.Tuple.reduce/2` takes a list of default keys, whose values are `[]` if not found in the input.
+
 ## 4.2.0
 
 - Add changelog to docs and hex info. Thanks @epinault!
