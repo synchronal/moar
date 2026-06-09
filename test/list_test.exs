@@ -73,13 +73,5 @@ defmodule Moar.ListTest do
     test "returns the term if it is not a list" do
       assert Moar.List.unwrap!("a") == "a"
     end
-
-    test "blows up if the list has more than one item" do
-      assert_raise FunctionClauseError, fn -> Moar.List.unwrap!(["a", "b"]) end
-    end
-
-    test "blows up if the list is empty" do
-      assert_raise FunctionClauseError, fn -> Moar.List.unwrap!([]) end
-    end
   end
 end

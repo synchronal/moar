@@ -246,8 +246,9 @@ defmodule Moar.String do
   Removes all whitespace following a backspace+v escape code.
 
   Especially useful in test assertions where only some of the whitespace matters.
-  ```
-  iex> Moar.String.remove_marked_whitespace("one two three\v\t   four five")
+
+  ```elixir
+  iex> Moar.String.remove_marked_whitespace("one two three\\v\\t   four five")
   "one two threefour five"
   ```
   """

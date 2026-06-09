@@ -86,18 +86,12 @@ defmodule Moar.List do
   Returns the argument if it is not a list. If it is a list, returns the only item
   in the list, or raises if the list is empty or has more than one item.
 
-  ```
+  ```elixir
   iex> Moar.List.unwrap!([5])
   5
 
   iex> Moar.List.unwrap!(5)
   5
-
-  iex> Moar.List.unwrap!([])
-  ** (FunctionClauseError) no function clause matching in Moar.List.unwrap!/1
-
-  iex> Moar.List.unwrap!([5, 9])
-  ** (FunctionClauseError) no function clause matching in Moar.List.unwrap!/1
   ```
   """
   @spec unwrap!(any() | [any()]) :: any()

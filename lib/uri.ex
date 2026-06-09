@@ -186,7 +186,6 @@ defmodule Moar.URI do
 
   # # #
 
-  defp extract_host_from_path(nil), do: nil
   defp extract_host_from_path(""), do: ""
 
   defp extract_host_from_path(path) when is_binary(path) do

@@ -2,6 +2,8 @@
 
 ## Unreleased changes
 
+- Test with Elixir 1.20.1 and Erlang 29.0.1; drop support for Elixir 1.17 and Erlang 26.
+
 ## 4.3.0
 
 - `Moar.Tuple.reduce/2` takes a list of default keys, whose values are `[]` if not found in the input.
