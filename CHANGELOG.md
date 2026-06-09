@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased changes
+## 5.0.0
 
 - Test with Elixir 1.20.1 and Erlang 29.0.1; drop support for Elixir 1.17 and Erlang 26.
 - Update dependencies.
