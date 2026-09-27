@@ -32,11 +32,42 @@ defmodule Moar.IO do
       |> String.split(~r/\s+/, trim: true)
       |> Enum.reduce([], fn
         "&", acc -> acc ++ previous_formats
-        "+" <> format, acc -> acc ++ [String.to_atom(format)]
-        "-" <> format, acc -> acc -- [String.to_atom(format)]
-        format, acc -> acc ++ [String.to_atom(format)]
+        "+" <> format, acc -> acc ++ [expand_format(format)]
+        "-" <> format, acc -> acc -- [expand_format(format)]
+        format, acc -> acc ++ [expand_format(format)]
       end)
     end
+
+    @colors %{
+      "k" => "black",
+      "r" => "red",
+      "g" => "green",
+      "y" => "yellow",
+      "b" => "blue",
+      "m" => "magenta",
+      "c" => "cyan",
+      "w" => "white"
+    }
+    @underline "_"
+
+    defp expand_format(format) do
+      {bright?, format} = unbright(format)
+
+      format =
+        case format do
+          @underline -> "underline"
+          format -> Map.get(@colors, format, format)
+        end
+
+      if(bright?, do: "light_" <> format, else: format) |> String.to_atom()
+    end
+
+    # A color is marked as bright by repeating its first letter, so a leading doubled color letter
+    # (e.g. "rr" or "rred") means the color is bright: strip the duplicate letter and mark it bright.
+    defp unbright(<<letter, letter, rest::binary>>) when is_map_key(@colors, <<letter>>),
+      do: {true, <<letter>> <> rest}
+
+    defp unbright(format), do: {false, format}
 
     defp maybe_unwrap_list([item]), do: item
     defp maybe_unwrap_list(list) when is_list(list), do: list
@@ -61,6 +92,14 @@ defmodule Moar.IO do
   The formatting options are the ANSI codes that are allowed to be sent to `IO.ANSI.format/2`.
   There doesn't seem to be a list of valid codes, but the names of most of the zero-arity functions
   in `IO.ANSI` can be used. The order of the formatting options is not important.
+
+  Formats can be abbreviated with the following shortcuts:
+
+  * a color can be specified by its first letter, using `k` for "black": `k` `r` `g` `y` `b` `m` `c` `w`
+  * an underline can be specified with an underscore: `_`
+  * a bright color can be specified by repeating its first letter: `rr` and `rred` are both "light red"
+
+  For example, `"{rr _: alert}"` is the same as `"{light_red underline: alert}"`.
 
   A formatting expression can inherit the formatting of the previous formatting expression by using
   the `&` character, and can add or remove individual formats by prefixing them with `+` or `-`. For

@@ -5,6 +5,9 @@
 - `Moar.IO.cformat/2` formatting expressions can inherit the previous expression's formatting via `&`,
   and can add or remove individual formats by prefixing them with `+` or `-`. For example,
   `"A {green: quick} {& +underline: brown} fox"` is the same as `"A {green: quick} {green underline: brown} fox"`.
+- `Moar.IO.cformat/2` supports format shortcuts: a color's first letter (`k` for black), `_` for underline,
+  and a repeated color letter for a bright color (`rr` and `rred` are "light red"). For example,
+  `"{rr _: alert}"` is the same as `"{light_red underline: alert}"`.
 
 ## 5.0.0
 

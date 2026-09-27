@@ -31,6 +31,39 @@ defmodule IOTest do
     test "trims spaces" do
       assert Moar.IO.ANSI.convert("  {cyan: I like pie} ") == [:cyan, "I like pie", :reset]
     end
+
+    test "expands single-letter color shortcuts, using `k` for black" do
+      assert Moar.IO.ANSI.convert("{k: pie}") == [:black, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{r: pie}") == [:red, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{g: pie}") == [:green, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{y: pie}") == [:yellow, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{b: pie}") == [:blue, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{m: pie}") == [:magenta, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{c: pie}") == [:cyan, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{w: pie}") == [:white, "pie", :reset]
+    end
+
+    test "expands an underscore to underline" do
+      assert Moar.IO.ANSI.convert("{_: pie}") == [:underline, "pie", :reset]
+    end
+
+    test "expands a repeated color letter to a bright color" do
+      assert Moar.IO.ANSI.convert("{rr: pie}") == [:light_red, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{rred: pie}") == [:light_red, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{kk: pie}") == [:light_black, "pie", :reset]
+    end
+
+    test "a single or full-name color letter is not bright" do
+      assert Moar.IO.ANSI.convert("{r: pie}") == [:red, "pie", :reset]
+      assert Moar.IO.ANSI.convert("{red: pie}") == [:red, "pie", :reset]
+    end
+
+    test "combines shortcuts with each other and with the `+`/`-`/`&` operators" do
+      assert Moar.IO.ANSI.convert("{rr _: pie}") == Moar.IO.ANSI.convert("{light_red underline: pie}")
+
+      assert Moar.IO.ANSI.parse("{r: a} {& +_: b}") == Moar.IO.ANSI.parse("{red: a} {red underline: b}")
+      assert Moar.IO.ANSI.parse("{r _: a} {& -_: b}") == Moar.IO.ANSI.parse("{red underline: a} {red: b}")
+    end
   end
 
   describe "ANSI.parse" do
