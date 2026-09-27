@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- Fix typespec in `Moar.Code.fetch_docs_as_markdown` and add a catch-all clause.
+
 ## 5.0.0
 
 - Test with Elixir 1.20.1 and Erlang 29.0.1; drop support for Elixir 1.17 and Erlang 26.
