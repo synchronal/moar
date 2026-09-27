@@ -47,5 +47,27 @@ defmodule IOTest do
                " fox"
              ]
     end
+
+    test "inherits the previous formatting via `&` and adds formats via `+`" do
+      assert Moar.IO.ANSI.parse("A {green: quick} {& +underline: brown} fox") ==
+               Moar.IO.ANSI.parse("A {green: quick} {green underline: brown} fox")
+    end
+
+    test "inherits the previous formatting via `&` and removes formats via `-`" do
+      assert Moar.IO.ANSI.parse("A {underline green: quick} {& -green: brown} fox") ==
+               Moar.IO.ANSI.parse("A {underline green: quick} {underline: brown} fox")
+    end
+
+    test "inheritance chains across successive formatting expressions" do
+      assert Moar.IO.ANSI.parse("{green: a} {& +underline: b} {& +bold: c} fox") == [
+               "",
+               [:green, "a", :reset],
+               " ",
+               [[:green, :underline], "b", :reset],
+               " ",
+               [[:green, :underline, :bold], "c", :reset],
+               " fox"
+             ]
+    end
   end
 end

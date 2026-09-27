@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `Moar.IO.cformat/2` formatting expressions can inherit the previous expression's formatting via `&`,
+  and can add or remove individual formats by prefixing them with `+` or `-`. For example,
+  `"A {green: quick} {& +underline: brown} fox"` is the same as `"A {green: quick} {green underline: brown} fox"`.
+
 ## 5.0.0
 
 - Test with Elixir 1.20.1 and Erlang 29.0.1; drop support for Elixir 1.17 and Erlang 26.

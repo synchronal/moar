@@ -6,20 +6,36 @@ defmodule Moar.IO do
     @doc "Parses a string as described in `Moar.IO.cformat/2`"
     @spec parse(String.t()) :: iolist()
     def parse(string),
-      do: Regex.split(pattern(), string, include_captures: true) |> Enum.map(&convert/1)
+      do:
+        Regex.split(pattern(), string, include_captures: true)
+        |> Enum.map_reduce([], &convert_with_state/2)
+        |> elem(0)
 
     @doc "Converts one formatting expression to an iolist"
     @spec convert(String.t()) :: iolist()
-    def convert(string) do
+    def convert(string), do: convert_with_state(string, []) |> elem(0)
+
+    defp convert_with_state(string, previous_formats) do
       trimmed_string = String.trim(string)
 
       if String.first(trimmed_string) == "{" && String.last(trimmed_string) == "}" do
         [_, formats, text] = Regex.run(pattern(), trimmed_string)
-        formats = formats |> String.split(~r/\W+/) |> Enum.map(&String.to_atom/1) |> maybe_unwrap_list()
-        [formats, text, :reset]
+        formats = parse_formats(formats, previous_formats)
+        {[maybe_unwrap_list(formats), text, :reset], formats}
       else
-        string
+        {string, previous_formats}
       end
+    end
+
+    defp parse_formats(formats, previous_formats) do
+      formats
+      |> String.split(~r/\s+/, trim: true)
+      |> Enum.reduce([], fn
+        "&", acc -> acc ++ previous_formats
+        "+" <> format, acc -> acc ++ [String.to_atom(format)]
+        "-" <> format, acc -> acc -- [String.to_atom(format)]
+        format, acc -> acc ++ [String.to_atom(format)]
+      end)
     end
 
     defp maybe_unwrap_list([item]), do: item
@@ -45,6 +61,18 @@ defmodule Moar.IO do
   The formatting options are the ANSI codes that are allowed to be sent to `IO.ANSI.format/2`.
   There doesn't seem to be a list of valid codes, but the names of most of the zero-arity functions
   in `IO.ANSI` can be used. The order of the formatting options is not important.
+
+  A formatting expression can inherit the formatting of the previous formatting expression by using
+  the `&` character, and can add or remove individual formats by prefixing them with `+` or `-`. For
+  example, the following two strings are equivalent:
+
+      "A {green: quick} {& +underline: brown} fox"
+      "A {green: quick} {green underline: brown} fox"
+
+  As are these two:
+
+      "A {underline green: quick} {& -green: brown} fox"
+      "A {underline green: quick} {underline: brown} fox"
 
   The resulting iolist can be used anywhere that iodata is expected. This module's `cstring/2` function
   will take the same input and return a string, and `cputs/2` will take the same input and print it to
