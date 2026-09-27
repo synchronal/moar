@@ -19,7 +19,7 @@ defmodule Moar.Code do
   end
 
   @doc "Fetches `module`.`function`'s @doc as a markdown string"
-  @spec fetch_docs_as_markdown(module(), fun()) :: nil | binary()
+  @spec fetch_docs_as_markdown(module(), atom()) :: nil | binary()
   def fetch_docs_as_markdown(module, function) do
     case Code.fetch_docs(module) do
       {:error, :module_not_found} ->
@@ -30,6 +30,9 @@ defmodule Moar.Code do
           {{:function, ^function, _}, _, _, %{"en" => markdown}, %{}} -> markdown
           _ -> nil
         end)
+
+      _ ->
+        nil
     end
   end
 end
