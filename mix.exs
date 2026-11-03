@@ -41,7 +41,7 @@ defmodule Moar.MixProject do
       {:credo, "~> 1.7.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
-      {:markdown_formatter, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:markdown_formatter, "~> 2.0", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.0", only: :dev, runtime: false}
     ]
   end
